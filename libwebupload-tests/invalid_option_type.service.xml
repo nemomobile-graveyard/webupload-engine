@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<webService version="0.1" account="service id in account" uploadPlugin="plugin name">
+    <postOptions>
+        <option id="option1" type="updatable" default="value1">
+            <caption>caption1</caption>
+            <value id="value1">value1</value>
+            <value id="value2">value2</value>
+        </option>
+        <option id="option2" default="valueB">
+            <caption>caption2</caption>
+            <value id="valueA">valueA</value>
+            <value id="valueB">valueB</value>
+            <value id="valueC">valueC</value>
+        </option>             
+        <option id="abc" type="updatable" default="value1">
+            <caption>caption3</caption>
+            <value id="value1">value1</value>
+            <value id="value2">value2</value>
+        </option>
+    </postOptions>
+</webService>
+

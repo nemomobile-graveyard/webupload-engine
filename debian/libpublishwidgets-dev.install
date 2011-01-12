@@ -1,0 +1,4 @@
+usr/lib/libpublishwidgets.so
+usr/include/PublishWidgets/*
+usr/lib/pkgconfig/publish-widgets.pc
+usr/share/qt4/mkspecs/features/publish-widgets.prf

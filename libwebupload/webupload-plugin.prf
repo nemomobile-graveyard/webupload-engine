@@ -1,0 +1,17 @@
+###################################################################
+# webupload-plugin feature
+###################################################################
+
+!contains(DEFINES, BUILD_WEBUPLOAD_PLUGIN) {
+
+    CONFIG += libwebupload
+
+    # Adding the target path for the plugins
+    isEmpty(target.path) {
+        target.path  = /usr/lib/webupload/plugins/
+        INSTALLS    += target
+    }
+}
+
+
+

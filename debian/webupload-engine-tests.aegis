@@ -1,0 +1,7 @@
+<aegis>
+  <request>
+    <credential name="TrackerReadAccess" />
+    <credential name="TrackerWriteAccess" />    
+    <for path="/usr/bin/webupload-engine-tests" />
+  </request>
+</aegis>

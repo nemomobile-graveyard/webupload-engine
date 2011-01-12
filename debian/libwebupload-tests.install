@@ -1,0 +1,3 @@
+usr/bin/libwebupload-tests
+usr/lib/webupload/plugins/*
+usr/share/libwebupload-tests/*

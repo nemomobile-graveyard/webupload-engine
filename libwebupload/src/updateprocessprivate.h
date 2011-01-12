@@ -1,0 +1,104 @@
+
+/*
+ * Web Upload Engine -- MeeGo social networking uploads
+ * Copyright (c) 2010 Nokia Corporation and/or its subsidiary(-ies).
+ * Contact: Jukka Tiihonen <jukka.tiihonen@nokia.com>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms and conditions of the GNU Lesser General Public License,
+ * version 2.1, as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+ 
+#ifndef _WEBUPLOAD_UPDATE_PROCESS_PRIVATE_H_
+#define _WEBUPLOAD_UPDATE_PROCESS_PRIVATE_H_
+
+#include "WebUpload/Error"
+#include <QObject>
+#include <QStringList>
+#include "connectionmanager.h"
+
+namespace WebUpload {
+
+class Account;
+class ServiceOption;
+class UpdateProcess;
+
+/*!
+   \class  UpdateProcessPrivate
+   \brief  Private implementation class for UpdateProcess
+   \author Jukka Tiihonen <jukka.t.tiihonen@nokia.com>
+ */
+class UpdateProcessPrivate : public QObject {
+    Q_OBJECT
+
+public:
+    UpdateProcessPrivate (UpdateProcess *publicObject);
+    virtual ~UpdateProcessPrivate();
+
+public Q_SLOTS:
+
+    /*!
+      \brief Slot for ProcessExchangeData::doneSignal
+     */
+    void doneSlot ();
+
+    /*!
+      \brief Slot for ProcessExchangeData::stoppedSignal
+     */
+    void stoppedSlot ();
+    
+    /*!
+      \brief Slot for ProcessExchangeData::updateFailedSignal
+     */
+    void failedSlot (WebUpload::Error::Code errorId, QStringList failedIds);
+
+    /*!
+      \brief Slot for ProcessExchangeData::updateWarningSignal
+     */
+    void warningSlot (WebUpload::Error::Code warningId, QStringList failedIds);
+        
+    /*!
+      \brief Slot for PluginProcess::currentProcessStopped
+     */
+    void pluginProcessCrashed (); 
+    
+    /*!
+      \brief Slot to connect with disconnected signal from ConnectionManager.
+             No need for connected signal - we do not do updates automatically
+             - it is the user's responsibility to trigger a new update after
+             ensuring connection is there.
+     */
+    void disconnected ();
+
+private:
+
+    UpdateProcess *q_ptr;
+
+    WebUpload::Account * m_account; //!< Account updated
+
+    WebUpload::ServiceOption * m_option; //!< Post option updated or null
+
+    QString m_value; //!< Value added if not empty
+
+    ConnectionManager m_connection; //!< To check if there is connection or not
+
+    //! Used to check after cancellation whether to emit no connection error or
+    // some other error
+    bool m_isConnected; 
+    
+    friend class UpdateProcess;
+
+};
+
+}
+
+#endif

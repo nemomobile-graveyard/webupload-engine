@@ -1,0 +1,23 @@
+interface: Web Upload Services
+type: library
+scope: Platform
+state: stable
+libs-pkg: libwebupload0
+dev-pkg: libwebupload-dev
+doc: libwebupload-doc
+
+interface: Web Upload Direct API
+type: dbus
+scope: Platform
+state: stable
+libs-pkg: webupload-engine
+dev-pkg: webupload-engine-dev
+doc: webupload-engine-doc
+
+interface: Publish Widgets
+type: library
+scope: Platform
+state: experimental
+libs-pkg: libpublishwidgets0
+dev-pkg: libpublishwidgets-dev
+doc: libpublishwidgets-doc

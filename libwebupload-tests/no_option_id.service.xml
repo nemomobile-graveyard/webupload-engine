@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<webService version="0.1" account="service id in account" uploadPlugin="plugin name">
+    <!-- Options define options that are asked from user
+         Text attributes are used for now until localization is implemented -->
+    <postOptions>
+        <option id="" type="updatable" default="value1">
+            <caption>caption1</caption>
+            <value id="value1">value1</value>
+            <value id="value2">value2</value>
+        </option>
+    </postOptions>
+</webService>
+

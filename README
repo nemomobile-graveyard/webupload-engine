@@ -1,0 +1,45 @@
+Web Upload Engine for MeeGo Social Networking Uploads
+=====================================================
+
+0. About
+
+Web Upload Engine serves as a central point for uploading media content
+to social networks. Web Upload Engine is a suite of tools that prepare,
+process, queue, and upload the content with the help of specialized plugins 
+(destinations).
+
+Web Upload Engine integrates with Accounts and Single Sign-On libraries in MeeGo.
+This gives possibility to have unified account management for all uploads and
+enables unified handling of all social networking destinations in Share UI
+through the single Share UI plugin that exposes all accounts which have "sharing"
+service defined for them (which means these services have corresponding web upload
+engine plugin).
+
+In order to allow fine tuned configuration for the media being uploaded, Web Upload Engine
+defines helper library for publishing widgets that can be used by Share UI web upload plugin
+to expose destination-specific UI for specified media content.
+
+Web Upload Engine includes MetaWriter, a tool to clean up media files from the metadata that
+isn't reasonable to share with social networks.
+
+Web Upload Engine itself allows to run plugins as separate processes to increase
+privilege separation and decrease exposure of accounts information between plugins.
+This feature is enabled by default and is controlled via 
+
+CONFIG += process-split
+
+option in QMake configuration
+
+1. Licensing
+
+Web Upload Engine binaries and libraries are licensed under LGPL v2.1 
+with the following exception:
+
+Following code is licensed under MIT license:
+metawriter/*
+libwebupload/examples/*
+libwebupload-tests/*
+test-plugin/*
+test-app/*
+webupload-engine-tests/*
+webupload-recovery/*

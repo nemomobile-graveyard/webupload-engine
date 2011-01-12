@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<webService version="0.1" account="service id in account" uploadPlugin="plugin name">
+    
+    <!-- Presentation information is used when presenting service to user -->
+    <presentation>
+        <name>Name of service</name>
+    </presentation>
+
+    <!-- Options define options that are asked from user
+         Text attributes are used for now until localization is implemented -->
+    <postOptions>
+        <option id="option1" type="updatable" default="value1">
+            <caption>caption1</caption>
+            <value id="value1">value1</value>
+            <value id="value2">value2</value>
+        </option>
+        <option id="option2" default="valueB">
+            <caption>caption2</caption>
+            <value id="valueA">valueA</value>
+            <value id="valueB">valueB</value>
+            <value id="valueC">valueC</value>
+        </option>             
+    </postOptions>
+
+    <media>
+        <!-- Mime formats accepted -->
+        <formats>
+            <mime>image/*</mime>
+            <mime>video/*</mime>            
+        </formats>
+    </media>
+    
+</webService>
+

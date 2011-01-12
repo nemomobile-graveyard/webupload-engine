@@ -1,0 +1,24 @@
+###################################################################
+# libwebupload feature
+###################################################################
+
+!contains(DEFINES, BUILD_LIBWEBUPLOAD) {
+
+    CONFIG += qt mdatauri link_pkgconfig
+    PKGCONFIG += accounts-qt libsignon-qt
+    QT += xml dbus network
+    
+    LIBWEBUPLOAD_INC_DIR = /usr/include
+
+    INCLUDEPATH += $${LIBWEBUPLOAD_INC_DIR}
+    DEPENDPATH  += $${LIBWEBUPLOAD_INC_DIR}
+
+    LIBWEBUPLOAD_LIB_DIR = /usr/lib
+    unix: QMAKE_FLAGS += $${QMAKE_LFLAGS_RPATH}$${LIBWEBUPLOAD_LIB_DIR}
+    LIBS += -L$${LIBWEBUPLOAD_LIB_DIR}
+    qtAddLibrary(webupload)
+    qtAddLibrary(webupload-service)   
+}
+
+
+

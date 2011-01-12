@@ -1,0 +1,128 @@
+Source: webupload-engine
+Section: main
+Priority: optional
+Maintainer: Jukka Tiihonen <jukka.t.tiihonen@nokia.com>
+Build-Depends: debhelper (>= 5.0.0), transfer-ui-dev (>=0.2.43.1),
+    libshare-ui-dev (>=0.2.33.3), libqt4-dev (>=4.6), doxygen, accounts-qt-dev,
+    libmeegotouch-dev (>= 0.20.40), libqtsparql-dev,
+    libaccounts-qt-dev (>=0.19), libsignon-qt-dev (>= 3.2-1~),
+    libquillmetadata-dev (>= 1.100604), libmdatauri-dev,
+    aegis-builder, libqmsystem2-dev, libqtm-systeminfo-dev
+Standards-Version: 3.8.0
+
+Package: webupload-engine
+Section: net
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, 
+    libwebupload0 (>= ${source:Version}),
+    libwebupload0 (<< ${source:Version}.1~)
+Description: Webupload engine and some support libraries
+
+Package: webupload-engine-dev
+Section: libdevel
+Architecture: all
+Depends: ${misc:Depends}, webupload-engine (>= ${source:Version}),
+ webupload-engine (<< ${source:Version}.1~),
+ libwebupload-dev (>= ${source:Version}),
+ libwebupload-dev (<< ${source:Version}.1~) 
+Description: Web upload engine development files
+ 
+Package: webupload-engine-dbg
+Section: devel
+Architecture: any
+Priority: extra
+Depends: ${misc:Depends}, webupload-engine (= ${binary:Version})
+Description: Web upload engine debug symbols
+
+Package: webupload-engine-tests
+Section: devel
+Architecture: any
+Depends: ${shlibs:Depends},
+    ${misc:Depends}, ci-testing,  busybox [armel], sudo [armel], matti
+XB-Maemo-CI-Packages: webupload-engine
+XB-Maemo-CI-Stage: acceptance
+Description: Tests for webupload-engine
+  Tests for webupload-engine
+
+Package: webupload-engine-l10n-engineering-english
+Section: devel
+Architecture: all
+Depends: ${misc:Depends}
+Description: Contains engineering english translation for webupload-engine and the plugin it provides to share-ui
+
+Package: webupload-engine-doc
+Section: doc
+Architecture: all
+Depends: ${misc:Depends}
+Description: Documentation for Webupload Engine
+
+Package: libwebupload0
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends},
+    libexempi3 (>= 2.1.1-1+maemo10+0m6), libqtm-systeminfo
+Description: Webupload engine and some support libraries
+
+Package: libwebupload0-dbg
+Section: devel
+Architecture: any
+Priority: extra
+Depends: libwebupload0 (= ${binary:Version})
+Description: Libwebupload debug symbols
+
+Package: libwebupload-dev
+Section: libdevel
+Architecture: all
+Depends: ${misc:Depends}, libwebupload0 (>= ${source:Version}),
+ libwebupload0 (<< ${source:Version}.1~), 
+ libexempi-dev (>= 2.1.1-1+maemo10+0m6),
+ libqtm-systeminfo-dev, libsignon-qt-dev
+Description: Development files of libwebupload.
+
+Package: libwebupload-l10n-engineering-english
+Section: devel
+Architecture: all
+Depends: ${misc:Depends}
+Description: Contains engineering english translation for libwebupload
+
+Package: libwebupload-doc
+Section: doc
+Architecture: all
+Depends: ${misc:Depends}
+Description: API documentation for libwebupload
+
+Package: libwebupload-tests
+Section: devel
+Architecture: any
+Depends: ci-testing, ${shlibs:Depends}, ${misc:Depends}
+XB-Maemo-CI-Packages: libwebupload
+XB-Maemo-CI-Stage: staging, acceptance
+Description: Tests for Webupload library
+ Tests for Webupload library
+
+Package: libpublishwidgets0
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Publish widgets
+
+Package: libpublishwidgets0-dbg
+Section: devel
+Architecture: any
+Priority: extra
+Depends: ${misc:Depends}, libpublishwidgets0 (= ${binary:Version})
+Description: Publish widgets debug symbols
+
+Package: libpublishwidgets-dev
+Section: libdevel
+Architecture: all
+Depends: ${misc:Depends}, libpublishwidgets0 (>= ${source:Version}),
+ libpublishwidgets0 (<< ${source:Version}.1~)
+Description: Publish widgets development files
+
+Package: libpublishwidgets-doc
+Section: doc
+Architecture: all
+Depends: ${misc:Depends}
+Description: Documentation for Publish Widgets Engine
+

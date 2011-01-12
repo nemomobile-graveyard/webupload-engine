@@ -1,0 +1,4 @@
+[D-BUS Service]
+Interface=com.meego.sharing.webuploadengine
+Name=com.meego.sharing.webuploadengine
+Exec=/usr/bin/webupload-engine

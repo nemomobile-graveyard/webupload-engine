@@ -1,0 +1,21 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+ "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+
+<node>
+    <interface name="com.meego.sharing.webuploadengine">
+    <!-- 
+      The method newUpload is used when the communicating service wants to add
+      a new upload request into the queue maintained by the Upload Engine. The
+      'IN' parameters are:
+        path: Path to file defining the upload task
+      The 'OUT' parameter is:
+        received: Has value true if the message was received
+     -->
+        <method name="newUpload">
+            <arg name="path" type="s" direction="in"/>
+            <arg name="received" type="b" direction="out"/>
+        </method>
+        
+    </interface>
+</node>
+

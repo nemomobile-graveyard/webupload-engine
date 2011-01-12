@@ -1,0 +1,6 @@
+usr/include/webupload-engine/service/*
+#usr/include/WebUploadPUI/*
+#usr/lib/libwebuploadpui.so
+#usr/share/qt4/mkspecs/features/libwebuploadpui.prf
+#usr/lib/pkgconfig/libwebuploadpui.pc
+

@@ -1,0 +1,3 @@
+usr/lib/libwebupload.so.*
+usr/lib/libwebupload-service.so.*
+usr/lib/webupload-engine/metawriter

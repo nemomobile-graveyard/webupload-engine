@@ -1,0 +1,11 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: publish-widgets
+Description: Libraries for Publish Widgets
+Version: 0.2.0
+Requires: meegotouch libwebupload share-widgets
+Libs: -L${libdir} -lpublishwidgets
+Cflags: -I${includedir}

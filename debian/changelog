@@ -1,0 +1,6 @@
+webupload-engine (0.3.2.1) unstable; urgency=low
+
+  * Fixes: NB#216773 - Sharing; Wrong string; "qtn_comm_share_service_unavailable" instead of "qtn_comm_share_no_connection"
+  * Fixed mime type handling as mentioned in bug 216982, so similar error is not raised on transfer-ui
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 12 Jan 2011 11:59:30 +0530

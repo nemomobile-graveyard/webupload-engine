@@ -1,0 +1,17 @@
+###################################################################
+# publish-widgets library Feature
+###################################################################
+
+!contains(DEFINES, BUILD_PUBLISH_WIDGETS) {
+    PUBLISH_WIDGETS_INC_DIR = /usr/include
+    PUBLISH_WIDGETS_LIB_DIR = /usr/lib
+    
+    CONFIG += libwebupload share-widgets
+
+    INCLUDEPATH += $${PUBLISH_WIDGETS_INC_DIR}
+    DEPENDPATH  += $${PUBLISH_WIDGETS_INC_DIR}
+
+    unix: QMAKE_FLAGS += $${QMAKE_RPATH}$${PUBLISH_WIDGETS_LIB_DIR}
+    LIBS += -L$${PUBLISH_WIDGETS_LIB_DIR}
+    qtAddLibrary(publishwidgets)
+}

@@ -1,0 +1,3 @@
+usr/bin/webupload-engine
+usr/lib/webupload-engine/webupload-recovery
+usr/share/dbus-1/services/com.meego.sharing.webuploadengine.service

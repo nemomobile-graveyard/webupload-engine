@@ -1,0 +1,27 @@
+<test>
+<formats type="empty" />
+<formats type="all">
+<mime>*</mime>
+</formats>
+<formats type="images">
+<mime>image/*</mime>
+</formats>
+<formats type="both">
+<mime>image/*</mime>
+<mime>video/*</mime>
+</formats>
+<formats type="videos">
+<mime>video/*</mime>
+</formats>
+<formats type="jpeg">
+<mime>image/jpeg</mime>
+</formats>
+<formats type="jpegs">
+<mime>image/jpeg</mime>
+<mime>image/jpeg</mime>
+<mime>image/jpeg</mime>
+</formats>
+<formats type="pdf">
+<mime>application/pdf</mime>
+</formats>
+</test>

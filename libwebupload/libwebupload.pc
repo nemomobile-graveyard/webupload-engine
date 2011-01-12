@@ -1,0 +1,12 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+wue_plugin_dir=${libdir}/webupload/plugins
+
+Name: libwebupload
+Description: WebUpload library for plug-ins and applications
+Version: 0.2.0
+Requires: accounts-qt libsignon-qt
+Libs: -L${libdir} -lwebupload
+Cflags: -I${includedir}

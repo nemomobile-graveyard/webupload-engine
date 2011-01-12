@@ -1,0 +1,302 @@
+
+/*
+ * Web Upload Engine -- MeeGo social networking uploads
+ * Copyright (c) 2010 Nokia Corporation and/or its subsidiary(-ies).
+ * Contact: Jukka Tiihonen <jukka.tiihonen@nokia.com>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms and conditions of the GNU Lesser General Public License,
+ * version 2.1, as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+ 
+#include "uploadprocess.h"
+#include <QDebug>
+#include "WebUpload/Entry"
+#include "WebUpload/Media"
+#include "WebUpload/Account"
+#include <QFile>
+
+UploadProcess::UploadProcess (QObject * parent) : 
+    WebUpload::PluginProcess (parent), m_currItem (0), m_currEntry (0),
+    m_currMediaIdx (-1), m_resultHandled(false), m_stopping(false) {
+
+    // Making these connections queued connection so as to not block the event
+    // loop when some data comes from the upload process
+    connect (&m_pdata, SIGNAL (sendingMediaSignal(quint32)), this,
+        SLOT (sendingMedia(quint32)), Qt::QueuedConnection);
+    connect (&m_pdata, SIGNAL (doneSignal()), this, SLOT (done()),
+        Qt::QueuedConnection);
+    connect (&m_pdata, SIGNAL (stoppedSignal()), this, SLOT (stopped()),
+        Qt::QueuedConnection);
+    connect (&m_pdata, SIGNAL (uploadFailedSignal(WebUpload::Error)), this, 
+        SLOT (failed(WebUpload::Error)), Qt::QueuedConnection);
+
+    connect (this, SIGNAL(currentProcessStopped()), this, 
+        SLOT (pluginProcessCrashed()), Qt::QueuedConnection);
+}
+
+UploadProcess::~UploadProcess () {
+    m_pdata.disconnect (this);
+    if (m_currItem) {
+        m_pdata.disconnect (m_currItem);
+    }
+}
+
+UploadItem * UploadProcess::currentlySendingMedia () const {
+    return m_currItem;
+}
+
+void UploadProcess::startUpload (UploadItem * item) {
+    qDebug() << "UploadProcess::" << __FUNCTION__;
+    if (canProcessNewRequest (item)) {
+        m_pdata.clear ();
+        startUploadProcess (item);
+    }
+}
+
+void UploadProcess::stopUpload (UploadItem * item) {
+    qDebug() << "UploadProcess::" << __FUNCTION__;
+
+    if ((item != m_currItem) && (item != 0)) {
+        qDebug() << "Input item does not match item being uploaded. "
+            "Ignoring the stop request";
+        return;
+    }
+
+    if (isActive ()) {
+        m_stopping = true;
+        send (m_pdata.stop ());
+    }
+    else {
+        qCritical() << "The process was not active. Ignoring.";
+    }
+
+    return;
+}
+
+void UploadProcess::processStarted () {
+    qDebug() << "UploadProcess::" << __FUNCTION__;
+    if (isActive () == false)
+        return;
+
+    WebUpload::Error currError = m_currItem->takeError ();
+    QString xmlPath = m_currEntry->serializedTo();
+
+    send (m_pdata.startUpload (xmlPath, currError));
+
+    return;
+}
+
+void UploadProcess::sendingMedia (quint32 index) {
+    qDebug() << "UploadProcess::" << __FUNCTION__;
+    WebUpload::Media * media;
+    if ((m_currMediaIdx >= 0) && 
+        ((quint32)m_currMediaIdx < m_currEntry->mediaCount())) {
+
+        media = m_currEntry->mediaAt (m_currMediaIdx);
+        media->refreshStateFromTracker ();
+    }
+
+    if (index > m_currEntry->mediaCount()) {
+        qDebug() << "Invalid media index sent" << index;
+        return;
+    }
+
+    m_currMediaIdx = index;
+
+    m_currItem->markActive ();
+    m_currItem->mediaStarted (index);
+    return;
+}
+
+void UploadProcess::done () {
+    qDebug() << "UploadProcess::" << __FUNCTION__;
+
+    if (m_resultHandled) {
+        qDebug() << "Ignoring this signal";
+        return;
+    }
+    m_resultHandled = true;
+
+    WebUpload::Media * media;
+    qDebug () << "Current media index is " << m_currMediaIdx;
+    if ((m_currMediaIdx >= 0) && 
+        ((quint32)m_currMediaIdx < m_currEntry->mediaCount())) {
+
+        media = m_currEntry->mediaAt (m_currMediaIdx);
+        media->refreshStateFromTracker ();
+    }
+
+    m_currItem->uploadProgress (1.0);
+    
+    m_pdata.disconnect (m_currItem);
+    m_currentProcess = 0;
+
+    Q_EMIT (uploadDone (m_currItem));
+}
+
+void UploadProcess::stopped () {
+    qDebug() << "UploadProcess::" << __FUNCTION__;
+
+    if (m_resultHandled) {
+        qDebug() << "Ignoring this signal";
+        return;
+    }
+    m_resultHandled = true;
+    m_stopping = false;
+
+    WebUpload::Media * media;
+    if ((m_currMediaIdx >= 0) && 
+        ((quint32)m_currMediaIdx < m_currEntry->mediaCount())) {
+
+        media = m_currEntry->mediaAt (m_currMediaIdx);
+        media->refreshStateFromTracker ();
+    }
+
+    m_pdata.disconnect (m_currItem);
+    m_currentProcess = 0;
+
+    Q_EMIT (uploadStopped (m_currItem));
+}
+
+void UploadProcess::failed (WebUpload::Error error) {
+    qDebug() << "UploadProcess::" << __FUNCTION__;
+
+    if (m_resultHandled) {
+        qDebug() << "Ignoring this signal";
+        return;
+    }
+    m_resultHandled = true;
+
+    WebUpload::Media * media;
+    if ((m_currMediaIdx >= 0) && 
+        ((quint32)m_currMediaIdx < m_currEntry->mediaCount())) {
+
+        media = m_currEntry->mediaAt (m_currMediaIdx);
+        media->refreshStateFromTracker ();
+    }
+
+    // Set service name in the error
+    WebUpload::SharedAccount account = m_currEntry->account ();
+    QString accountName;
+    if (account != 0) {
+        accountName = account->service()->name ();
+    } 
+    account.clear();
+    error.setAccountName (accountName);
+    qDebug() << "Set account name as " << accountName;
+
+    m_pdata.disconnect (m_currItem);
+    m_currentProcess = 0;
+
+    Q_EMIT (uploadFailed (m_currItem, error));
+}
+
+
+void UploadProcess::pluginProcessCrashed () {
+    qDebug() << "UploadProcess::" << __FUNCTION__;
+
+    if (m_resultHandled) {
+        qDebug() << "Ignoring this signal";
+        return;
+    }
+
+    if (m_stopping) {
+        stopped();
+        return;
+    }
+
+    m_resultHandled = true;
+
+    qWarning() << "Upload process crashed";
+
+    m_pdata.disconnect (m_currItem);
+
+    WebUpload::Error error = WebUpload::Error::transferFailed ();
+    Q_EMIT (uploadFailed (m_currItem, error));
+    return;
+}
+
+
+bool UploadProcess::canProcessNewRequest (UploadItem * item) {
+    bool retVal = true;
+
+    if (item == 0) {
+        qDebug() << "Null item recieved";
+        WebUpload::Error error = WebUpload::Error::custom (
+            "Null item recieved", "Null item recieved");
+        Q_EMIT (uploadFailed (item, error));
+        retVal = false;
+    } else if (isActive ()) {
+        qDebug() << "Upload already being processed";
+        WebUpload::Error error = WebUpload::Error::custom (
+            "Cannot process upload request", 
+            "One upload is already being processed");
+        Q_EMIT (uploadFailed (item, error));
+        retVal = false;
+    }
+
+    qDebug() << "UploadProcess::" << __FUNCTION__ << retVal;
+    return retVal;
+}
+
+void UploadProcess::startUploadProcess (UploadItem * item) {
+    qDebug() << "UploadProcess::" << __FUNCTION__;
+
+    m_resultHandled = false;
+    m_stopping = false;
+    m_currMediaIdx = -1;
+    m_currItem = item;
+    m_currEntry = m_currItem->getEntry ();
+    Q_ASSERT (m_currEntry != 0);
+
+    unsigned int notSent = m_currEntry->mediaCount () - 
+        m_currEntry->mediaSentCount ();
+    if (notSent == 0) {
+        qDebug() << "No more files to send";
+        m_currItem = 0;
+        Q_EMIT (uploadDone (item));
+        return;
+    }
+
+    // WebUpload::Account * account = m_currEntry->account ().data ();
+    WebUpload::SharedAccount account = m_currEntry->account ();
+    if (account == 0) {
+        qWarning() << "Failed to load account";
+        /* Section 5.3.6 - if account could not be loaded, then it has probably
+         * been deleted
+         */
+        WebUpload::Error itemError = WebUpload::Error::accountRemoved();
+        itemError.setFailedCount (notSent);
+        m_currItem = 0;
+        account.clear ();
+        Q_EMIT (uploadFailed (item, itemError));
+        return;
+    }
+
+    // WebUpload::PluginProcess::startProcess expects WebUpload::Account * 
+    bool startProcessResult = startProcess (account.data ());
+    account.clear ();
+
+    if (startProcessResult == false) {
+        WebUpload::Error error = WebUpload::Error::custom (
+            "Invalid plugin", "Cannot upload given request");
+        m_currItem = 0;
+        Q_EMIT (uploadFailed (item, error));
+        return;
+    }
+
+    connect (&m_pdata, SIGNAL (progressSignal(float)), m_currItem,
+        SLOT (uploadProgress(float)), Qt::QueuedConnection);
+
+    return;
+}

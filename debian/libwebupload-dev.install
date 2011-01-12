@@ -1,0 +1,6 @@
+usr/lib/libwebupload.so
+usr/lib/libwebupload-service.so
+usr/include/WebUpload/*
+usr/share/qt4/mkspecs/features/webupload-plugin.prf
+usr/share/qt4/mkspecs/features/libwebupload.prf
+usr/lib/pkgconfig/libwebupload.pc

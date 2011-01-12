@@ -1,0 +1,17 @@
+###################################################################
+# web-upload feature : For applications communicating to webupload-engine
+###################################################################
+
+!contains(DEFINES, BUILD_WEBUPLOAD_SERVICE) {
+    INCLUDEPATH += /usr/include/webupload-engine/services
+    DEPENDPATH  += $${INCLUDEPATH}
+    
+    QT += dbus
+    CONFIG += meegotouchcore
+
+    WEBUPLOAD_SERVICE_LIB_DIR = /usr/lib
+    
+    unix: QMAKE_FLAGS += $${{QMAKE_LFLAGS_RPATH}$${WEBUPLOAD_SERVICE_LIB_DIR}
+    LIBS += -L$${WEBUPLOAD_SERVICE_LIB_DIR}
+    qtAddLibrary(webupload-service)    
+}

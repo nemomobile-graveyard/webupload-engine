@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<testdefinition version="1.0">
+  <suite name="webupload-engine" domain="Media">
+    <set name="webupload-engine-functional" 
+         feature="Webupload-engine functional tests">
+      <pre_steps>
+        <step>sh /usr/share/webupload-engine-tests/tracker-copy.sh</step>
+      </pre_steps>
+      <case name="testUploadItem" type="Functional" level="Component">
+        <description>Tests the UploadItem class</description>
+        <step>sh /usr/share/webupload-engine-tests/run-test.sh testUploadItem</step>
+      </case>
+      <case name="testUploadQueue" type="Functional" level="Component">
+        <description>Tests the UploadQueue class</description>
+        <step>sh /usr/share/webupload-engine-tests/run-test.sh testUploadQueue</step>
+      </case>
+      <case name="testStatistics" type="Functional" level="Component"
+        insignificant="true">
+        <description>Tests the UploadStatistics class class</description>
+        <step>sh /usr/share/webupload-engine-tests/run-test.sh testStatistics</step>
+      </case>
+      <environments>
+        <scratchbox>true</scratchbox>
+        <hardware>true</hardware>
+      </environments>
+      <get>
+        <file>/home/user/.local/share/tracker/tracker-store.log</file>
+      </get>
+      <post_steps>
+        <step>sh /usr/share/webupload-engine-tests/tracker-clean.sh</step>
+      </post_steps>
+    </set>
+
+    <set name="webupload-engine-ui-tests" 
+         feature="Webupload-engine UI tests">
+      <pre_steps>
+        <step>/usr/bin/qttasserver --nogui &amp;</step>
+      </pre_steps>
+      <!-- None of these test cases work currently. Hence commenting them out
+      <case name="test_optionsTitle" type="Functional" level="Feature">
+        <description>Testing share title option</description>
+        <step>/usr/bin/ruby /usr/share/webupload-engine-tests/ts_webuploadengine.rb test_optionsTitle</step>
+      </case>
+      <case name="test_tags" type="Functional" level="Feature">
+        <description>Testing tags</description>
+        <step>/usr/bin/ruby /usr/share/webupload-engine-tests/ts_webuploadengine.rb test_tags</step>
+      </case>
+      <case name="test_optionsTags" type="Functional" level="Feature">
+        <description>Testing share tags option</description>
+        <step>/usr/bin/ruby /usr/share/webupload-engine-tests/ts_webuploadengine.rb test_optionsTags</step>
+      </case>
+      <case name="test_optionsDescription" type="Functional" level="Feature">
+        <description>Testing share description option</description>
+        <step>/usr/bin/ruby /usr/share/webupload-engine-tests/ts_webuploadengine.rb test_optionsDescription</step>
+      </case>
+      <case name="test_picasaSingleFile" type="Functional" level="Feature">
+        <description>Testing one file upload</description>
+        <step>/usr/bin/ruby /usr/share/webupload-engine-tests/ts_webuploadengine.rb test_picasaSingleFile</step>
+      </case>
+      <case name="test_picasaMultipleFile" type="Functional" level="Feature">
+        <description>Testing multiple file uploads</description>
+        <step>/usr/bin/ruby /usr/share/webupload-engine-tests/ts_webuploadengine.rb test_picasaMultipleFile</step>
+      </case>
+      -->
+      <environments>
+        <scratchbox>true</scratchbox>
+        <hardware>true</hardware>
+      </environments>
+    </set>
+  </suite>
+</testdefinition>
