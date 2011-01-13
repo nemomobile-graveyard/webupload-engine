@@ -1,22 +1,16 @@
- 
-/*
- * Web Upload Engine -- MeeGo social networking uploads
- * Copyright (c) 2010 Nokia Corporation and/or its subsidiary(-ies).
- * Contact: Jukka Tiihonen <jukka.tiihonen@nokia.com>
+/* This file is part of webupload-engine
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms and conditions of the GNU Lesser General Public License,
- * version 2.1, as published by the Free Software Foundation.
+ * Copyright © 2009 Nokia Corporation and/or its subsidiary(-ies).
+ * All rights reserved.
+ * Contact: Jukka Tiihonen <jukka.t.tiihonen@nokia.com>
  *
- * This program is distributed in the hope it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
- * more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * This software, including documentation, is protected by copyright controlled
+ * by Nokia Corporation. All rights are reserved. Copying, including
+ * reproducing, storing, adapting or translating, any or all of this material
+ * requires the prior written consent of Nokia Corporation. This material also
+ * contains confidential information which may not be disclosed to others
+ * without the prior written consent of Nokia.
+ */ 
 
 #include "uploadengine.h"
 #include "uploaditem.h"
@@ -130,6 +124,22 @@ void UploadEngine::newUploadReceived (const QString &path) {
     // Mark item to be in queue
     if (queue.size() > 1) {
         item->markPending (UploadItem::PENDING_QUEUED);
+
+        // Handle the case where the new transfer pushed is not the top of the
+        // queue, and the process thread is not already running. Only in this
+        // case do we need to restart the process thread and send this item for
+        // processing. 
+        // If the item is the top item, it will get sent to the process thread
+        // as a part of the processing of the top item. 
+        // If the process thread is running, then this item will get picked up
+        // at some point of time when the item before it is finished being
+        // processed.
+        if (processThread == 0) {
+            startProcessThread ();
+            item->setOwner (UploadItem::OWNER_PROCESS_THREAD);
+            item->markPending (UploadItem::PENDING_PROCESSING);
+            Q_EMIT (startProcess (item));
+        }
     }
 }
 
@@ -638,3 +648,4 @@ void UploadEngine::usbModeChanged (MeeGo::QmUSBMode::Mode mode) {
         queueTop (queue.getTop ());
     }
 }
+
