@@ -29,10 +29,11 @@
 
 int main(int argc, char **argv) {
 
-    QCoreApplication::setApplicationName ("WebUpload Engine");
+    QCoreApplication::setApplicationName (QLatin1String ("WebUpload Engine"));
+    QCoreApplication::setOrganizationName (QLatin1String ("MeeGo"));
 
     // Let's use custom logging
-    Logger logger();
+    Logger logger;
     
     DBGSTREAM << "Web upload engine started";
 

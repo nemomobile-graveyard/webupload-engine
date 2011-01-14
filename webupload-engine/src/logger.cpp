@@ -49,11 +49,11 @@ Logger::Logger (const QString & name) {
     QDir dir;    
     if (dir.exists (logPath) == false) {
         dir.mkpath (logPath);
-        std::cout << "Path" << logPath.toStdString() << "created for the logs"
-            << std::endl;        
+        std::cout << "Path " << logPath.toStdString()
+            << " created for the logs" << std::endl;        
     }
     
-    logPath.append("/");
+    logPath.append (QDir::separator ());
     logPath.append (myName);
     logPath.append (".log");
     
@@ -65,7 +65,7 @@ Logger::Logger (const QString & name) {
     }
 
     std::cout << QCoreApplication::applicationName().toStdString()
-        << "logs will be written to" << logPath.toStdString() << std::endl;
+        << " logs will be written to " << logPath.toStdString() << std::endl;
 
     // save ourself in a static variable
     Logger::m_instance = this;
