@@ -1,3 +1,9 @@
+webupload-engine (0.3.2.2) unstable; urgency=low
+
+  * After tagging
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Fri, 14 Jan 2011 13:52:25 +0530
+
 webupload-engine (0.3.2.1) unstable; urgency=low
 
   * Fixes: NB#216773 - Sharing; Wrong string; "qtn_comm_share_service_unavailable" instead of "qtn_comm_share_no_connection"
