@@ -3,7 +3,10 @@ include (../config-flags.pri)
 CONFIG    += qt debug libtuiclient network meegotouchcore link_pkgconfig qmsystem2
 TEMPLATE   = app
 QT        += dbus network xml
-QT        -= gui
+
+# Commenting this out for now, since we are using QDestopServices which is a
+# QtGui component. Need to see how to handle that.
+# QT        -= gui
 
 PKGCONFIG += accounts-qt
 

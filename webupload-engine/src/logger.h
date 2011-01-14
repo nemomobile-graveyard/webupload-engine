@@ -27,6 +27,12 @@
 #include <QFile>
 #include <QMutex>
 #include <QTime>
+#include <QList>
+#include <QDebug>
+
+#define DBGSTREAM qDebug()
+#define WARNSTREAM qWarning()
+#define CRITSTREAM qCritical()
 
 /**
  * @brief Simple Qt logging redirector class.
@@ -52,26 +58,29 @@ public:
      */
     ~Logger ();
 
-    /**
-     * Enables filtering of so called "crap" that should not be logged. This can be enabled to filter out stuff
-     * that makes debugging hard because of flooding. All strings in @p patterns are checked against each logged message
-     * and a case sensitive match means that the message is not logged. By default no patterns or filtering are used.
-     * Set to an empty list to disable.
-     *
-     * @param patterns the patterns to check against.
-     **/
+    /*!
+      \brief Enables filtering of so called "crap" that should not be logged.
+             This can be enabled to filter out stuff that makes debugging hard
+             because of flooding. All strings in @p patterns are checked
+             against each logged message and a case sensitive match means that
+             the message is not logged. By default no patterns or filtering are
+             used.
+             Set to an empty list to disable.
+      \param patterns the patterns to check against.
+     */
     void setFilter (const QStringList & patterns);
 
 
 private:
 
-    /**
-     * The actual message handler method. This method will get called for each logged @p msg. The log @p type
-     * is mapped to a string and prefixed, along with the current time. The @p msg is simply appended to a log file.
-     *
-     * @param type the log level type.
-     * @param msg the message to be logged.
-     **/
+    /*!
+      \brief The actual message handler method. This method will get called for
+             each logged @p msg. The log @p type is mapped to a string and
+             prefixed, along with the current time. The @p msg is simply
+             appended to a log file.
+      \param type the log level type.
+      \param msg the message to be logged.
+     */
     static void messageHandler (QtMsgType type, const char *msg);
 
     //! an instance pointer to the class
