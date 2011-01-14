@@ -1,6 +1,6 @@
-webupload-engine (0.3.2.2) unstable; urgency=low
+webupload-engine (0.3.3.1) unstable; urgency=low
 
-  * After tagging
+  * Fix log file naming
 
  -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Fri, 14 Jan 2011 13:52:25 +0530
 

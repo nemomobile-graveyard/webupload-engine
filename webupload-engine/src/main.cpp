@@ -19,6 +19,7 @@
  */
 
 #include <QDebug>
+#include <QCoreApplication>
 #include <MLocale>
 #include "WebUpload/System"
 #include "WebUpload/Error"
@@ -28,8 +29,10 @@
 
 int main(int argc, char **argv) {
 
+    QCoreApplication::setApplicationName ("WebUpload Engine");
+
     // Let's use custom logging
-    Logger logger("WebUploadEngine");
+    Logger logger();
     
     DBGSTREAM << "Web upload engine started";
 
