@@ -67,7 +67,7 @@ Package: libwebupload0-dbg
 Section: devel
 Architecture: any
 Priority: extra
-Depends: libwebupload0 (= ${binary:Version})
+Depends: libwebupload0 (= ${binary:Version}), ${misc:Depends}
 Description: Libwebupload debug symbols
 
 Package: libwebupload-dev
