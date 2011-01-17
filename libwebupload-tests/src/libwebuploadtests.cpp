@@ -36,6 +36,8 @@
 #include <QUuid>
 #include <QSignalSpy>
 
+#include "libwebuploadtests.h"
+
 #include "WebUpload/Entry"
 #include "WebUpload/Media"
 #include "WebUpload/ServiceOption"
@@ -51,8 +53,6 @@
 #include "xmlhelper.h"
 #include "WebUpload/CommonTextOption"
 #include "commonoptionprivate.h"
-
-#include "libwebuploadtests.h"
 
 #define TEMP_ENTRY_PATH "/tmp/entry.xml"
 
@@ -1057,6 +1057,99 @@ void LibWebUploadTests::checkServicePrivate() {
     QCOMPARE (obj->m_uploadPlugin, QString ("plugin name"));    
     
     delete obj;
+
+    // Another valid xml - this time with more options set
+    obj = new WebUpload::ServicePrivate (0);
+    file.setFileName("/usr/share/libwebupload-tests/another.valid.service.xml");
+    QVERIFY (file.open(QIODevice::ReadOnly));
+    QVERIFY (dom.setContent(&file));
+    file.close();
+    QVERIFY (obj->initFromDefinition (dom.documentElement ()));
+    QVERIFY (obj->m_serviceOptionsLoaded == false);
+
+    iter = QListIterator<PostOption *>(obj->m_postOptions);
+    while (iter.hasNext ()) {
+        PostOption * option = iter.next ();
+        switch (option->type ()) {
+            case PostOption::OPTION_TYPE_TITLE:
+                titleOpt = qobject_cast <CommonTextOption *> (option);
+                break;
+
+            case PostOption::OPTION_TYPE_DESC:
+                descOpt = qobject_cast <CommonTextOption *> (option);
+                break;
+
+            case PostOption::OPTION_TYPE_TAGS:
+                tagsOpt = qobject_cast <CommonTextOption *> (option);
+                break;
+
+            case PostOption::OPTION_TYPE_METADATA:
+            case PostOption::OPTION_TYPE_IMAGE_RESIZE:
+            case PostOption::OPTION_TYPE_VIDEO_RESIZE:
+                // These will not be valid for either media or entry since
+                // the options are invalid
+                QVERIFY (option->validForMedia (0) == false);
+                QVERIFY (option->validForEntry (0) == false);
+                break;
+
+            case PostOption::OPTION_TYPE_SERVICE:
+            {
+                ServiceOption *sOpt = qobject_cast <ServiceOption*> (option);
+                /**
+                QVERIFY (sOpt->validForMimeType ("image/jpeg"));
+                QVERIFY (!sOpt->validForMimeType ("video/mpeg"));
+                QVERIFY (!sOpt->validForMimeType ("text/x-url"));
+                QVERIFY (!sOpt->validForMimeType ("text/x-uri"));
+                **/
+                QVERIFY (sOpt->id () == "album");
+                QVERIFY (sOpt->isUpdatable ());
+                QVERIFY (sOpt->isChangeable ());
+                break;
+            }
+
+            default:
+                break;
+        }
+    }
+
+    QVERIFY (titleOpt);
+    QVERIFY (titleOpt->caption() == "Caption for images and videos");
+    /**
+    QVERIFY (titleOpt->validForMimeType ("image/jpeg"));
+    QVERIFY (titleOpt->validForMimeType ("video/mpeg"));
+    QVERIFY (!titleOpt->validForMimeType ("text/x-url"));
+    QVERIFY (!titleOpt->validForMimeType ("text/x-uri"));
+    **/
+
+    QVERIFY (descOpt);
+    QVERIFY (descOpt->caption() == "Description for links");
+    /**
+    QVERIFY (!descOpt->validForMimeType ("image/jpeg"));
+    QVERIFY (!descOpt->validForMimeType ("video/mpeg"));
+    QVERIFY (descOpt->validForMimeType ("text/x-url"));
+    QVERIFY (descOpt->validForMimeType ("text/x-uri"));
+    **/
+
+    QVERIFY (tagsOpt == 0);
+    
+    optionsNodeList = dom.elementsByTagName ("postOptions");
+    for (int i = 0; i < optionsNodeList.count(); ++i) {
+        QDomNode node = optionsNodeList.at (i);
+        if (!node.isElement()) {
+            continue;
+        }
+        QDomElement element = node.toElement();
+        obj->initOptions (element);
+        break;
+    }
+    
+    // This will be false since accounts() is not defined
+    //QVERIFY (obj->m_serviceOptionsLoaded == true);
+    QCOMPARE (obj->m_postOptions.count(), (2+2));
+    QCOMPARE (obj->m_uploadPlugin, QString ("plugin name"));    
+    
+    delete obj;
+
 }
 
 inline void LibWebUploadTests::createAccounts () {
@@ -1099,7 +1192,7 @@ inline void LibWebUploadTests::cleanupAccounts () {
 }
 
 /* TODO: Write proper test here. Make valid compination of file and strings.
-   Then read it and validate that it's compined correctly */
+   Then read it and validate that it's combined correctly */
 void LibWebUploadTests::testHttpMultiContentIO() {
     HttpMultiContentIO * multi = 0;
     QString payload = "";
@@ -1349,7 +1442,6 @@ void LibWebUploadTests::testXmlHelper() {
 }
 
 void LibWebUploadTests::testProcessExchangeData () {
-#ifdef TEST_PROCESS_SPLIT
     ProcessExchangeData pData;
     
     // No need to actually check all of them
@@ -1486,7 +1578,6 @@ void LibWebUploadTests::testProcessExchangeData () {
     firstArg = spyArgs[0];
     QVERIFY (firstArg.canConvert<WebUpload::Error>() == true);
     QVERIFY (firstArg.value<WebUpload::Error>().code() == WebUpload::Error::CODE_TARGET_DOES_NOT_EXIST);
-#endif
 }
 
 

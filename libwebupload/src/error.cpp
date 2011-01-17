@@ -375,7 +375,7 @@ QString Error::description () const {
         case CODE_FILE_SIZE_ERROR:
             str = errCount;
             //% "Some of the files were too big for the service"
-            str.append (qtTrId ("qtn_tui_unable_to_share_file_size"));
+            str.append (qtTrId ("qtn_tui_unable_share_file_size"));
             break;
 
         case CODE_FILE_SIZE_TYPE_ERROR:

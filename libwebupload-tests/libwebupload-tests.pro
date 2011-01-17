@@ -8,7 +8,7 @@ CONFIG += mobility
 MOBILITY += systeminfo
 #DEFINES += DONT_CHECK_EMPTY_SPACE
 
-DEFINES += TESTING
+DEFINES += UNIT_TESTING
 
 PKGCONFIG += accounts-qt libsignon-qt
 

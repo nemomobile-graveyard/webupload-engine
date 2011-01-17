@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+  <webService version="0.1" account="service id in account" uploadPlugin="plugin name">
+    <presentation>
+      <name>Name of service</name>
+      <title multiline="1" order="1">
+        <caption>Caption for images and videos</caption>
+        <formats>
+          <mime>image/*</mime>
+          <mime>video/*</mime>
+        </formats>
+      </title>
+      <description multiline="1" order="2">
+        <caption>Description for links</caption>
+        <tooltip>Enter description</tooltip>
+        <formats>
+          <mime>text/x-url</mime>
+          <mime>text/x-uri</mime>
+        </formats>
+      </description>
+      <tags hide="1"/>
+      <metadata hide="1" />
+      <image_resize hide="1" />
+      <video_resize hide="1" />
+    </presentation>
+    <postOptions>
+      <option id="album" type="changeable" default=" " order="3">
+        <caption>Album</caption>
+        <value id=" ">Default album</value>
+        <update>
+          <command>Update</command>
+        </update>
+        <add>
+          <command>Create new album</command>
+          <caption>Title</caption>
+          <tooltip>Add title</tooltip>
+          <note>Note with album creation</note>
+          <input maxLength="100"/>
+          <button>Create</button>
+        </add>
+        <formats>
+            <mime>image/*</mime>
+        </formats>
+      </option>
+    </postOptions>
+    <media>
+      <formats>
+        <mime>image/*</mime>
+        <mime>video/*</mime>
+        <mime>text/x-url</mime>
+        <mime>text/x-uri</mime>
+      </formats>
+    </media>
+</webService>
+
+

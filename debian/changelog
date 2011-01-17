@@ -1,8 +1,9 @@
 webupload-engine (0.3.3.1) unstable; urgency=low
 
   * Fix log file naming
+  * Fixes: NB#219582 - String "File too big for service" not getting translated due to incorrect Logical ID
 
- -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Fri, 14 Jan 2011 13:52:25 +0530
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Mon, 17 Jan 2011 16:45:35 +0530
 
 webupload-engine (0.3.2.1) unstable; urgency=low
 
