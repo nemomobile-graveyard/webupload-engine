@@ -73,6 +73,11 @@ namespace WebUpload {
           \return Default localized tooltip string
          */
         QString defaultTooltip () const;
+
+#ifdef TESTING
+        friend class LibWebUploadTests; //!< For unit tests
+#endif
+           
     };
 }
 

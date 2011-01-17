@@ -79,6 +79,10 @@ namespace WebUpload {
     private:
     
         CommonOptionPrivate * const d_ptr; //!< Private data
+
+#ifdef TESTING
+        friend class LibWebUploadTests; //!< For unit tests
+#endif
            
     };
 }

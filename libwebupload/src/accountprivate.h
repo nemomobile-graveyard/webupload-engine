@@ -115,7 +115,9 @@ namespace WebUpload {
         bool m_accountEnabled; //!< Is account is enabled in Accounts&SSO
         bool m_serviceEnabled; //!< Is service is enabled in Accounts&SSO
     
+#ifdef TESTING
         friend class LibWebUploadTests; //!< For unit tests
+#endif
             
     };
  

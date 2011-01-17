@@ -197,11 +197,16 @@ bool CommonListOptionPrivate::initMetadata () {
         return false;
     }
 
+    if (m_parent->account () == 0) {
+        qDebug() << "Account not defined";
+        return false;
+    }
+
     struct OptionValue * opt;
 
     m_currentValueIndex = 0;
-    int defVal = m_parent->account()->metadataFilters ();
 
+    int defVal = m_parent->account()->metadataFilters ();
     opt = new OptionValue ();
     //% "Keep all"
     opt->valueId = "qtn_tui_share_keep_all";
@@ -227,6 +232,11 @@ bool CommonListOptionPrivate::initImageResize () {
 
     if (!m_valueList.isEmpty ()) {
         qWarning() << "Option already been initialized earlier";
+        return false;
+    }
+
+    if (m_parent->account () == 0) {
+        qDebug() << "Account not defined";
         return false;
     }
 
@@ -277,6 +287,11 @@ bool CommonListOptionPrivate::initVideoResize () {
 
     if (!m_valueList.isEmpty ()) {
         qWarning() << "Option already been initialized earlier";
+        return false;
+    }
+
+    if (m_parent->account () == 0) {
+        qDebug() << "Account not defined";
         return false;
     }
 

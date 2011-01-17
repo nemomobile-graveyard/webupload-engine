@@ -8,6 +8,8 @@ CONFIG += mobility
 MOBILITY += systeminfo
 #DEFINES += DONT_CHECK_EMPTY_SPACE
 
+DEFINES += TESTING
+
 PKGCONFIG += accounts-qt libsignon-qt
 
 TARGET       = libwebupload-tests
