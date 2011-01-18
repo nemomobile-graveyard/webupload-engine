@@ -145,7 +145,6 @@ void UploadEngine::newUploadReceived (const QString &path) {
             item->setOwner (UploadItem::OWNER_PROCESS_THREAD);
             // Mark item as pending processing only if it is the top of the
             // queue
-            // item->markPending (UploadItem::PENDING_PROCESSING);
             Q_EMIT (startProcess (item));
         }
     }
