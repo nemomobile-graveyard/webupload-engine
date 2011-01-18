@@ -143,7 +143,9 @@ void UploadEngine::newUploadReceived (const QString &path) {
         if (processThread == 0) {
             startProcessThread ();
             item->setOwner (UploadItem::OWNER_PROCESS_THREAD);
-            item->markPending (UploadItem::PENDING_PROCESSING);
+            // Mark item as pending processing only if it is the top of the
+            // queue
+            // item->markPending (UploadItem::PENDING_PROCESSING);
             Q_EMIT (startProcess (item));
         }
     }
@@ -511,7 +513,11 @@ void UploadEngine::repairError () {
         }
 
         item->setOwner (UploadItem::OWNER_PROCESS_THREAD);
-        item->markPending (UploadItem::PENDING_PROCESSING);
+        if (item == queue.getTop ()) {
+            item->markPending (UploadItem::PENDING_PROCESSING);
+        } else {
+            item->markPending (UploadItem::PENDING_QUEUED);
+        }
         Q_EMIT (startProcess (item));
     }
 }
@@ -646,7 +652,11 @@ void UploadEngine::usbModeChanged (MeeGo::QmUSBMode::Mode mode) {
                 startProcessThread ();
             }
             item->setOwner (UploadItem::OWNER_PROCESS_THREAD);
-            item->markPending (UploadItem::PENDING_PROCESSING);
+            if (item == queue.getTop ()) {
+                item->markPending (UploadItem::PENDING_PROCESSING);
+            } else {
+                item->markPending (UploadItem::PENDING_QUEUED);
+            }
             Q_EMIT (startProcess (item));
         }
 
