@@ -47,17 +47,11 @@ bool PluginProcess::isActive() const {
     
     if (m_currentProcess != 0) {
         if (m_currentProcess->state () == QProcess::Running) {
-            qDebug() << "waiting a while for process to finnish...";
-            m_currentProcess->waitForFinished(1000);
-        }
-        
-        qDebug() << "now check if process is still running";
-        if (m_currentProcess->state () == QProcess::Running) {
             isRunning = true;
         }
     }
     
-    qDebug() << "is process running? " << isRunning;
+    qDebug() << "Is process running? " << isRunning;
     
     return isRunning;
 }

@@ -125,7 +125,13 @@ void UploadProcess::done () {
         qDebug() << "Ignoring this signal";
         return;
     }
+
     m_resultHandled = true;
+    // Can set the current process to NULL and disconnect from m_pdata before
+    // doing further processing of the media and entry since these are not
+    // needed any more here.
+    m_currentProcess = 0;
+    m_pdata.disconnect (m_currItem);
 
     WebUpload::Media * media;
     qDebug () << "Current media index is " << m_currMediaIdx;
@@ -137,9 +143,6 @@ void UploadProcess::done () {
     }
 
     m_currItem->uploadProgress (1.0);
-    
-    m_pdata.disconnect (m_currItem);
-    m_currentProcess = 0;
 
     Q_EMIT (uploadDone (m_currItem));
 }

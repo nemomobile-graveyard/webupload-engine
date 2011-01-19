@@ -4,8 +4,9 @@ webupload-engine (0.3.3.1) unstable; urgency=low
   * Fixes: NB#219582 - String "File too big for service" not getting translated due to incorrect Logical ID
   * Fixes: NB#219643 - 'Processing files before transfer' is displayed instead of 'Waiting for previous upload to finish in Transfer details dialog
   * Fixes: NB#219652 - Select Internet connection dialog does not pop up, instead error info dialog is directly displayed when Updating/Creating albums when there is no WLAN
+  * Fixes: NB#219705 - Sometimes Webupload Engine Crash (QProcess::state WebUpload::PluginProcess::isActive) is observed when uploading
 
- -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 19 Jan 2011 10:31:56 +0530
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 19 Jan 2011 12:29:50 +0530
 
 webupload-engine (0.3.2.1) unstable; urgency=low
 
