@@ -23,6 +23,8 @@
 #include "updateprocessprivate.h"
 #include <QDebug>
 
+#include "connectionmanager.h"
+
 using namespace WebUpload;
  
 UpdateProcess::UpdateProcess (QObject * parent) : 
@@ -59,11 +61,6 @@ UpdateProcess::~UpdateProcess () {
 void UpdateProcess::startUpdate (WebUpload::Account * account,
     WebUpload::ServiceOption * option) {
     
-    if (d_ptr->m_connection.isConnected () == false) {
-        Q_EMIT (failed (WebUpload::Error::CODE_NO_CONNECTION, QStringList()));
-        return;
-    }
-
     if (startProcess (account) == false) {
         Q_EMIT (failed (WebUpload::Error::CODE_CUSTOM, QStringList()));
         return;
@@ -77,11 +74,6 @@ void UpdateProcess::startUpdate (WebUpload::Account * account,
 
 void UpdateProcess::startUpdateAll (WebUpload::Account * account) {
 
-    if (d_ptr->m_connection.isConnected () == false) {
-        Q_EMIT (failed (WebUpload::Error::CODE_NO_CONNECTION, QStringList()));
-        return;
-    }
-
     if (startProcess (account) == false) {
         Q_EMIT (failed (WebUpload::Error::CODE_CUSTOM, QStringList()));
         return;
@@ -94,11 +86,6 @@ void UpdateProcess::startUpdateAll (WebUpload::Account * account) {
 
 void UpdateProcess::startAddValue (WebUpload::Account * account,
     WebUpload::ServiceOption * option, const QString & value) {
-
-    if (d_ptr->m_connection.isConnected () == false) {
-        Q_EMIT (failed (WebUpload::Error::CODE_NO_CONNECTION, QStringList()));
-        return;
-    }
 
     if (startProcess (account) == false) {
         Q_EMIT (failed (WebUpload::Error::CODE_CUSTOM, QStringList()));
@@ -136,24 +123,14 @@ void UpdateProcess::processStarted () {
 // -- private class functions -----------------------------------------------
 
 UpdateProcessPrivate::UpdateProcessPrivate(UpdateProcess *publicObject) :
-    QObject(publicObject), q_ptr(publicObject), m_account(0), m_option(0),
-    m_connection (this, false)
-{
-    connect (&m_connection, SIGNAL (disconnected()), this, SLOT
-        (disconnected()));
+    QObject(publicObject), q_ptr(publicObject), m_account(0), m_option(0) {
+
 }
 
-UpdateProcessPrivate::~UpdateProcessPrivate()
-{
-    disconnect (&m_connection, SIGNAL (disconnected()), this, SLOT
-        (disconnected()));
+UpdateProcessPrivate::~UpdateProcessPrivate() {
 }
 
 void UpdateProcessPrivate::doneSlot () {
-//    if (m_currentProcess == 0) {
-//        return;
-//    }
-
     if (m_option != 0) {
         m_option->refresh();
     } else {
@@ -161,48 +138,31 @@ void UpdateProcessPrivate::doneSlot () {
         m_account->service()->refreshPostOptions();
     }
     
-//    m_currentProcess = 0;
     Q_EMIT (q_ptr->finished());
 }
 
 void UpdateProcessPrivate::failedSlot (const WebUpload::Error::Code errorId,
     const QStringList failedIds) {
     
-//    if (m_currentProcess == 0) {
-//        return;
-//    }    
-    
     qDebug() << __FUNCTION__ << errorId << ": Refreshing all options";
     m_account->service()->refreshPostOptions();
-    
-//    m_currentProcess = 0;
-    Q_EMIT (q_ptr->failed (errorId, failedIds));
+
+    ConnectionManager connection (this, false);
+    if (connection.isConnected () == false) {
+        Q_EMIT(q_ptr->failed(WebUpload::Error::CODE_NO_CONNECTION, failedIds));
+    } else {
+        Q_EMIT (q_ptr->failed (errorId, failedIds));
+    }
 }
 
 void UpdateProcessPrivate::warningSlot (const WebUpload::Error::Code warningId,
     const QStringList failedIds) {
-    
-//    if (m_currentProcess == 0) {
-//        return;
-//    }    
-    
-    //qDebug() << __FUNCTION__ << warningId << ": Refreshing all options";
-    //m_account->service()->refreshPostOptions();
-    
+
     Q_EMIT (q_ptr->warning (warningId, failedIds));
 }
 
 void UpdateProcessPrivate::stoppedSlot () {
-//    if (m_currentProcess == 0) {
-//        return;
-//    }
-// 
-//    m_currentProcess = 0;
-    if (m_isConnected == false) {
-        failedSlot (WebUpload::Error::CODE_NO_CONNECTION, QStringList());
-    } else {
-        Q_EMIT (q_ptr->canceled());
-    }
+    Q_EMIT (q_ptr->canceled());
 }
 
 void UpdateProcessPrivate::pluginProcessCrashed () {
@@ -213,7 +173,3 @@ void UpdateProcessPrivate::pluginProcessCrashed () {
     failedSlot (WebUpload::Error::CODE_CUSTOM, QStringList());
 }
 
-void UpdateProcessPrivate::disconnected () {
-    m_isConnected = false;
-    q_ptr->cancel();
-}

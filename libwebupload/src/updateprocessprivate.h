@@ -24,7 +24,6 @@
 #include "WebUpload/Error"
 #include <QObject>
 #include <QStringList>
-#include "connectionmanager.h"
 
 namespace WebUpload {
 
@@ -71,14 +70,6 @@ public Q_SLOTS:
      */
     void pluginProcessCrashed (); 
     
-    /*!
-      \brief Slot to connect with disconnected signal from ConnectionManager.
-             No need for connected signal - we do not do updates automatically
-             - it is the user's responsibility to trigger a new update after
-             ensuring connection is there.
-     */
-    void disconnected ();
-
 private:
 
     UpdateProcess *q_ptr;
@@ -89,12 +80,6 @@ private:
 
     QString m_value; //!< Value added if not empty
 
-    ConnectionManager m_connection; //!< To check if there is connection or not
-
-    //! Used to check after cancellation whether to emit no connection error or
-    // some other error
-    bool m_isConnected; 
-    
     friend class UpdateProcess;
 
 };
