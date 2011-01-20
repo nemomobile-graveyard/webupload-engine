@@ -80,7 +80,7 @@ void PostBase::upload (WebUpload::Entry * entry, WebUpload::Error error) {
     
     if (error.code () != WebUpload::Error::CODE_NO_ERROR) {
         DBG_STREAM << "fix error";    
-        d_ptr->state = STATE_FIX_ERROR_PENDING;
+        d_ptr->state = MyPrivate::STATE_FIX_ERROR_PENDING;
         fixError (entry, error);
     } else if (d_ptr->media == 0) {
         /* There are no more media to be sent */
