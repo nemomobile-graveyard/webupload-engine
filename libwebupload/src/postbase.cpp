@@ -80,6 +80,7 @@ void PostBase::upload (WebUpload::Entry * entry, WebUpload::Error error) {
     
     if (error.code () != WebUpload::Error::CODE_NO_ERROR) {
         DBG_STREAM << "fix error";    
+        d_ptr->state = STATE_FIX_ERROR_PENDING;
         fixError (entry, error);
     } else if (d_ptr->media == 0) {
         /* There are no more media to be sent */
@@ -180,7 +181,7 @@ void PostBase::errorFixedSlot () {
 // --- Private class functions ----
 
 PostBasePrivate::PostBasePrivate(PostBase * parent) : QObject (parent), 
-    publicObject (parent), authPtr (0) {
+    state (STATE_IDLE), publicObject (parent), authPtr (0) {
 
     reset ();
 }
@@ -216,7 +217,6 @@ bool PostBasePrivate::setEntry (Entry *entry_t) {
 
     entry = entry_t;
     media = entry->nextUnsentMedia ();
-    state = STATE_AUTH_PENDING;
     totalSize = entry->totalSize ();
     sentSize = totalSize - entry->unsentSize ();
     ofItemDone = ((float)sentSize)/((float)totalSize);
@@ -237,6 +237,7 @@ void PostBasePrivate::errorFixed (AuthBase *authP) {
 
 
 void PostBasePrivate::startAuthentication (AuthBase *authP) {
+    state = STATE_AUTH_PENDING;
     if (authP != 0) {
         if (authPtr != 0) {
             authPtr->disconnect (this);
@@ -253,6 +254,7 @@ void PostBasePrivate::startAuthentication (AuthBase *authP) {
     if (entry == 0) {
         WebUpload::Error err = WebUpload::Error::transferFailed ();
         qWarning () << "Null entry pointer";
+        reset ();
         Q_EMIT (error (err));
         return;
     }
@@ -262,6 +264,7 @@ void PostBasePrivate::startAuthentication (AuthBase *authP) {
         WebUpload::Error err = WebUpload::Error::transferFailed ();
         err.setFailedCount (unsentFiles);
         qWarning () << "Null authPtr";
+        reset ();
         Q_EMIT (error (err));
         return;
     }
@@ -272,12 +275,14 @@ void PostBasePrivate::startAuthentication (AuthBase *authP) {
         WebUpload::Error err = WebUpload::Error::accountRemoved ();
         err.setFailedCount (unsentFiles);
         account.clear ();
+        reset ();
         Q_EMIT (error (err));
         return;
     } else if (account->isValid() == false) {
         WebUpload::Error err = WebUpload::Error::accountDisabled ();
         err.setFailedCount (unsentFiles);
         account.clear ();
+        reset ();
         Q_EMIT (error (err));
         return;
     }

@@ -1,8 +1,8 @@
 webupload-engine (0.3.3.2) unstable; urgency=low
 
-  * After tagging
+  * Fixes: NB#219702 - Upload plugins crash sometimes in WebUpload::PostBasePrivate::stop when upload is cancelled or connection is lost
 
- -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 19 Jan 2011 16:33:11 +0530
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Thu, 20 Jan 2011 12:18:45 +0530
 
 webupload-engine (0.3.3.1) unstable; urgency=low
 

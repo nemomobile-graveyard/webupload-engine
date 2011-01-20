@@ -153,6 +153,7 @@ namespace WebUpload {
             STATE_AUTH_PENDING, //!< Middle of authorization step
             STATE_UPLOAD_PENDING, //!< Middle of upload step
             STATE_CANCEL_PENDING, //!< Waiting for canceled reply
+            STATE_FIX_ERROR_PENDING, //!< Waiting for error fix to be done
 
             STATE_INVALID
         };
