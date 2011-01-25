@@ -987,7 +987,7 @@ bool MediaPrivate::initFromTrackerIri (const QString &tUri) {
         qDebug() << "Media mime-type is:" << m_mimeType;
         if (m_mimeType.isEmpty()) {
             qWarning() << "Media, Failed resolve mime type";
-            m_mimeType = "text/plain";
+            return false;
         }
     }
 
@@ -1200,7 +1200,7 @@ bool MediaPrivate::readTrackerInfo() {
             m_mimeType = result->binding(2).value().toString();
             if(m_mimeType.isEmpty()) {
                 qCritical() << "Media, failed to resolve mime type";
-                m_mimeType = "text/plain";
+                return false;
             }
         }
     }
