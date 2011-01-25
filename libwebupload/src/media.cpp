@@ -631,13 +631,6 @@ bool MediaPrivate::init(QDomElement & mediaElem) {
 
     m_copiedTextData = mediaElem.attribute("textData", "");    
     
-    m_trackerURI = mediaElem.attribute("tracker", "");
-    if (m_trackerURI.isEmpty() == false && readTrackerInfo() == false) {
-        m_copiedTextData.clear();
-        m_trackerURI.clear();
-        return false;
-    }
-    
     // Always read size
     m_size = 0;
     QString temp = mediaElem.attribute("size", "");
@@ -728,6 +721,16 @@ bool MediaPrivate::init(QDomElement & mediaElem) {
             qWarning() << "Unknown tag under media:" << e.tagName();
         }
     }
+
+    // Read tracker information after reading the rest of the information from
+    // the xml file
+    m_trackerURI = mediaElem.attribute("tracker", "");
+    if (m_trackerURI.isEmpty() == false && readTrackerInfo() == false) {
+        m_copiedTextData.clear();
+        m_trackerURI.clear();
+        return false;
+    }
+    
     return true;
 }
 
@@ -1148,14 +1151,24 @@ bool MediaPrivate::readTrackerInfo() {
     }
     qDebug() << "PERF: TrackerMediaRead START";
 
+    // Normally mime type can be read from the xml file, and once we have the
+    // xml file properly filled, we don't really require the original file name
     QString queryString = 
         "SELECT ?ftUri ?fUri ?mime ?state ?startTime ?endTime WHERE {"
-        "?:tUri a mto:TransferElement; mto:state ?state . "
-        "OPTIONAL { ?:tUri mto:source ?ftUri. "
-        "?ftUri a nie:InformationElement; nie:mimeType ?mime . "
-        "?ftUri a nie:DataObject; nie:url ?fUri . } "
-        "OPTIONAL { ?:tUri mto:startedTime ?startTime . } "
-        "OPTIONAL { ?:tUri mto:completedTime ?endTime . } }";
+        "    ?:tUri a mto:TransferElement; "
+        "        mto:state ?state . "
+        "    OPTIONAL {"
+        "        ?:tUri mto:source ?ftUri. "
+        "        OPTIONAL {"
+        "            ?ftUri a nie:InformationElement; "
+        "                nie:mimeType ?mime . "
+        "            ?ftUri a nie:DataObject; "
+        "                nie:url ?fUri . "
+        "        } "
+        "    } "
+        "    OPTIONAL { ?:tUri mto:startedTime ?startTime . } "
+        "    OPTIONAL { ?:tUri mto:completedTime ?endTime . }"
+        "}";
     QSparqlQuery query (queryString);
     query.bindValue ("tUri", QUrl(m_trackerURI));
 
@@ -1170,17 +1183,25 @@ bool MediaPrivate::readTrackerInfo() {
         m_origFileTrackerUri = result->binding(0).value().toString();
         m_origFileUri = 
             convertTrackerUrl (result->binding(1).value().toString());
-        if(m_origFileUri.isEmpty()) {
+        if (m_origFileTrackerUri.isEmpty ()) {
             qCritical() << "Source not provided for TransferElement";
             return false;
+        } else if(m_origFileUri.isEmpty()) {
+            qDebug() << "Looks like original file has been deleted";
+            // Can still continue
         }
+
         QString filePath = m_origFileUri.toLocalFile();
         m_fileName = QFileInfo(filePath).fileName();
 
-        m_mimeType = result->binding(2).value().toString();
-        if(m_mimeType.isEmpty()) {
-            qCritical() << "Media, failed to resolve mime type";
-            m_mimeType = "text/plain";
+        if (m_mimeType.isEmpty ()) {
+            // If mime info could not be read from the xml file, only then do 
+            // we need it from tracker
+            m_mimeType = result->binding(2).value().toString();
+            if(m_mimeType.isEmpty()) {
+                qCritical() << "Media, failed to resolve mime type";
+                m_mimeType = "text/plain";
+            }
         }
     }
 

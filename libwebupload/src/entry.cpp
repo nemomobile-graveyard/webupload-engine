@@ -748,6 +748,10 @@ bool EntryPrivate::init(const QString &path, Entry * entry, bool demandProper,
                 if(!newMedia->init(e)) {
                     delete newMedia;
                     qWarning() << "Could not fill a file information";
+                    // Media init'ing failing means there is something gone
+                    // wrong with the xml file. If this happens, we should
+                    // treat it as an unrecoverable error
+                    return false;
                 } else {
                     Q_CHECK_PTR(newMedia);
                     media.append(newMedia);

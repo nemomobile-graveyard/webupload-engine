@@ -143,8 +143,14 @@ bool UploadItem::init (const QString & path, TransferUI::Client * tuiClient) {
         m_tuiTransfer->setIcon(iconName);
         
         if (isThumbnail == true) {
-            m_tuiTransfer->setThumbnailForFile
-                (media->origURI().toLocalFile(), media->mimeType());
+            if (media->origURI().isEmpty()) {
+                // In case where original file might have already been deleted,
+                // we send the copy file path for thumbnail setting
+                m_tuiTransfer->setImageFromFilePath (media->copyFilePath());
+            } else {
+                m_tuiTransfer->setThumbnailForFile
+                    (media->origURI().toLocalFile(), media->mimeType());
+            }
         }
         
         //set total no of files
@@ -440,8 +446,14 @@ void UploadItem::mediaStarted (quint32 mediaIndex) {
         
         if (isThumbnail == true) {
             DBGSTREAM << "Media changed with thumbnail";
-            m_tuiTransfer->setThumbnailForFile(
-                media->origURI().toLocalFile() , media->mimeType());
+            if (media->origURI().isEmpty()) {
+                // In case where original file might have already been deleted,
+                // we send the copy file path for thumbnail setting
+                m_tuiTransfer->setImageFromFilePath (media->copyFilePath());
+            } else {
+                m_tuiTransfer->setThumbnailForFile
+                    (media->origURI().toLocalFile(), media->mimeType());
+            }
         }
 
         m_tuiTransfer->commit();
@@ -469,8 +481,14 @@ void UploadItem::mediaStarted (WebUpload::Media *media) {
         
         if (isThumbnail == true) {
             DBGSTREAM << "Media changed with thumbnail";
-            m_tuiTransfer->setThumbnailForFile(
-                media->origURI().toLocalFile() , media->mimeType());
+            if (media->origURI().isEmpty()) {
+                // In case where original file might have already been deleted,
+                // we send the copy file path for thumbnail setting
+                m_tuiTransfer->setImageFromFilePath (media->copyFilePath());
+            } else {
+                m_tuiTransfer->setThumbnailForFile
+                    (media->origURI().toLocalFile(), media->mimeType());
+            }
         }
         
         m_tuiTransfer->commit();

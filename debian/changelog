@@ -1,8 +1,9 @@
-webupload-engine (0.3.3.2) unstable; urgency=low
+webupload-engine (0.3.4.1) unstable; urgency=low
 
   * Fixes: NB#219702 - Upload plugins crash sometimes in WebUpload::PostBasePrivate::stop when upload is cancelled or connection is lost
+  * Fixes: NB#221151 - 'Unable to find selected file' is not displayed in Transfer details error dialog instead the deleted item is shown as completed
 
- -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Thu, 20 Jan 2011 12:18:45 +0530
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Tue, 25 Jan 2011 12:43:55 +0530
 
 webupload-engine (0.3.3.1) unstable; urgency=low
 
