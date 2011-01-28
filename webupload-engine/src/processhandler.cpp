@@ -83,7 +83,7 @@ void ProcessHandler::processNextMedia (
         media = myItem->getNextUnprocessedMedia ();
 
         if (media) {
-            QString originalFilePath = media->origURI().toLocalFile();
+            QString originalFilePath = media->srcFilePath ();
             if (!QFile::exists (originalFilePath)) {
                 Q_EMIT (processFailed (myItem, 
                     (int)UploadItem::PROCESS_ERROR_FILE_NOT_FOUND));

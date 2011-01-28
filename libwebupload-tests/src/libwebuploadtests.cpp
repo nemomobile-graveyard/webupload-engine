@@ -686,8 +686,7 @@ void LibWebUploadTests::checkImageResizeOptionMedium () {
         entry->appendMedia (media);
         QVERIFY(media->makeCopy () == WebUpload::Media::COPY_RESULT_SUCCESS);
 
-        QUrl origPathUrl (media->origURI ());
-        QImage original (origPathUrl.toLocalFile ());
+        QImage original (media->srcFilePath ());
         QImage copy (media->copyFilePath ());
         QSize origSize = original.size ();
         QSize copySize = copy.size ();

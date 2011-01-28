@@ -349,21 +349,10 @@ namespace WebUpload {
         QString option(const QString & id) const;
         
         /*!
-          \brief Deprecated, usee initFromTrackerIri
+          \brief Get the path of the source file
+          \return Path of the source file
          */
-        Q_DECL_DEPRECATED bool init (const QString & tUri);        
-        
-        /*!
-          \brief Deprecated use fastInitFromTrackerIri
-         */
-        Q_DECL_DEPRECATED bool fastInit (const QString &tUri,
-            const QString & fileUri, const QString &mimeType, qint64 size);
-            
-        /*!
-          \brief Deprecated use trackerIri()
-         */
-        Q_DECL_DEPRECATED QString trackerURI() const;
-        
+        QString srcFilePath () const;
         
     public Q_SLOTS:
 

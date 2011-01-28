@@ -59,7 +59,7 @@ void PostSimpleHttp::uploadMedia (Media * media) {
     currentReply = generateRequest (media);
     
     if (media->type() == Media::TYPE_FILE) {        
-        QString originalFilePath = media->origURI().toLocalFile();
+        QString originalFilePath = media->srcFilePath ();
         if (!QFile::exists (originalFilePath)) {
             Q_EMIT (mediaError(WebUpload::Error::missingFiles()));
             return;

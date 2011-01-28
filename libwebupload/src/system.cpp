@@ -299,7 +299,8 @@ System::EngineResponse System::validateEntry (WebUpload::Entry * entry) {
     QVectorIterator<Media *> mediaIter = entry->media();
     while (mediaIter.hasNext ()) {
         Media * media = mediaIter.next ();
-        QString filePath = media->origURI().toLocalFile ();
+        QString filePath = media->srcFilePath ();
+        qDebug() << "SYSTEM::" << __FUNCTION__ << filePath;
         if ((!filePath.isEmpty ()) && (!QFile::exists (filePath))) {
             return System::ENGINE_RESPONSE_FILES_MISSING;
         }

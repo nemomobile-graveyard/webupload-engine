@@ -67,11 +67,6 @@ const Entry* Media::entry() const {
     return qobject_cast<WebUpload::Entry *>(parentPtr);
 }
 
-bool Media::init (const QString &tUri) {
-    qCritical() << "Depricated function" << __FUNCTION__ << "called";
-    return initFromTrackerIri (tUri);
-}
-
 bool Media::initFromTrackerIri (const QString &tIri) {
     if(tIri.isEmpty()) {
         return false;
@@ -86,35 +81,6 @@ bool Media::initFromDataUri (const MDataUri & dUri) {
     }
     
     return d_ptr->initFromDataUri (dUri);
-}
-
-bool Media::fastInit (const QString &tUri, const QString & fileUri,
-    const QString &mimeType, qint64 size) {
-    
-    qWarning() << "Using deprecated function" << __FUNCTION__;    
-    
-    QString fTitle, fDesc;
-
-    // Title and description might not always be set. Hence they are optional
-    QString queryString = "SELECT ?title ?desc WHERE { "
-        "?:ie a nie:InformationElement . "
-        "OPTIONAL { ?:ie nie:title ?title . }"
-        "OPTIONAL { ?:ie nie:description ?desc . } }";
-    QSparqlQuery query (queryString);
-    query.bindValue ("ie", QUrl(tUri));
-
-    QSparqlResult * result = d_ptr->blockingSparqlQuery (query, true);
-    if (result == 0) {
-        return false;
-    } else {
-        result->first ();
-        fTitle = result->binding(0).value().toString();
-        fDesc = result->binding(1).value().toString();
-        delete result;
-    }
-
-    return fastInitFromTrackerIri (tUri, fileUri, mimeType, size, fTitle,
-        fDesc);
 }
 
 bool Media::fastInitFromTrackerIri (const QString &tIri, 
@@ -257,11 +223,6 @@ QUrl Media::origURI() const {
 
 QString Media::trackerIri() const {
     return d_ptr->m_trackerURI;
-}
-
-QString Media::trackerURI() const {
-    qWarning() << "Deprecated function trackerURI used";
-    return trackerIri();
 }
 
 QString Media::copyFilePath() const {
@@ -611,6 +572,13 @@ QString Media::option (const QString & id) const {
     return ret;
 }
 
+QString Media::srcFilePath () const {
+    QString encodedFilePath = d_ptr->m_origFileUri.toLocalFile ();
+    QString filePath = QUrl::fromPercentEncoding (encodedFilePath.toAscii());
+    return filePath;
+}
+
+
 /*******************************************************************************
  * Definition of functions for MediaPrivate
  ******************************************************************************/
@@ -763,7 +731,9 @@ Media::CopyResult MediaPrivate::makeCopyOfFile (
         return Media::COPY_RESULT_NO_SPACE;
     }
 
-    QString originalFilePath = m_origFileUri.toLocalFile();
+    QString encodedFilePath = m_origFileUri.toLocalFile ();
+    QString originalFilePath = 
+        QUrl::fromPercentEncoding (encodedFilePath.toAscii());
 
     if (m_mimeType.startsWith ("image/")) {
         result = processImage(originalFilePath, targetPath, imageResizeOption);
@@ -884,14 +854,14 @@ bool MediaPrivate::fastInitFromTrackerIri (const QString & tIri,
     qDebug() << "Fast init of Media" << tIri;
     
     m_origFileTrackerUri = tIri;
-    qDebug() << __FUNCTION__ << "m_origFileTrackerUri 1" << m_origFileTrackerUri;
     m_origFileUri = fileUri;
     m_mimeType = mimeType;
     m_size = size;
     m_title = fileTitle;
     m_description = fileDesc;
     
-    QString filePath = m_origFileUri.toLocalFile();
+    QString encodedFilePath = m_origFileUri.toLocalFile ();
+    QString filePath = QUrl::fromPercentEncoding (encodedFilePath.toAscii());
     m_fileName = QFileInfo(filePath).fileName();
     m_copyFileUri.clear();
     m_state = TRANSFER_STATE_PENDING;
@@ -972,12 +942,11 @@ bool MediaPrivate::initFromTrackerIri (const QString &tUri) {
 
         result->first ();
         m_origFileTrackerUri = result->binding(0).value().toString();
-        m_origFileUri = convertTrackerUrl(QUrl::fromLocalFile(fPath));
+        m_origFileUri = QUrl::fromLocalFile (fPath);
     } else {
         m_origFileTrackerUri = QUrl(tUri);
         result->first ();
-        m_origFileUri = 
-            convertTrackerUrl(QUrl(result->binding(0).value().toString()));
+        m_origFileUri = QUrl(result->binding(0).value().toString());
     }
 
     m_size = result->binding(1).value().toInt();
@@ -994,7 +963,8 @@ bool MediaPrivate::initFromTrackerIri (const QString &tUri) {
     delete result;
     result = 0;
 
-    QString filePath = m_origFileUri.toLocalFile();
+    QString encodedFilePath = m_origFileUri.toLocalFile ();
+    QString filePath = QUrl::fromPercentEncoding (encodedFilePath.toAscii());
     m_fileName = QFileInfo(filePath).fileName();
     m_copyFileUri.clear();
     m_state = TRANSFER_STATE_PENDING;
@@ -1181,8 +1151,7 @@ bool MediaPrivate::readTrackerInfo() {
     result->first ();
     if (m_copiedTextData.isEmpty ()) {
         m_origFileTrackerUri = result->binding(0).value().toString();
-        m_origFileUri = 
-            convertTrackerUrl (result->binding(1).value().toString());
+        m_origFileUri = result->binding(1).value().toString();
         if (m_origFileTrackerUri.isEmpty ()) {
             qCritical() << "Source not provided for TransferElement";
             return false;
@@ -1191,7 +1160,9 @@ bool MediaPrivate::readTrackerInfo() {
             // Can still continue
         }
 
-        QString filePath = m_origFileUri.toLocalFile();
+        QString encodedFilePath = m_origFileUri.toLocalFile ();
+        QString filePath = 
+            QUrl::fromPercentEncoding (encodedFilePath.toAscii());
         m_fileName = QFileInfo(filePath).fileName();
 
         if (m_mimeType.isEmpty ()) {
@@ -1500,7 +1471,9 @@ Media::CopyResult MediaPrivate::constructTargetFilePath(
         return Media::COPY_RESULT_UNDEFINED_FAILURE;
     }
 
-    QString originalFilePath = m_origFileUri.toLocalFile();
+    QString encodedFilePath = m_origFileUri.toLocalFile ();
+    QString originalFilePath = 
+        QUrl::fromPercentEncoding (encodedFilePath.toAscii());
     QFileInfo fileInfo (originalFilePath);
     QString targetFilenameTemplate = targetDirectory +
         "attachment-XXXXXX." + fileInfo.suffix();

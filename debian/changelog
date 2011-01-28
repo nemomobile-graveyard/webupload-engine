@@ -1,8 +1,8 @@
 webupload-engine (0.3.4.2) unstable; urgency=low
 
-  * After tagging
+  * Made changes to handle files with '#' etc characters in their name
 
- -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Thu, 27 Jan 2011 17:31:10 +0530
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Fri, 28 Jan 2011 15:23:52 +0530
 
 webupload-engine (0.3.4.1) unstable; urgency=low
 
