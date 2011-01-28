@@ -573,9 +573,7 @@ QString Media::option (const QString & id) const {
 }
 
 QString Media::srcFilePath () const {
-    QString encodedFilePath = d_ptr->m_origFileUri.toLocalFile ();
-    QString filePath = QUrl::fromPercentEncoding (encodedFilePath.toAscii());
-    return filePath;
+    return d_ptr->srcFilePath ();
 }
 
 
@@ -731,9 +729,7 @@ Media::CopyResult MediaPrivate::makeCopyOfFile (
         return Media::COPY_RESULT_NO_SPACE;
     }
 
-    QString encodedFilePath = m_origFileUri.toLocalFile ();
-    QString originalFilePath = 
-        QUrl::fromPercentEncoding (encodedFilePath.toAscii());
+    QString originalFilePath = srcFilePath ();
 
     if (m_mimeType.startsWith ("image/")) {
         result = processImage(originalFilePath, targetPath, imageResizeOption);
@@ -860,8 +856,7 @@ bool MediaPrivate::fastInitFromTrackerIri (const QString & tIri,
     m_title = fileTitle;
     m_description = fileDesc;
     
-    QString encodedFilePath = m_origFileUri.toLocalFile ();
-    QString filePath = QUrl::fromPercentEncoding (encodedFilePath.toAscii());
+    QString filePath = srcFilePath ();
     m_fileName = QFileInfo(filePath).fileName();
     m_copyFileUri.clear();
     m_state = TRANSFER_STATE_PENDING;
@@ -963,8 +958,7 @@ bool MediaPrivate::initFromTrackerIri (const QString &tUri) {
     delete result;
     result = 0;
 
-    QString encodedFilePath = m_origFileUri.toLocalFile ();
-    QString filePath = QUrl::fromPercentEncoding (encodedFilePath.toAscii());
+    QString filePath = srcFilePath ();
     m_fileName = QFileInfo(filePath).fileName();
     m_copyFileUri.clear();
     m_state = TRANSFER_STATE_PENDING;
@@ -1114,6 +1108,13 @@ QDomElement MediaPrivate::serializeToXML(QDomDocument & doc, int options) {
     return mediaTag;
 }
 
+QString MediaPrivate::srcFilePath () const {
+    QString encodedFilePath = m_origFileUri.toLocalFile ();
+    QString filePath = QUrl::fromPercentEncoding (encodedFilePath.toAscii());
+    return filePath;
+}
+
+
 bool MediaPrivate::readTrackerInfo() {
     if(m_trackerURI.isEmpty()) {
         qWarning() << "Invalid XML data (missing tracker uri)";
@@ -1160,9 +1161,7 @@ bool MediaPrivate::readTrackerInfo() {
             // Can still continue
         }
 
-        QString encodedFilePath = m_origFileUri.toLocalFile ();
-        QString filePath = 
-            QUrl::fromPercentEncoding (encodedFilePath.toAscii());
+        QString filePath = srcFilePath ();
         m_fileName = QFileInfo(filePath).fileName();
 
         if (m_mimeType.isEmpty ()) {
@@ -1471,9 +1470,7 @@ Media::CopyResult MediaPrivate::constructTargetFilePath(
         return Media::COPY_RESULT_UNDEFINED_FAILURE;
     }
 
-    QString encodedFilePath = m_origFileUri.toLocalFile ();
-    QString originalFilePath = 
-        QUrl::fromPercentEncoding (encodedFilePath.toAscii());
+    QString originalFilePath = srcFilePath ();
     QFileInfo fileInfo (originalFilePath);
     QString targetFilenameTemplate = targetDirectory +
         "attachment-XXXXXX." + fileInfo.suffix();

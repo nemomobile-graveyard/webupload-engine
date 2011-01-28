@@ -147,10 +147,13 @@ namespace WebUpload {
         // options here is the integer value whose bits indicate which
         // metadata information is to be shared and which is not
         QDomElement serializeToXML(QDomDocument &doc, int options);
-        
-        bool readMetadataFromFile();
-        bool syncMetadataToFile();
 
+        /*!
+          \brief Get the path of the source file
+          \return Path of the source file
+         */
+        QString srcFilePath () const;
+        
         bool readTrackerInfo();
         bool updateTracker(bool updateState = false);
         QUrl addToTracker();
