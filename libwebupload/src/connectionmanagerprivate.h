@@ -60,6 +60,11 @@ namespace WebUpload {
 
     private Q_SLOTS:
         /*!
+          \brief Slot to connect to the QNetworkSession::error signal
+         */
+        void error (QNetworkSession::SessionError error);
+
+        /*!
             \brief slot to recieve state changed signal
             \online state of the connectivity
         */

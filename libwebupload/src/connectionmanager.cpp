@@ -67,7 +67,7 @@ bool ConnectionManagerPrivate::isConnected() {
         Q_EMIT (askNetworkSession());
     } 
 
-    m_askConnection = false;
+    // m_askConnection = false;
     return m_isConnectionReady;
 }
 
@@ -85,10 +85,27 @@ void ConnectionManagerPrivate::createNetworkSession() {
         QNetworkConfiguration::Active)) {
 
         qDebug() << "\t\tCalling QNetworkSession::open";
-        QNetworkSession  session(cfg, this);
-        session.open();
+        QNetworkSession  *session = new QNetworkSession(cfg, this);
+        connect (session, SIGNAL (opened()), session, SLOT (deleteLater()));
+        connect (session, SIGNAL (error(QNetworkSession::SessionError)),
+            this, SLOT (error(QNetworkSession::SessionError)),
+            Qt::QueuedConnection);
+        session->setSessionProperty ("ConnectInBackGround", QVariant (false));
+        session->open();
     }
     qDebug() << "ConnectionManagerPrivate::createNetworkSession end";
+}
+
+void ConnectionManagerPrivate::error (QNetworkSession::SessionError error) {
+    Q_UNUSED (error)
+    QNetworkSession *sentBy = qobject_cast<QNetworkSession *>(sender ());
+    if (sentBy == 0) {
+        qCritical () << "ConnectionManagerPrivate::error -> invalid usage";
+        return;
+    }
+
+    qDebug() << "QNetworkSession error -> " << sentBy->errorString ();
+    sentBy->deleteLater ();
 }
 
 void ConnectionManagerPrivate::onlineStateChanged(bool online) {
