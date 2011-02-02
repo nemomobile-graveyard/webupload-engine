@@ -26,7 +26,7 @@
 #include <QStringList>
 #include <QFile>
 #include <QMutex>
-#include <QTime>
+#include <QElapsedTimer>
 #include <QList>
 #include <QDebug>
 
@@ -106,7 +106,7 @@ private:
     QList<Qt::HANDLE> m_threads;
 
     //! timer used to get timestamps
-    QTime m_time;
+    QElapsedTimer m_time;
 };
 
 #endif // #ifndef _LOGGER_H_
