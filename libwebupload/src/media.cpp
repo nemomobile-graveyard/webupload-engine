@@ -1273,16 +1273,22 @@ bool MediaPrivate::updateTracker(bool updateState) {
 
     QUrl stateId;
     if (updateState) {
+        qDebug() << "State needs to be updated";
         insertString.append ("; mto:state ?:state ");
+        qDebug () << "insertString now is: " << insertString;
+        qDebug() << "State is " << m_state;
         if (m_state == TRANSFER_STATE_ACTIVE) {
             stateId = transferStateIri(TRANSFER_STATE_PENDING);
         } else {
             stateId = transferStateIri(m_state);
         }
+        qDebug() << "Setting state to" << stateId << "\n";
 
         QSparqlQuery delQuery ("DELETE { ?:teIri mto:state ?state . } WHERE { "
             "?:teIri mto:state ?state . } ", QSparqlQuery::DeleteStatement);
+        qDebug() << "Binding teIri to " << m_trackerURI;
         delQuery.bindValue ("teIri", QUrl(m_trackerURI));
+        qDebug () << "Now making a blocking sparql query";
         QSparqlResult * result = blockingSparqlQuery (delQuery);
         if (result == 0) {
             qWarning() << "Delete query " << delQuery.preparedQueryText () <<

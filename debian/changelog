@@ -1,3 +1,9 @@
+webupload-engine (0.3.5.2) unstable; urgency=low
+
+  * After tagging
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Thu, 03 Feb 2011 15:32:01 +0530
+
 webupload-engine (0.3.5.1) unstable; urgency=low
 
   * Fixes: NB#216476 - Select connection UI is not shown if there are no saved connection available when starting to share
