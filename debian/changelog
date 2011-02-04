@@ -1,6 +1,6 @@
 webupload-engine (0.3.5.2) unstable; urgency=low
 
-  * After tagging
+  * Option for disabling document generation
 
  -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Thu, 03 Feb 2011 15:32:01 +0530
 

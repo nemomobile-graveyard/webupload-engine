@@ -42,7 +42,9 @@ INSTALLS += pkgconfig
 
 # API Documentation with Doxygen
 dox.path        = /usr/share/doc/publish-widgets
-dox.commands    = doxygen doxygen.cfg
+!contains( DEFINES, NO_DOCS ) {
+    dox.commands    = doxygen doxygen.cfg
+}
 dox.depends     = PublishWidgets       
 dox.files       = doc/html/*
 dox.CONFIG     += no_check_exist

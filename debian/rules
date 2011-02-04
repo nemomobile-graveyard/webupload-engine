@@ -31,6 +31,9 @@ endif
 ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
 endif
 
+ifneq (,$(findstring nodocs,$(DEB_BUILD_OPTIONS)))
+        EXTRA_QMAKE_OPTIONS += "DEFINES+=NO_DOCS"
+endif
 	
 config.status: configure
 	dh_testdir
