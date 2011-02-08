@@ -532,7 +532,13 @@ void Media::refreshStateFromTracker () {
 
     QSparqlResult * result = d_ptr->blockingSparqlQuery (query, true);
     if (result == 0) {
-        return;
+        // Tracker db has got incorrect state value, perhaps because plugin
+        // crashed just after deleting current state, but before updating new
+        // state value, so setting state to pending.
+        // This might result in same media being uploaded multiple times, but
+        // that is better than giving some wierd error to the user
+        qDebug() << "Tracker does not have state value set";
+        d_ptr->m_state = TRANSFER_STATE_PENDING;
     } else {
         result->first ();
         d_ptr->m_state = 
@@ -583,7 +589,6 @@ QString Media::srcFilePath () const {
 MediaPrivate::MediaPrivate (Media * parent) : QObject (parent),
     m_media (parent), m_state(TRANSFER_STATE_UNINITIALIZED), m_size (-1),
     m_hadError (false), m_sparqlConnection (0) {
-
 }
 
 MediaPrivate::~MediaPrivate() {
@@ -657,15 +662,41 @@ bool MediaPrivate::init(QDomElement & mediaElem) {
             while(!n1.isNull()) {
                 QDomElement e1 = n1.toElement();
                 QString tagUrl = e1.attribute ("tracker_url");
-                if(e1.tagName() != "tag") {
-                    qDebug() << "Invalid tagName " << e1.tagName() <<
-                        ".  Expected \"tag\"";
-                } else {
+                if(e1.tagName() == "tag") {
                     m_tags << e1.text();
                     m_tagUrls << QUrl (tagUrl);
+                } else {
+                    qDebug() << "Invalid tagName " << e1.tagName() <<
+                        ".  Expected \"tag\"";
                 }
                 n1 = n1.nextSibling();
             }
+#if 0
+            // TODO: Uncomment later when handling geotags
+        } else if (e.tagName () == "geotag") {
+            if (m_geotag.isEmpty ()) {
+                QDomNode n1 = e.firstChild ();
+                while (!n1.isNull ()) {
+                    QDomElement e1 = n1.toElement ();
+                    if (e1.tagName () == "country") {
+                        m_geotag.setCountry (e1.text ());
+                    } else if (e1.tagName () == "city") {
+                        m_geotag.setCity (e1.text ());
+                    } else if (e1.tagName () == "district") {
+                        m_geotag.setDistrict (e1.text ());
+                    } else {
+                        qDebug() << "Invalid geotag" << e1.tagName ()
+                            << "with value" << e1.text ();
+                    }
+                    n1 = n1.nextSibling ();
+                }
+            } else {
+                // There should be only one geotag, so not looping to
+                // see if there are more
+                qDebug() << "Geotag already defined once. Ignoring "
+                    "others";
+            }
+#endif
         } else if (e.tagName() == "cleanUpFile") {
             m_cleanUpFiles << e.text();
             
@@ -887,6 +918,46 @@ bool MediaPrivate::getTagsFromTracker () {
     }
 
     qDebug() << "PERF: Getting tags for " << m_origFileUri << ": END";
+
+#if 0
+    // TODO: Uncomment later when handling geotags
+    qDebug() << "PERF: Getting geotag for " << m_origFileUri << ": START";
+    QString geotagQueryString = "SELECT ?country ?city ?district WHERE { "
+        "?:ieElem a nie:InformationElement . "
+        "    OPTIONAL { ?OPTIONAL { ?:ieElem slo:location ?loc . "
+        "        OPTIONAL { ?OPTIONAL { ?loc slo:postalAddress ?pAdd . "
+        "            OPTIONAL { ?OPTIONAL { ?pAdd nco:country ?country . } "
+        "            OPTIONAL { ?OPTIONAL { ?pAdd nco:locality ?city . } "
+        "            OPTIONAL { ?OPTIONAL { ?pAdd nco:region ?district . } "
+        "        } "
+        "    } "
+        "} ";
+
+    QSparqlQuery geotagQuery (geotagQueryString);
+    geotagQuery.bindValue ("ieElem", m_origFileTrackerUri);
+
+    result = blockingSparqlQuery (geotagQuery);
+    if (result == 0) {
+        return false;
+    } else {
+        // Query can have 0 rows as well - when there are no tags
+        while (result->next ()) {
+            if (!result->binding(0).value().isNull()) {
+                m_geotag.setCountry (result->binding(0).value().toString());
+            }
+            if (!result->binding(1).value().isNull()) {
+                m_geotag.setCity (result->binding(1).value().toString());
+            }
+            if (!result->binding(2).value().isNull()) {
+                m_geotag.setDistrict (result->binding(2).value().toString());
+            }
+        } 
+
+        delete result;
+    }
+
+    qDebug() << "PERF: Getting geotag for " << m_origFileUri << ": END";
+#endif
     return true;
 }
 
@@ -1071,15 +1142,40 @@ QDomElement MediaPrivate::serializeToXML(QDomDocument & doc, int options) {
     }
 
     // Tags
-    if ((m_tags.isEmpty() == false) && (options != METADATA_FILTER_TAGS)) {
-        dataTag = doc.createElement("tags");
-        for (int i = 0; i < m_tags.size(); ++i) {
-            QDomElement tagTag = doc.createElement("tag");
-            tagTag.setAttribute ("tracker_url", m_tagUrls.at (i).toString ());
-            tagTag.appendChild (doc.createTextNode (m_tags.at(i)));
-            dataTag.appendChild (tagTag);
+    if (options != METADATA_FILTER_TAGS) {
+        if (m_tags.isEmpty() == false) {
+            dataTag = doc.createElement("tags");
+            for (int i = 0; i < m_tags.size(); ++i) {
+                QDomElement tagTag = doc.createElement("tag");
+                tagTag.setAttribute ("tracker_url", 
+                    m_tagUrls.at (i).toString ());
+                tagTag.appendChild (doc.createTextNode (m_tags.at(i)));
+                dataTag.appendChild (tagTag);
+            }
+            mediaTag.appendChild (dataTag);
         }
-        mediaTag.appendChild (dataTag);
+
+#if 0
+        // TODO: Uncomment later when handling geotags
+        if (!m_geotag.isEmpty ()) {
+            dataTag = doc.createElement ("geotag");
+
+            QDomElement tagTag = doc.createElement ("country");
+            tagTag.appendChild (doc.createTextNode (m_geotag.country ()));
+            dataTag.appendChild (tagTag);
+
+            tagTag = doc.createElement ("city");
+            tagTag.appendChild (doc.createTextNode (m_geotag.city ()));
+            dataTag.appendChild (tagTag);
+
+            tagTag = doc.createElement ("district");
+            tagTag.appendChild (doc.createTextNode (m_geotag.district ()));
+            dataTag.appendChild (tagTag);
+
+            mediaTag.appendChild (dataTag);
+        }
+#endif
+
     }
     
     // Remember files to be cleaned
@@ -1126,8 +1222,8 @@ bool MediaPrivate::readTrackerInfo() {
     // xml file properly filled, we don't really require the original file name
     QString queryString = 
         "SELECT ?ftUri ?fUri ?mime ?state ?startTime ?endTime WHERE {"
-        "    ?:tUri a mto:TransferElement; "
-        "        mto:state ?state . "
+        "    ?:tUri a mto:TransferElement. "
+        "    OPTIONAL { ?:tUri mto:state ?state . } "
         "    OPTIONAL {"
         "        ?:tUri mto:source ?ftUri. "
         "        OPTIONAL {"
@@ -1175,7 +1271,13 @@ bool MediaPrivate::readTrackerInfo() {
         }
     }
 
-    m_state = transferStateEnum(result->binding(3).value().toString());
+    QVariant stateVariant = result->binding(3).value();
+    if (!stateVariant.isNull()) {
+        m_state = transferStateEnum(stateVariant.toString());
+    } else {
+        // State value is not set in tracker for some reason. So considering this to be as yet not uploaded
+        m_state = TRANSFER_STATE_PENDING;
+    }
 
     QVariant timeVariant = result->binding(4).value();
     if (timeVariant.isValid() && timeVariant.canConvert<QDateTime> ()) {
@@ -1291,9 +1393,9 @@ bool MediaPrivate::updateTracker(bool updateState) {
         qDebug () << "Now making a blocking sparql query";
         QSparqlResult * result = blockingSparqlQuery (delQuery);
         if (result == 0) {
+            // Deleting state failed - could be because the state is not set?
             qWarning() << "Delete query " << delQuery.preparedQueryText () <<
                 " failed";
-            return false;
         }
 
         switch (m_state) {
@@ -1311,10 +1413,10 @@ bool MediaPrivate::updateTracker(bool updateState) {
                     QSparqlQuery::DeleteStatement);
                 delQuery.bindValue ("teIri", QUrl(m_trackerURI));
                 QSparqlResult * result = blockingSparqlQuery (delQuery);
+                // Deleting startedTime failed
                 if (result == 0) {
                     qWarning() << "Delete query " << 
                         delQuery.preparedQueryText () << " failed";
-                    return false;
                 }
             }
             break;
@@ -1334,7 +1436,6 @@ bool MediaPrivate::updateTracker(bool updateState) {
                 if (result == 0) {
                     qWarning() << "Delete query " << 
                         delQuery.preparedQueryText () << " failed";
-                    return false;
                 }
                 break;
             }
