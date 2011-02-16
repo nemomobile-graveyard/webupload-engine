@@ -391,6 +391,69 @@ void Entry::getAllTags (QList<QUrl> & commonTags,
     return;
 }
 
+void Entry::getAllTags (QList<QUrl> & commonTags, 
+    QMap<QUrl, int> & partialTags, GeotagInfo & commonGeotag,
+    QMap<GeotagInfo, int> & partialGeotags) const {
+
+    // Clear the lists first
+    commonTags.clear ();
+    partialTags.clear ();
+    commonGeotag.clear ();
+    partialGeotags.clear ();
+
+    if (d_ptr->metadataFilter.testFlag (METADATA_FILTER_TAGS)) {
+        // If tag filtering is enabled, do not return any tags
+        return;
+    }
+
+    QMap <QUrl, int> myPartialTags;
+    QVectorIterator<Media *> mediaIter = d_ptr->media;
+    while (mediaIter.hasNext ()) {
+        Media * media = mediaIter.next ();
+        QList<QUrl> mediaTags = media->tagUrls ();
+
+        for (int i = 0; i < mediaTags.count(); ++i) {
+            if (myPartialTags.contains (mediaTags[i])) {
+                ++myPartialTags [mediaTags [i]];
+            } else {
+                myPartialTags [mediaTags [i]] = 1;
+            }
+        }
+
+        GeotagInfo mediaGeotag;
+        mediaGeotag = media->geotag ();
+        if (!mediaGeotag.isEmpty()) {
+            if (partialGeotags.contains (mediaGeotag)) {
+                ++partialGeotags [mediaGeotag];
+            } else {
+                partialGeotags [mediaGeotag] = 1;
+            }
+        }
+    }
+
+    const int mediaCount = d_ptr->media.count ();
+    QMapIterator<QUrl, int> iter(myPartialTags);
+    while (iter.hasNext ()) {
+        iter.next ();
+        if (iter.value () == mediaCount) {
+            commonTags.append (iter.key ());
+        } else {
+            partialTags [iter.key ()] = iter.value();
+        }
+    }
+
+    if (partialGeotags.size() == 1) {
+        QMapIterator<GeotagInfo, int> iter (partialGeotags);
+        iter.next ();
+        if (iter.value () == mediaCount) {
+            commonGeotag = iter.key ();
+            partialGeotags.clear ();
+        }
+    }
+
+    return;
+}
+
 void Entry::setTags (QList<QUrl> commonTags, QList<QUrl> partialTags) {
     QVectorIterator<Media *> mediaIter = d_ptr->media;
     while (mediaIter.hasNext ()) {
@@ -411,6 +474,25 @@ void Entry::setTags (QList<QUrl> commonTags, QList<QUrl> partialTags) {
         // not allow for duplication, so no need to check for duplication here
         for (int i = 0; i < commonTags.count (); ++i) {
             media->appendTag (commonTags[i]);
+        }
+    }
+}
+
+void Entry::setGeotag (GeotagInfo commonGeotag, 
+    QList <GeotagInfo> partialGeotags) {
+
+    QVectorIterator<Media *> mediaIter = d_ptr->media;
+    if (!commonGeotag.isEmpty ()) {
+        while (mediaIter.hasNext ()) {
+            Media * media = mediaIter.next ();
+            media->setGeotag (commonGeotag);
+        }
+    } else {
+        while (mediaIter.hasNext ()) {
+            Media * media = mediaIter.next ();
+            if (!partialGeotags.contains (media->geotag())) {
+                media->clearGeotag ();
+            }
         }
     }
 }

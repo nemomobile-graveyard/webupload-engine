@@ -30,6 +30,7 @@
 #include <QUrl>
 #include <WebUpload/enums.h>
 #include <QDateTime>
+#include <WebUpload/GeotagInfo>
 
 namespace WebUpload {
 
@@ -226,6 +227,28 @@ namespace WebUpload {
             QMap<QUrl, int> & partialTags) const;
 
         /*!
+          \brief Read the tags in the media elements and either add them to the
+                 common tags list or partially selected tags list.
+          \param commonTags Reference to list of urls which will be filled in
+                    this function with the list of tags applicable to ALL the
+                    media
+          \param partialTags Reference to map of urls versus count of number of
+                    media for which the tag is applicable. This map will be
+                    filled in this function. 
+          \param commonGeotag If all the media have the exact same
+                    country,city,district triple, then this parameter will
+                    contain that triple, else it will be empty.
+          \param partialTags If all the media do not have the exact same 
+                    country,city,district triple, then this parameter will
+                    contain a map of each distinct instance of geotag versus a
+                    count of the number of media for which that geotag is
+                    applicable. 
+         */
+        void getAllTags (QList<QUrl> & commonTags, 
+            QMap<QUrl, int> & partialTags, GeotagInfo & commonGeotag,
+            QMap<GeotagInfo, int> & partialGeotags) const;
+
+        /*!
           \brief Function called to set the common and partial tags in the
                  media. If the media has a tag that does not appear in either
                  the common or the partial tag list, it will be removed.
@@ -236,6 +259,20 @@ namespace WebUpload {
                     non-common tag should still apply to the media or not
          */
         void setTags (QList<QUrl> commonTags, QList<QUrl> partialTags);
+
+        /*!
+          \brief Function called to set the geotag which would be common for
+                 all the media. Since each media can have only one set of
+                 geotag triple, at least one of the parameters would be empty
+          \param commonGeotag Geotag information that is applicable for all the
+                    media. 
+          \param partialGeotags List of geotag triples that are present in only
+                    some of the media. This list is used to figure our whether
+                    a non-common geotag should still apply to the media or not
+         */
+        void setGeotag (GeotagInfo commonGeotag, 
+            QList <GeotagInfo> partialGeotags);
+
 
         /*!
           \brief Get tag that are found in all media elements

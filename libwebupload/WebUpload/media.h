@@ -31,6 +31,7 @@
 #include <QUrl>
 #include <QStringList>
 #include <QMetaType>
+#include <WebUpload/GeotagInfo>
 
 class MDataUri;
 
@@ -353,6 +354,29 @@ namespace WebUpload {
           \return Path of the source file
          */
         QString srcFilePath () const;
+
+        /*!
+          \brief Get the geotag information associated with this media
+                 There can be only one distinct country,city,district triple
+                 associated with a media at any point of time.
+          \return The GeotagInfo instance containing geotag information
+                  associated with the media.
+         */
+        const GeotagInfo &geotag () const;
+
+        /*!
+          \brief Set the geotag information associated with this media
+          \param geotag The GeotagInfo instance containing the
+                    country,city,district triple to be associated with the
+                    media. There is no check done - any checks to be done
+                    should be done by the called.
+         */
+        void setGeotag (const GeotagInfo & geotag);
+
+        /*!
+          \brief Clear any geotag information associated with this media
+         */
+        void clearGeotag ();
         
     public Q_SLOTS:
 

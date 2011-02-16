@@ -32,6 +32,7 @@
 #include <QList>
 #include <QUrl>
 #include <QDateTime>
+#include "WebUpload/geotaginfo.h"
 
 // If using qtsparql
 #include <QtSparql>
@@ -68,6 +69,8 @@ namespace WebUpload {
         QString m_description; //!< Description of media
         QList<QUrl> m_tagUrls; //!< Url of all the tags
         QStringList m_tags; //!< Tags (keywords) of media
+
+        GeotagInfo m_geotag; //!< Geotag info associated with this media
 
         //! Tracker types, or empty if not yet queried
         QList<QUrl> m_trackerTypes;

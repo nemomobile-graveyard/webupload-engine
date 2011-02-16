@@ -1,8 +1,8 @@
-webupload-engine (0.3.6.2) unstable; urgency=low
+webupload-engine (0.3.6.3) unstable; urgency=low
 
-  * After tagging
+  * Updated Media and Entry classes to handle geotags
 
- -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 09 Feb 2011 10:33:52 +0530
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 16 Feb 2011 10:53:43 +0530
 
 webupload-engine (0.3.6.1) unstable; urgency=low
 

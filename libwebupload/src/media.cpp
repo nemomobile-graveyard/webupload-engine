@@ -582,6 +582,19 @@ QString Media::srcFilePath () const {
     return d_ptr->srcFilePath ();
 }
 
+const GeotagInfo &Media::geotag () const {
+    return d_ptr->m_geotag;
+}
+
+void Media::setGeotag (const GeotagInfo & geotag) {
+    d_ptr->m_geotag = geotag;
+}
+
+void Media::clearGeotag () {
+    d_ptr->m_geotag.clear ();
+}
+
+
 
 /*******************************************************************************
  * Definition of functions for MediaPrivate
@@ -671,8 +684,6 @@ bool MediaPrivate::init(QDomElement & mediaElem) {
                 }
                 n1 = n1.nextSibling();
             }
-#if 0
-            // TODO: Uncomment later when handling geotags
         } else if (e.tagName () == "geotag") {
             if (m_geotag.isEmpty ()) {
                 QDomNode n1 = e.firstChild ();
@@ -696,7 +707,6 @@ bool MediaPrivate::init(QDomElement & mediaElem) {
                 qDebug() << "Geotag already defined once. Ignoring "
                     "others";
             }
-#endif
         } else if (e.tagName() == "cleanUpFile") {
             m_cleanUpFiles << e.text();
             
@@ -919,16 +929,14 @@ bool MediaPrivate::getTagsFromTracker () {
 
     qDebug() << "PERF: Getting tags for " << m_origFileUri << ": END";
 
-#if 0
-    // TODO: Uncomment later when handling geotags
     qDebug() << "PERF: Getting geotag for " << m_origFileUri << ": START";
     QString geotagQueryString = "SELECT ?country ?city ?district WHERE { "
         "?:ieElem a nie:InformationElement . "
         "    OPTIONAL { ?OPTIONAL { ?:ieElem slo:location ?loc . "
         "        OPTIONAL { ?OPTIONAL { ?loc slo:postalAddress ?pAdd . "
-        "            OPTIONAL { ?OPTIONAL { ?pAdd nco:country ?country . } "
-        "            OPTIONAL { ?OPTIONAL { ?pAdd nco:locality ?city . } "
-        "            OPTIONAL { ?OPTIONAL { ?pAdd nco:region ?district . } "
+        "            OPTIONAL { ?pAdd nco:country ?country . } "
+        "            OPTIONAL { ?pAdd nco:locality ?city . } "
+        "            OPTIONAL { ?pAdd nco:region ?district . } "
         "        } "
         "    } "
         "} ";
@@ -957,7 +965,6 @@ bool MediaPrivate::getTagsFromTracker () {
     }
 
     qDebug() << "PERF: Getting geotag for " << m_origFileUri << ": END";
-#endif
     return true;
 }
 
@@ -1155,8 +1162,6 @@ QDomElement MediaPrivate::serializeToXML(QDomDocument & doc, int options) {
             mediaTag.appendChild (dataTag);
         }
 
-#if 0
-        // TODO: Uncomment later when handling geotags
         if (!m_geotag.isEmpty ()) {
             dataTag = doc.createElement ("geotag");
 
@@ -1174,8 +1179,6 @@ QDomElement MediaPrivate::serializeToXML(QDomDocument & doc, int options) {
 
             mediaTag.appendChild (dataTag);
         }
-#endif
-
     }
     
     // Remember files to be cleaned
@@ -1813,11 +1816,6 @@ Media::CopyResult MediaPrivate::filterAndSyncImageMetadata(
 
     qDebug() << "filterAndSyncImageMetadata()";
 
-#if 1
-    /*
-     * Comment out the code below because libquill currently crashes due to bug
-     * 194879
-     */
     if (m_mimeType == "image/gif") {
         //TODO: Check with AB about this later.
         qWarning () << "Not supporting handling gif image metadata currently";
@@ -1841,6 +1839,11 @@ Media::CopyResult MediaPrivate::filterAndSyncImageMetadata(
             m_media->description());
         originalMetadata.setEntry (QuillMetadata::Tag_Subject, m_media->tags());
 
+        originalMetadata.setEntry (QuillMetadata::Tag_Country,
+            m_geotag.country());
+        originalMetadata.setEntry (QuillMetadata::Tag_City, m_geotag.city());
+        // TODO: Need to check where to write district
+
         if (filters.testFlag(METADATA_FILTER_AUTHOR_LOCATION)) {
             qDebug() << "Removing creator and location from the metadata";
             originalMetadata.removeEntry (QuillMetadata::Tag_Creator);
@@ -1856,14 +1859,6 @@ Media::CopyResult MediaPrivate::filterAndSyncImageMetadata(
     if (!metadataWritten) {
         result = Media::COPY_RESULT_METADATA_FAILURE;
     }
-
-#else
-    Q_UNUSED (originalFilePath)
-    Q_UNUSED (targetPath)
-    Q_UNUSED (filters)
-
-    Media::CopyResult result = Media::COPY_RESULT_SUCCESS;
-#endif
 
     return result;
 }

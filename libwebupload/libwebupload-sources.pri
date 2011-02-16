@@ -46,7 +46,8 @@ HEADERS += WebUpload/account.h \
            WebUpload/updateprocess.h \
            updateprocessprivate.h \
            connectionmanager.h \
-           connectionmanagerprivate.h
+           connectionmanagerprivate.h \
+           WebUpload/geotaginfo.h
            
 
 SOURCES += account.cpp \
@@ -77,5 +78,6 @@ SOURCES += account.cpp \
            processexchangedata.cpp \
            pluginprocess.cpp \
            updateprocess.cpp \
-           connectionmanager.cpp
+           connectionmanager.cpp \
+           geotaginfo.cpp
            
