@@ -375,12 +375,16 @@ bool HttpMultiContentIOPrivate::seek (qint64 pos) {
 
 qint64 HttpMultiContentIOPrivate::pos () const {
     qint64 devicePos = 0;
-    for (int i = 0; i < currentDeviceIndex; ++ i) {
-        QIODevice * currDevice = dataList[i];
-        devicePos += currDevice->size ();
+
+    if (dataList.size() > currentDeviceIndex) {
+        for (int i = 0; i < currentDeviceIndex; ++ i) {
+            QIODevice * currDevice = dataList[i];
+            devicePos += currDevice->size ();
+        }
+
+        devicePos += dataList[currentDeviceIndex]->pos ();
     }
 
-    devicePos += dataList[currentDeviceIndex]->pos ();
     return devicePos;
 }
 
