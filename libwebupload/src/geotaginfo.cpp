@@ -22,68 +22,98 @@
 #include "WebUpload/geotaginfo.h"
 using namespace WebUpload;
 
+namespace WebUpload {
+
+    class GeotagInfoPrivate {
+    public:
+        GeotagInfoPrivate ();
+        GeotagInfoPrivate (QString country, QString city, QString district);
+
+        QString m_country;
+        QString m_city;
+        QString m_district;
+    };
+}
+
 
 GeotagInfo::GeotagInfo (QObject * parent, QString country, QString city,
-    QString district): QObject (parent), m_country (country), m_city (city),
-    m_district (district) {
+    QString district): QObject (parent), 
+    d_ptr (new GeotagInfoPrivate (country, city, district)) {
 
 }
 
-GeotagInfo::GeotagInfo (const GeotagInfo &src) : QObject (0) {
-    m_country = src.country ();
-    m_city = src.city ();
-    m_district = src.district ();
+GeotagInfo::GeotagInfo (const GeotagInfo &src) : QObject (0), 
+    d_ptr (new GeotagInfoPrivate ()) {
+
+    d_ptr->m_country = src.country ();
+    d_ptr->m_city = src.city ();
+    d_ptr->m_district = src.district ();
 }
 
 GeotagInfo & GeotagInfo::operator= (const GeotagInfo &other) {
-    m_country = other.country ();
-    m_city = other.city ();
-    m_district = other.district ();
+    d_ptr->m_country = other.country ();
+    d_ptr->m_city = other.city ();
+    d_ptr->m_district = other.district ();
 
     return *this;
 }
 
 bool GeotagInfo::operator== (const GeotagInfo &other) const {
-    return ((m_country == other.country ()) && (m_city == other.city ()) && 
-            (m_district == other.district ()));
+    return ((d_ptr->m_country == other.country ()) && 
+            (d_ptr->m_city == other.city ()) && 
+            (d_ptr->m_district == other.district ()));
 }
 
 
 GeotagInfo::~GeotagInfo () {
+    delete d_ptr;
 }
 
 const QString & GeotagInfo::country () const {
-    return m_country;
+    return d_ptr->m_country;
 }
 
 const QString & GeotagInfo::city () const {
-    return m_city;
+    return d_ptr->m_city;
 }
 
 const QString & GeotagInfo::district () const {
-    return m_district;
+    return d_ptr->m_district;
 }
 
 void GeotagInfo::setCountry (const QString &country) {
-    m_country = country;
+    d_ptr->m_country = country;
 }
 
 void GeotagInfo::setCity (const QString &city) {
-    m_city = city;
+    d_ptr->m_city = city;
 }
 
 void GeotagInfo::setDistrict (const QString &district) {
-    m_district = district;
+    d_ptr->m_district = district;
 }
 
 bool GeotagInfo::isEmpty () const {
-    return (m_country.isEmpty() && m_city.isEmpty() && m_district.isEmpty());
+    return (d_ptr->m_country.isEmpty() && d_ptr->m_city.isEmpty() && 
+            d_ptr->m_district.isEmpty());
 }
 
 void GeotagInfo::clear () {
-    m_country.clear ();
-    m_city.clear ();
-    m_district.clear ();
+    d_ptr->m_country.clear ();
+    d_ptr->m_city.clear ();
+    d_ptr->m_district.clear ();
 }
 
+
+///------------ Private class constructors
+
+
+GeotagInfoPrivate::GeotagInfoPrivate () {
+}
+
+GeotagInfoPrivate::GeotagInfoPrivate (QString country, QString city,
+    QString district) : m_country (country), m_city (city),
+    m_district (district) {
+
+}
 

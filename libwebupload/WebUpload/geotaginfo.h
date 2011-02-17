@@ -26,6 +26,9 @@
 
 namespace WebUpload {
 
+    // Private class for this.
+    class GeotagInfoPrivate;
+
     /*!
       \class GeotagInfo
       \brief Class storing geotag information
@@ -124,19 +127,13 @@ namespace WebUpload {
         void clear ();
 
     private:
-        QString m_country;
-        QString m_city;
-        QString m_district;
+        class GeotagInfoPrivate * const d_ptr; //!< Private data
     };
 }
 
 inline bool operator< (const WebUpload::GeotagInfo &e1, 
     const WebUpload::GeotagInfo &e2) {
 
-    Q_UNUSED (e1)
-    Q_UNUSED (e2)
-
-    return false;
     if (e1.country () == e2.country ()) {
         if (e1.city () == e2.city ()) {
             if (e1.district () == e2.district ()) {
