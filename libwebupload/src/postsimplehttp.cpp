@@ -56,8 +56,6 @@ void PostSimpleHttp::uploadMedia (Media * media) {
     DBG_STREAM << "Calling generateRequest";
     currentReply = 0;
     
-    currentReply = generateRequest (media);
-    
     if (media->type() == Media::TYPE_FILE) {        
         QString originalFilePath = media->srcFilePath ();
         if (!QFile::exists (originalFilePath)) {
@@ -65,6 +63,8 @@ void PostSimpleHttp::uploadMedia (Media * media) {
             return;
         }
     }
+
+    currentReply = generateRequest (media);
 
     if (currentReply == 0) {
         WARN_STREAM << "Generate request returned null";
