@@ -1,8 +1,9 @@
-webupload-engine (0.3.6.2) unstable; urgency=low
+webupload-engine (0.3.7.1) unstable; urgency=low
 
   * Fixes: NB#227720 - Random Picasa crash while trying to upload images
+  * Fixes: NB#227949 - 'Waiting for previous upload to finish' is displayed instead of 'Transfer disabled in mass storage mode' in a particular scenario
 
- -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 09 Feb 2011 10:33:52 +0530
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Thu, 17 Feb 2011 11:43:49 +0530
 
 webupload-engine (0.3.6.1) unstable; urgency=low
 

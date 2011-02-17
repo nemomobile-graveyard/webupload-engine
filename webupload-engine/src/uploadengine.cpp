@@ -612,15 +612,16 @@ void UploadEngine::usbModeChanged (MeeGo::QmUSBMode::Mode mode) {
     currentUSBMode = mode;
     
     if (mode == MeeGo::QmUSBMode::MassStorage) {
-        if (getState () == MASS_STORAGE) {
-            return;
-        }
-
-        if (getState() == IDLE) {
+        if (state == IDLE || state == MASS_STORAGE) {
             UploadItem * top = queue.getTop ();
             if (top != 0) {
                 top->markPending (UploadItem::PENDING_MSM);
             }
+        }
+
+        if (state == MASS_STORAGE || state == OFFLINE || 
+            state == SHUTTING_DOWN) {
+            return;
         }
 
         setState (MASS_STORAGE);
