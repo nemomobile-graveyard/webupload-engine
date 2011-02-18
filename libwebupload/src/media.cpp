@@ -932,8 +932,8 @@ bool MediaPrivate::getTagsFromTracker () {
     qDebug() << "PERF: Getting geotag for " << m_origFileUri << ": START";
     QString geotagQueryString = "SELECT ?country ?city ?district WHERE { "
         "?:ieElem a nie:InformationElement . "
-        "    OPTIONAL { ?OPTIONAL { ?:ieElem slo:location ?loc . "
-        "        OPTIONAL { ?OPTIONAL { ?loc slo:postalAddress ?pAdd . "
+        "    OPTIONAL { ?:ieElem slo:location ?loc . "
+        "        OPTIONAL { ?loc slo:postalAddress ?pAdd . "
         "            OPTIONAL { ?pAdd nco:country ?country . } "
         "            OPTIONAL { ?pAdd nco:locality ?city . } "
         "            OPTIONAL { ?pAdd nco:region ?district . } "
