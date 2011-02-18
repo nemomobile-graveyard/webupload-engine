@@ -1842,7 +1842,8 @@ Media::CopyResult MediaPrivate::filterAndSyncImageMetadata(
         originalMetadata.setEntry (QuillMetadata::Tag_Country,
             m_geotag.country());
         originalMetadata.setEntry (QuillMetadata::Tag_City, m_geotag.city());
-        // TODO: Need to check where to write district
+        originalMetadata.setEntry (QuillMetadata::Tag_Location, 
+            m_geotag.district());
 
         if (filters.testFlag(METADATA_FILTER_AUTHOR_LOCATION)) {
             qDebug() << "Removing creator and location from the metadata";
