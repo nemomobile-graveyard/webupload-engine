@@ -201,7 +201,8 @@ WebUpload::Media * UploadItem::getNextUnprocessedMedia () {
         return 0;
     }
 
-    if ((m_currMedia != 0) && (m_currMedia->copyFilePath().isEmpty()))
+    if ((m_currMedia != 0) && (m_currMedia->copyFilePath().isEmpty()) &&
+        (m_currMedia->isPending()))
         return m_currMedia;
 
     while (m_mediaIter->hasNext()) {
@@ -210,7 +211,8 @@ WebUpload::Media * UploadItem::getNextUnprocessedMedia () {
         
         if (isFile == true) {
         
-            if (m_currMedia->copyFilePath().isEmpty()) {
+            if (m_currMedia->copyFilePath().isEmpty() && 
+                m_currMedia->isPending ()) {
             
                 DBGSTREAM << "Media file" << m_currMedia->fileName()
                     << "not processed"; 
@@ -219,7 +221,7 @@ WebUpload::Media * UploadItem::getNextUnprocessedMedia () {
             }
 
             DBGSTREAM << "Media File" << m_currMedia->fileName()
-                << "already processed";
+                << "already processed or already completed";
                 
         } else {
             DBGSTREAM << "No processing for non file media";
@@ -312,11 +314,6 @@ bool UploadItem::markFailed (const WebUpload::Error & newError) {
 
     m_error = newError;
     
-    qDebug() << "Error ---> ";
-    qDebug() << "\t" << newError.title ();
-    qDebug() << "\t" << newError.description ();
-    qDebug() << "\t" << newError.accountName ();
-
     if (!m_entry->reSerialize()) {
         WARNSTREAM << "Failed to reserialize";
     }    

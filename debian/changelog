@@ -1,10 +1,11 @@
-webupload-engine (0.3.7.1) unstable; urgency=low
+webupload-engine (0.3.8.1) unstable; urgency=low
 
   * Updated Media and Entry classes to handle geotags
   * Fixes: NB#227720 - Random Picasa crash while trying to upload images
   * Fixes: NB#227949 - 'Waiting for previous upload to finish' is displayed instead of 'Transfer disabled in mass storage mode' in a particular scenario
+  * Fixes: NB#228737 - Transfer fails with error 'Unable to share files. Transfer failed.Unable to continue after device reboot
 
- -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Thu, 17 Feb 2011 11:43:49 +0530
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Tue, 22 Feb 2011 11:30:07 +0530
 
 webupload-engine (0.3.6.1) unstable; urgency=low
 
