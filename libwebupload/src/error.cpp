@@ -375,13 +375,15 @@ QString Error::description () const {
         case CODE_FILE_SIZE_ERROR:
             str = errCount;
             //% "Some of the files were too big for the service"
-            str.append (qtTrId ("qtn_tui_unable_share_file_size"));
+            str.append (qtTrId ("qtn_tui_unable_share_file_size", 
+                d_ptr->m_count));
             break;
 
         case CODE_FILE_SIZE_TYPE_ERROR:
             str = errCount;
             //% "Service does not accept file type or file was too big"
-            str.append (qtTrId ("qtn_tui_unable_share_file_sizetype"));
+            str.append (qtTrId ("qtn_tui_unable_share_file_sizetype", 
+                d_ptr->m_count));
             break;
 
         case CODE_INV_DATE_TIME:
@@ -423,7 +425,7 @@ QString Error::description () const {
         case CODE_MISSING_FILES:
             str = errCount;
             //% "Selected file can't be found"
-            str.append (qtTrId ("qtn_tui_file_removed_error"));
+            str.append (qtTrId ("qtn_tui_file_removed_error", d_ptr->m_count));
             break;
 
         case CODE_UNIMPLEMENTED:

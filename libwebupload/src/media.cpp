@@ -348,6 +348,16 @@ bool Media::setFailed() {
         retVal = true;
 
         Q_EMIT (stateChanged(this));
+    } else if (d_ptr->m_state == TRANSFER_STATE_PENDING) {
+        // Can go to failed directly from pending state only while doing 
+        // processing. Right now, the only scenario where this happens is that
+        // of when the source file has already been deleted. No need to update
+        // tracker. Also no need to let entry know about this right now - there
+        // is no need to mark entire entry as failed. We can let entry
+        // uploading continue and show this error in the end.
+        d_ptr->m_hadError = true;
+        retVal = true;
+
     } else if (d_ptr->m_hadError == true) {
         retVal = true;
     } else {

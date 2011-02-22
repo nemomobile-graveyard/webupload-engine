@@ -22,8 +22,8 @@
 #include "processhandler.h"
 #include <QFile>
 
-ProcessHandler::ProcessHandler (QObject *parent) : QObject (parent), myItem (0),
-    media (0) {
+ProcessHandler::ProcessHandler (QObject *parent) : QObject (parent), 
+    m_myItem (0), m_media (0) {
     
     qRegisterMetaType<WebUpload::Media::CopyResult> ();    
 
@@ -34,7 +34,7 @@ ProcessHandler::ProcessHandler (QObject *parent) : QObject (parent), myItem (0),
 }
 
 ProcessHandler::~ProcessHandler () {
-    if (myItem) 
+    if (m_myItem) 
         stopProcess (0);
 }
 
@@ -43,7 +43,7 @@ void ProcessHandler::startProcess (UploadItem * item) {
 
     qDebug() << "Start processing item : " << item;
 
-    if (myItem != 0) {
+    if (m_myItem != 0) {
         // Some other item is already being processed
         return;
     }
@@ -51,7 +51,7 @@ void ProcessHandler::startProcess (UploadItem * item) {
     if (item->isProcessed ()) {
         Q_EMIT (processDone (item));
     } else {
-        myItem = item;
+        m_myItem = item;
         processNextMedia ();
     }
 }
@@ -59,13 +59,13 @@ void ProcessHandler::startProcess (UploadItem * item) {
 void ProcessHandler::processNextMedia (
     WebUpload::Media::CopyResult prevCopyResult) {
     
-    Q_ASSERT (myItem != 0);
+    Q_ASSERT (m_myItem != 0);
     
     // Storage space error
     if (prevCopyResult == WebUpload::Media::COPY_RESULT_NO_SPACE) {
         qWarning() << "Previous media process failed for space";
     
-        Q_EMIT (processFailed (myItem,
+        Q_EMIT (processFailed (m_myItem,
             (int)UploadItem::PROCESS_ERROR_STORAGE_MEMORY_FULL));
       
     // All other errors
@@ -75,34 +75,44 @@ void ProcessHandler::processNextMedia (
         qWarning() << "Previous media process failed with error code"
             << prevCopyResult;
             
-        Q_EMIT (processFailed (myItem, (int)UploadItem::PROCESS_ERROR_UNDEFINED));
+        Q_EMIT (processFailed (m_myItem, 
+            (int)UploadItem::PROCESS_ERROR_UNDEFINED));
     
     // No error   
     } else {
         qDebug() << "Copy made - processing next media";
-        media = myItem->getNextUnprocessedMedia ();
+        m_media = m_myItem->getNextUnprocessedMedia ();
 
-        if (media) {
-            QString originalFilePath = media->srcFilePath ();
+        WebUpload::Media::CopyResult res = 
+            WebUpload::Media::COPY_RESULT_SUCCESS;
+
+        if (m_media) {
+            QString originalFilePath = m_media->srcFilePath ();
             if (!QFile::exists (originalFilePath)) {
-                Q_EMIT (processFailed (myItem, 
-                    (int)UploadItem::PROCESS_ERROR_FILE_NOT_FOUND));
+                if (!m_media->setFailed ()) {
+                    Q_EMIT (processFailed (m_myItem, 
+                        (int)UploadItem::PROCESS_ERROR_FILE_NOT_FOUND));
+                    return;
+                }
+                // Otherwise letting res stay success - the error would anyways
+                // be reported once upload processing starts
             }  else {
-                WebUpload::Media::CopyResult res = media->makeCopy ();
-                Q_EMIT (mediaProcessed (res));
+                res = m_media->makeCopy ();
             }
+
+            Q_EMIT (mediaProcessed (res));
         } else {
             qDebug() << "All media processed";
-            Q_EMIT (processDone (myItem));
-            myItem = 0;
+            Q_EMIT (processDone (m_myItem));
+            m_myItem = 0;
         }
     }
 }
 
 void ProcessHandler::stopProcess (UploadItem *item) {
     qDebug() << "Asked to stop process";
-    if (((item != 0) && (item == myItem)) || (item == 0)) {
-        myItem = 0;
+    if (((item != 0) && (item == m_myItem)) || (item == 0)) {
+        m_myItem = 0;
         qDebug() << "emitting processStopped signal";
         Q_EMIT (processStopped (item));
     } 

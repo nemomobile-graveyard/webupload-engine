@@ -101,8 +101,8 @@ private Q_SLOTS:
         WebUpload::Media::COPY_RESULT_SUCCESS);
 
 private:
-    UploadItem * myItem; //!< Item being processed
-    WebUpload::Media *media; //!< Current media being processed
+    UploadItem * m_myItem; //!< Item being processed
+    WebUpload::Media *m_media; //!< Current media being processed
 };
 
 #endif // _PROCESS_HANDLER_H_
