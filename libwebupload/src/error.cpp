@@ -357,19 +357,18 @@ QString Error::description () const {
 
         case CODE_INV_FILE_TYPE:
             //% "Service does not accept the file type"
-            str = append (qtTrId ("qtn_tui_unable_to_share_file_type"));
+            str = qtTrId ("qtn_tui_unable_to_share_file_type");
             break;
 
         case CODE_FILE_SIZE_ERROR:
             //% "Some of the files were too big for the service"
-            str = append (qtTrId ("qtn_tui_unable_share_file_size", 
-                d_ptr->m_count));
+            str = qtTrId ("qtn_tui_unable_share_file_size", d_ptr->m_count);
             break;
 
         case CODE_FILE_SIZE_TYPE_ERROR:
             //% "Service does not accept file type or file was too big"
-            str = append (qtTrId ("qtn_tui_unable_share_file_sizetype", 
-                d_ptr->m_count));
+            str = qtTrId ("qtn_tui_unable_share_file_sizetype", 
+                d_ptr->m_count);
             break;
 
         case CODE_INV_DATE_TIME:
@@ -390,7 +389,7 @@ QString Error::description () const {
 
         case CODE_TARGET_DOES_NOT_EXIST:
             //% "Target album does not exist anymore"
-            str = append (qtTrId ("qtn_tui_unable_to_share_album_err"));
+            str = qtTrId ("qtn_tui_unable_to_share_album_err");
             str.append ("<br>");
             //% "Share to default album?"
             str.append (qtTrId ("qtn_tui_unable_to_share_album_err2"));
