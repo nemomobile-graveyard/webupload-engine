@@ -1,8 +1,8 @@
 webupload-engine (0.3.8.2) unstable; urgency=low
 
-  * After tagging
+  * Fixes: NB#229994 - Logical ID qtn_tui_unable_to_share_info is displayed in Transfer details dialog
 
- -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Tue, 22 Feb 2011 16:59:03 +0530
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Thu, 24 Feb 2011 11:28:59 +0530
 
 webupload-engine (0.3.8.1) unstable; urgency=low
 

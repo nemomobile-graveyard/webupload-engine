@@ -331,16 +331,6 @@ QString Error::description () const {
 
     QString str; // String that will be returned
     
-    // Many errors show count of how many files failed. That happens only in
-    // the case of multiple files in the transfer. Set up that string
-    QString errCount;
-    if (d_ptr->m_totalCount > 1) {
-        //% "%L1 files could not be sent to service"
-        errCount = qtTrId ("qtn_tui_unable_to_share_info", d_ptr->m_count).
-            arg (d_ptr->m_count);
-        errCount.append ("<br>");
-    }
-
     switch (d_ptr->m_code) {
         case CODE_NO_ERROR:
         case CODE_NO_CONNECTION:
@@ -361,28 +351,24 @@ QString Error::description () const {
 
         //  Below cases are from section 5.3.3
         case CODE_UPLOAD_LIMIT_EXCEEDED:
-            str = errCount;
             //% "Service upload limit is exceeded"
-            str.append (qtTrId ("qtn_tui_unable_to_share_upload_lim"));
+            str = append (qtTrId ("qtn_tui_unable_to_share_upload_lim"));
             break;
 
         case CODE_INV_FILE_TYPE:
-            str = errCount;
             //% "Service does not accept the file type"
-            str.append (qtTrId ("qtn_tui_unable_to_share_file_type"));
+            str = append (qtTrId ("qtn_tui_unable_to_share_file_type"));
             break;
 
         case CODE_FILE_SIZE_ERROR:
-            str = errCount;
             //% "Some of the files were too big for the service"
-            str.append (qtTrId ("qtn_tui_unable_share_file_size", 
+            str = append (qtTrId ("qtn_tui_unable_share_file_size", 
                 d_ptr->m_count));
             break;
 
         case CODE_FILE_SIZE_TYPE_ERROR:
-            str = errCount;
             //% "Service does not accept file type or file was too big"
-            str.append (qtTrId ("qtn_tui_unable_share_file_sizetype", 
+            str = append (qtTrId ("qtn_tui_unable_share_file_sizetype", 
                 d_ptr->m_count));
             break;
 
@@ -404,7 +390,7 @@ QString Error::description () const {
 
         case CODE_TARGET_DOES_NOT_EXIST:
             //% "Target album does not exist anymore"
-            str.append (qtTrId ("qtn_tui_unable_to_share_album_err"));
+            str = append (qtTrId ("qtn_tui_unable_to_share_album_err"));
             str.append ("<br>");
             //% "Share to default album?"
             str.append (qtTrId ("qtn_tui_unable_to_share_album_err2"));
@@ -423,9 +409,8 @@ QString Error::description () const {
             break;
 
         case CODE_MISSING_FILES:
-            str = errCount;
             //% "Selected file can't be found"
-            str.append (qtTrId ("qtn_tui_file_removed_error", d_ptr->m_count));
+            str = qtTrId ("qtn_tui_file_removed_error", d_ptr->m_count);
             break;
 
         case CODE_UNIMPLEMENTED:
