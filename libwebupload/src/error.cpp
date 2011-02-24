@@ -352,7 +352,7 @@ QString Error::description () const {
         //  Below cases are from section 5.3.3
         case CODE_UPLOAD_LIMIT_EXCEEDED:
             //% "Service upload limit is exceeded"
-            str = append (qtTrId ("qtn_tui_unable_to_share_upload_lim"));
+            str = qtTrId ("qtn_tui_unable_to_share_upload_lim");
             break;
 
         case CODE_INV_FILE_TYPE:
