@@ -1,8 +1,8 @@
 webupload-engine (0.3.8.3) unstable; urgency=low
 
-  * After tagging
+  * Fixes: NB#230509 - Crash happens while updating post options if cancel is pressed just before authentication token is received
 
- -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Thu, 24 Feb 2011 17:21:50 +0530
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Fri, 25 Feb 2011 12:08:49 +0530
 
 webupload-engine (0.3.8.2) unstable; urgency=low
 

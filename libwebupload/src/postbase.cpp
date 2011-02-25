@@ -294,9 +294,7 @@ void PostBasePrivate::startAuthentication (AuthBase *authP) {
 void PostBasePrivate::authResultSlot (int err) {
 
     // Handle user cancels
-    if ((state == STATE_CANCEL_PENDING && 
-         err == WebUpload::AuthBase::RESULT_CANCELED)) {
-
+    if (state == STATE_CANCEL_PENDING) {
         reset ();
         Q_EMIT (stopped());
         return;
