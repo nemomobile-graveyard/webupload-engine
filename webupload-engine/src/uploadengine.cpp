@@ -85,6 +85,9 @@ UploadEngine::UploadEngine(int argc, char **argv) :
 
     connect (&usbModeDetector, SIGNAL(modeChanged(MeeGo::QmUSBMode::Mode)),
         this, SLOT(usbModeChanged(MeeGo::QmUSBMode::Mode)));
+    connect (&usbModeDetector, 
+        SIGNAL(fileSystemWillUnmount(MeeGo::QmUSBMode::MountPath)),
+        this, SLOT(fileSystemWillUnmount(MeeGo::QmUSBMode::MountPath)));
     currentUSBMode = usbModeDetector.getMode ();
 }
 
@@ -427,6 +430,9 @@ void UploadEngine::uploadStopped (UploadItem * item) {
         item->markPending (UploadItem::PENDING_MSM);
     } else if (getState () == OFFLINE) {
         item->markPending (UploadItem::PENDING_CONNECTIVITY);
+    } else {
+        qDebug() << 
+            "Stop called, but handling after stop happened is not defined";
     }
 }
 
@@ -610,6 +616,36 @@ void UploadEngine::disconnected () {
 
 void UploadEngine::usbModeChanged (MeeGo::QmUSBMode::Mode mode) {
     currentUSBMode = mode;
+
+    switch (mode) {
+        case MeeGo::QmUSBMode::Connected :
+            qDebug() << "USB MODE --> Connected";
+            break;
+        case MeeGo::QmUSBMode::DataInUse :
+            qDebug() << "USB MODE --> DataInUse";
+            break;
+        case MeeGo::QmUSBMode::Disconnected :
+            qDebug() << "USB MODE --> Disconnected";
+            break;
+        case MeeGo::QmUSBMode::MassStorage :
+            qDebug() << "USB MODE --> MassStorage";
+            break;
+        case MeeGo::QmUSBMode::ChargingOnly :
+            qDebug() << "USB MODE --> ChargingOnly";
+            break;
+        case MeeGo::QmUSBMode::OviSuite :
+            qDebug() << "USB MODE --> OviSuite";
+            break;
+        case MeeGo::QmUSBMode::ModeRequest :
+            qDebug() << "USB MODE --> ModeRequest";
+            break;
+        case MeeGo::QmUSBMode::Ask :
+            qDebug() << "USB MODE --> Ask";
+            break;
+        case MeeGo::QmUSBMode::Undefined :
+            qDebug() << "USB MODE --> Undefined";
+            break;
+    }
     
     if (mode == MeeGo::QmUSBMode::MassStorage) {
         if (state == IDLE || state == MASS_STORAGE) {
@@ -664,4 +700,16 @@ void UploadEngine::usbModeChanged (MeeGo::QmUSBMode::Mode mode) {
         queueTop (queue.getTop ());
     }
 }
+
+
+void UploadEngine::fileSystemWillUnmount (MeeGo::QmUSBMode::MountPath path) {
+
+    Q_UNUSED (path)
+
+    UploadItem *nowSending = uploadProcess.currentlySendingMedia ();
+    if (nowSending != 0) {
+        Q_EMIT (stopUpload(nowSending));
+    }
+}
+
 

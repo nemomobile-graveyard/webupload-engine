@@ -180,6 +180,13 @@ private Q_SLOTS:
     //! \brief Slot for Meego::QmUSBMode::modeChanged
     void usbModeChanged (MeeGo::QmUSBMode::Mode mode);
 
+    /*! 
+      \brief Slot for MeeGo::QmUSBMode::fileSystemWillUnmount
+             Recieve this signal and stop any ongoing transfers so that device
+             can move to mass storage mode
+     */
+     void fileSystemWillUnmount (MeeGo::QmUSBMode::MountPath path);
+
 Q_SIGNALS:                    
 
     /*!
