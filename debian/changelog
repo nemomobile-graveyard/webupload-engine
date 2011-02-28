@@ -1,3 +1,9 @@
+webupload-engine (0.3.9.2) unstable; urgency=low
+
+  * After tagging
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Mon, 28 Feb 2011 16:42:23 +0200
+
 webupload-engine (0.3.9.1) unstable; urgency=low
 
   * Added handling of "about to unmount" signal emitted when usb is connected in mass storage mode.

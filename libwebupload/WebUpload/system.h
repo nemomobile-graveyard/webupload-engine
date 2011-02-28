@@ -116,8 +116,8 @@ namespace WebUpload {
          */
         Account * account (const QString & stringId, QObject * parent = 0); 
         
-        SharedAccount sharedAccount (const QString & stringId);   
-                
+        SharedAccount sharedAccount (const QString & stringId);
+        
         /*!
           \brief Enable account listener that will emit signal newAccount
                  when new account are created.
