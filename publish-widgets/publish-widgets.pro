@@ -1,6 +1,6 @@
 TEMPLATE = lib
 QT += xml
-CONFIG += debug meegotouch link_pkgconfig libwebupload
+CONFIG += debug meegotouch link_pkgconfig libwebupload share-widgets
 PKGCONFIG += accounts-qt libsignon-qt 
 
 TARGET = publishwidgets
@@ -57,7 +57,7 @@ example.files = example/*.cpp \
                 example/*.h
 INSTALLS     += example
 
-# Install prf file for others to use
+# Install prf file for others to use 
 prf.path = $$[QT_INSTALL_DATA]/mkspecs/features
 prf.files = publish-widgets.prf
 INSTALLS += prf

@@ -21,7 +21,6 @@
 #ifndef _PUBLISH_WIDGETS_FORM_WIDGET_INTERFACE_H_
 #define _PUBLISH_WIDGETS_FORM_WIDGET_INTERFACE_H_
 
-#include <MWidget>
 #include <WebUpload/Entry>
 #include <ShareWidgets/ApplicationViewInterface>
 

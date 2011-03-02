@@ -6,6 +6,6 @@ includedir=${prefix}/include
 Name: publish-widgets
 Description: Libraries for Publish Widgets
 Version: 0.2.0
-Requires: meegotouch libwebupload share-widgets
+Requires: libwebupload share-widgets
 Libs: -L${libdir} -lpublishwidgets
 Cflags: -I${includedir}
