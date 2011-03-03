@@ -318,28 +318,33 @@ bool UploadItem::markFailed (const WebUpload::Error & newError) {
         WARNSTREAM << "Failed to reserialize";
     }    
     
-    // Set thumbnail to first failed media's image
-    int mediaCount = m_entry->mediaCount ();
-    for (int i = 0; i < mediaCount; ++i) {
-        WebUpload::Media *media = m_entry->mediaAt (i);
-        // The first unsent media would definitely have an error since we 
-        // upload media sequentially.
-        if (!media->isSent ()) {
-            QString transferName = media->title();
-            if (transferName.isEmpty() == true) {
-                transferName = media->fileName();
-            }
-            m_tuiTransfer->setName (transferName);
+    if (m_tuiTransfer != 0) {
+        // Set thumbnail to first failed media's image
+        int mediaCount = m_entry->mediaCount ();
+        for (int i = 0; i < mediaCount; ++i) {
+            WebUpload::Media *media = m_entry->mediaAt (i);
+            // The first unsent media would definitely have an error since we 
+            // upload media sequentially.
+            if (!media->isSent ()) {
+                QString transferName = media->title();
+                if (transferName.isEmpty() == true) {
+                    transferName = media->fileName();
+                }
 
-            if (media->origURI().isEmpty()) {
-                // In case where original file might have already been deleted,
-                // we send the copy file path for thumbnail setting
-                m_tuiTransfer->setImageFromFilePath (media->copyFilePath());
-            } else {
-                m_tuiTransfer->setThumbnailForFile
-                    (media->origURI().toLocalFile(), media->mimeType());
+                m_tuiTransfer->setName (transferName);
+
+                if (media->origURI().isEmpty()) {
+                    // In case where original file might have already been
+                    // deleted, we send the copy file path for thumbnail
+                    // setting
+                    m_tuiTransfer->setImageFromFilePath
+                        (media->copyFilePath());
+                } else {
+                    m_tuiTransfer->setThumbnailForFile
+                        (media->origURI().toLocalFile(), media->mimeType());
+                }
+                break;
             }
-            break;
         }
     }
 
