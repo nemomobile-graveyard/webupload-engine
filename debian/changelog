@@ -1,3 +1,9 @@
+webupload-engine (0.3.9.3) unstable; urgency=low
+
+  * After tagging
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Thu, 03 Mar 2011 16:09:25 +0530
+
 webupload-engine (0.3.9.2) unstable; urgency=low
 
   * Removed dependancy on meegotouch and added dependancy to share-widgets
