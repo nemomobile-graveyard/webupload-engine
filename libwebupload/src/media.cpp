@@ -252,6 +252,20 @@ QStringList Media::tags() const {
     }
 }
 
+QStringList Media::allTags() const {
+    QStringList alltags;
+    if ((entry() != 0) && (!entry()->checkShareFilter(METADATA_FILTER_ALL))) {
+        alltags = d_ptr->m_tags;
+        if (!d_ptr->m_geotag.isEmpty ()) {
+            alltags << d_ptr->m_geotag.country();
+            alltags << d_ptr->m_geotag.city();
+            alltags << d_ptr->m_geotag.district();
+        }
+    }
+
+    return alltags;
+}
+
 void Media::clearTags() {
     if (d_ptr->m_tags.isEmpty() == false) {
         d_ptr->m_tags.clear();

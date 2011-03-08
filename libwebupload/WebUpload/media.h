@@ -196,6 +196,12 @@ namespace WebUpload {
         QStringList tags () const;
 
         /*!
+          \brief Get a list of all tags and geotags
+          \return A list of tags which also contains the geotags
+         */
+        QStringList allTags () const;
+
+        /*!
           \brief Get urls of tags applicable to this media. 
                  This function will return correct value only if the class was
                  initialized from tracker, and not from xml file.

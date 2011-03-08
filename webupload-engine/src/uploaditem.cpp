@@ -24,6 +24,7 @@
 #include "WebUpload/Service"
 #include <QDebug>
 #include "logger.h"
+#include <MDataUri>
 
 #define CLIENT_ERROR_WARNING_STMT \
     WARNSTREAM << "TUI client Error:" << m_tuiTransfer->lastError()
@@ -328,7 +329,15 @@ bool UploadItem::markFailed (const WebUpload::Error & newError) {
             if (!media->isSent ()) {
                 QString transferName = media->title();
                 if (transferName.isEmpty() == true) {
-                    transferName = media->fileName();
+                    if (media->copiedTextData ().isEmpty ()) {
+                        // This is mostly a file
+                        transferName = media->fileName();
+                    } else {
+                        // This is a MDataUri
+                        MDataUri duri;
+                        duri.read (media->copiedTextData ());
+                        transferName = duri.textData ();
+                    }
                 }
 
                 m_tuiTransfer->setName (transferName);

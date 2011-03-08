@@ -1,6 +1,6 @@
 include (../config-flags.pri)
 
-CONFIG    += qt debug libtuiclient network meegotouchcore link_pkgconfig qmsystem2
+CONFIG    += qt debug libtuiclient network meegotouchcore link_pkgconfig qmsystem2 mdatauri
 TEMPLATE   = app
 QT        += dbus network xml
 

@@ -1,4 +1,4 @@
-CONFIG      += qt debug libtuiclient link_pkgconfig qtsparql
+CONFIG      += qt debug libtuiclient link_pkgconfig qtsparql mdatauri
 QT          += xml testlib 
 TEMPLATE     = app
 
