@@ -1,3 +1,9 @@
+webupload-engine (0.3.10.2) unstable; urgency=low
+
+  * After tagging
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Tue, 08 Mar 2011 16:20:40 +0530
+
 webupload-engine (0.3.10.1) unstable; urgency=low
 
   * Added function allTags to WebUpload::Media class which returns list of all tags, geotags included
