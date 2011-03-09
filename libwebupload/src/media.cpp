@@ -843,7 +843,7 @@ Media::CopyResult MediaPrivate::scaleAndSaveImage (const QString & origPath,
     int longSide, shortSide, newShort;
     double aspectRatio = 0;
 
-    qDebug() << "Orignal size: h = " << imageHeight << ", w = " <<
+    qDebug() << "Orig size h=" << imageHeight << " w=" <<
         imageWidth;
     if (imageHeight < imageWidth) {
         htLonger = false;
@@ -877,7 +877,7 @@ Media::CopyResult MediaPrivate::scaleAndSaveImage (const QString & origPath,
         newSize.setWidth (reSizeScale);
     }
 
-    qDebug() << "Changed size: h = " << newSize.height() << ", w = " <<
+    qDebug() << "New size h=" << newSize.height() << " w=" <<
         newSize.width();
 
     originalImage.setScaledSize (newSize);
@@ -1583,32 +1583,46 @@ Media::CopyResult MediaPrivate::constructTargetFilePath(
     const QString& suggestedTargetDir,
     QString& uniqueFilePath)
 { 
-    qDebug() << "constructTargetFilePath()";
     QString targetDirectory;
 
     if (suggestedTargetDir.isEmpty()) {
+        // TODO: Default path is hardcoded here (need to be read somewhere)    
         targetDirectory = QDir::homePath().append("/MyDocs/.share/");
     } else {
-        qDebug() << "suggested target dir: " << suggestedTargetDir;
         targetDirectory = suggestedTargetDir;
     }
 
-    qDebug() << "Real target dir: " << targetDirectory;
+    qDebug() << "Real target dir:" << targetDirectory;
 
     QDir directory;
 
     if (!directory.exists(targetDirectory) &&
         !directory.mkpath(targetDirectory)) {
-        qCritical () << "Could not create path " << targetDirectory <<
-            " for storing copies";
+        qCritical () << "Could not create path" << targetDirectory <<
+            "for storing copies";
         return Media::COPY_RESULT_UNDEFINED_FAILURE;
     }
 
     QString originalFilePath = srcFilePath ();
     QFileInfo fileInfo (originalFilePath);
-    QString targetFilenameTemplate = targetDirectory +
-        "attachment-XXXXXX." + fileInfo.suffix();
-    qDebug() << "temp file template: " << targetFilenameTemplate;
+    QString targetFilenameTemplate = targetDirectory + "attachment-XXXXXX";
+    
+    // Only copy suffix if it's defined
+    if (fileInfo.suffix().isEmpty() == false) {
+        targetFilenameTemplate += "." + fileInfo.suffix();
+        
+    // For images we need to make sure that we have file suffix even when
+    // original file does not have it (QImageWriter checks the type from file
+    // path)
+    } else if (m_mimeType == "image/jpeg") {
+        targetFilenameTemplate += ".jpg";
+    } else if (m_mimeType == "image/png") {
+        targetFilenameTemplate += ".png";
+    } else if (m_mimeType == "image/gif") {
+        targetFilenameTemplate += ".gif"; 
+    }
+    
+    qDebug() << "temp file template:" << targetFilenameTemplate;
     QTemporaryFile tmpFile(targetFilenameTemplate);
 
     if (tmpFile.open()) {
@@ -1622,7 +1636,7 @@ Media::CopyResult MediaPrivate::constructTargetFilePath(
             QString::number(timestamp) + "." + fileInfo.suffix();
     }
 
-    qDebug() << "constructed file path: " << uniqueFilePath;
+    qDebug() << "constructed file path:" << uniqueFilePath;
 
     return Media::COPY_RESULT_SUCCESS;
 }
@@ -1630,7 +1644,7 @@ Media::CopyResult MediaPrivate::constructTargetFilePath(
 
 
 bool MediaPrivate::checkDiscSpace(const QString& targetDirectory) {
-    qDebug() << "checkingDiskSpace() in " << targetDirectory;
+    qDebug() << "checkingDiskSpace" << targetDirectory;
     Q_UNUSED(targetDirectory);
 
     bool enoughSpace = true;
@@ -1663,8 +1677,6 @@ bool MediaPrivate::checkDiscSpace(const QString& targetDirectory) {
 Media::CopyResult MediaPrivate::processImage(const QString& originalFilePath,
     const QString& targetPath, ImageResizeOption imageResizeOption) {
 
-    qDebug() << "processImage()";
-
     Q_CHECK_PTR (m_media);
     const WebUpload::Entry * entry = m_media->entry();
     Q_CHECK_PTR (entry);
@@ -1681,8 +1693,6 @@ Media::CopyResult MediaPrivate::processImage(const QString& originalFilePath,
         if (result == Media::COPY_RESULT_FILETYPE_NOT_ACCEPTED) {
             qDebug() << "Scaling failed, have to make normal copy";
             result = copyFile(originalFilePath, targetFile);
-        } else {
-            qDebug() << "Scaled image stored in " << targetFile;
         }
     } else {
         qDebug() << "only copying image";
@@ -1690,7 +1700,7 @@ Media::CopyResult MediaPrivate::processImage(const QString& originalFilePath,
     }
 
     if (result == Media::COPY_RESULT_SUCCESS) {
-        qDebug() << "copy ok, filtering metadata";
+        qDebug() << "image copied to" << targetFile;
 
         if (QuillMetadata::canRead(originalFilePath)) {
             MetadataFilters filters (entry->metadataFilterOption());
@@ -1837,8 +1847,6 @@ Media::CopyResult MediaPrivate::filterAndSyncVideoMetadata(
 Media::CopyResult MediaPrivate::filterAndSyncImageMetadata(
     const QString& originalFilePath, const QString& targetPath,
     MetadataFilters filters) {
-
-    qDebug() << "filterAndSyncImageMetadata()";
 
     if (m_mimeType == "image/gif") {
         //TODO: Check with AB about this later.
