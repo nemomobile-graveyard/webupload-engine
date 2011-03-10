@@ -24,7 +24,8 @@ Architecture: all
 Depends: ${misc:Depends}, webupload-engine (>= ${source:Version}),
  webupload-engine (<< ${source:Version}.1~),
  libwebupload-dev (>= ${source:Version}),
- libwebupload-dev (<< ${source:Version}.1~)
+ libwebupload-dev (<< ${source:Version}.1~),
+ libmeegotouch-dev
 Description: Web upload engine development files
  
 Package: webupload-engine-dbg

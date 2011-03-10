@@ -1,7 +1,7 @@
 webupload-engine (0.3.10.2) unstable; urgency=low
 
   * Fixes: NB#234632 - An image without filetype (.jpg) in its file name when scaled and uploaded fails with error 'Transfer failed. Unable to continue'
-  * Added libqt4-dev dependency to libwebupload-dev
+  * Fixes: NB#235097 - webupload-engine provides dev packages with missing dependencies
 
  -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Tue, 08 Mar 2011 16:20:40 +0530
 
