@@ -24,7 +24,7 @@ Architecture: all
 Depends: ${misc:Depends}, webupload-engine (>= ${source:Version}),
  webupload-engine (<< ${source:Version}.1~),
  libwebupload-dev (>= ${source:Version}),
- libwebupload-dev (<< ${source:Version}.1~) 
+ libwebupload-dev (<< ${source:Version}.1~)
 Description: Web upload engine development files
  
 Package: webupload-engine-dbg
@@ -76,7 +76,7 @@ Architecture: all
 Depends: ${misc:Depends}, libwebupload0 (>= ${source:Version}),
  libwebupload0 (<< ${source:Version}.1~), 
  libexempi-dev (>= 2.1.1-1+maemo10+0m6),
- libqtm-systeminfo-dev, libsignon-qt-dev
+ libqtm-systeminfo-dev, libsignon-qt-dev, libqt4-dev
 Description: Development files of libwebupload.
 
 Package: libwebupload-l10n-engineering-english
