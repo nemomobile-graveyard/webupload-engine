@@ -23,6 +23,11 @@
 #include <QNetworkConfiguration>
 #include <QFile>
 
+#include <QSslError>
+#include <QSslCertificate>
+#include <QDBusInterface>
+#include <QDBusReply>
+
 #define DBG_PREFIX "PostSHttp:"
 #define DBG_STREAM qDebug() << DBG_PREFIX
 #define WARN_STREAM qWarning() << DBG_PREFIX
@@ -143,13 +148,13 @@ void PostSimpleHttp::namSslErrors (QNetworkReply * reply,
         return;
     }
     
-    const QSslError::SslError errorEnum = QSslError::NoError; 
+    QSslError::SslError errorEnum = QSslError::NoError; 
     int i = 0;
     for (i = 0; errorEnum == QSslError::NoError && i < errors.size (); ++i) {
         errorEnum = errors.at (i).error ();
     }
 
-    if (firstError == QSslError::UnableToGetLocalIssuerCertificate) {
+    if (errorEnum == QSslError::UnableToGetLocalIssuerCertificate) {
         QSslCertificate cert = errors.at (i).certificate ();
         if (!cert.isNull ()) {
             QByteArray certDer = cert.toDer ();
@@ -179,12 +184,12 @@ void PostSimpleHttp::namSslErrors (QNetworkReply * reply,
     switch (errorEnum) {
         case QSslError::CertificateNotYetValid:
             //% "Check device time and date."
-            error->setDescription (qtTrId ("qtn_tui_invalid_device_time"));
+            error.setDescription (qtTrId ("qtn_tui_invalid_device_time"));
             break;
 
         default:
             //% "Secure connection failed"
-            error->setDescription (qtTrId ("qtn_tui_ssl_connection_failed"));
+            error.setDescription (qtTrId ("qtn_tui_ssl_connection_failed"));
             break;
     }
 
