@@ -61,7 +61,6 @@ namespace WebUpload {
 
     protected Q_SLOTS:
 
-
         /*!
           \brief Slot for QNetworkAccessManager::finished. Will check common
                  errors first and then calls handleResponse with reply if common
@@ -103,6 +102,14 @@ namespace WebUpload {
         
         QNetworkAccessManager * netAM; //!< Manager used for connections
         QNetworkReply * currentReply; //!< Reply received from generateRequest()
+
+    private Q_SLOTS:
+
+        /*!
+          \brief Slot for QNetworkAccessManager::sslErrors
+         */
+        void namSslErrors (QNetworkReply * reply, 
+            const QList<QSslError> & errors);
     };
 }
 

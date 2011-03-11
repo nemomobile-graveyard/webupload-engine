@@ -1,9 +1,15 @@
+webupload-engine (0.3.10.3) unstable; urgency=low
+
+  * Fixes: NB#222671 - SSL errors are not handled correctly
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Fri, 11 Mar 2011 15:10:04 +0530
+
 webupload-engine (0.3.10.2) unstable; urgency=low
 
   * Fixes: NB#234632 - An image without filetype (.jpg) in its file name when scaled and uploaded fails with error 'Transfer failed. Unable to continue'
   * Fixes: NB#235097 - webupload-engine provides dev packages with missing dependencies
 
- -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Tue, 08 Mar 2011 16:20:40 +0530
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Fri, 11 Mar 2011 15:09:40 +0530
 
 webupload-engine (0.3.10.1) unstable; urgency=low
 

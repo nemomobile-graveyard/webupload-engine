@@ -36,6 +36,8 @@ PostSimpleHttp::PostSimpleHttp (QObject * parent) : PostBase (parent),
     // Connect signals
     connect (netAM, SIGNAL(finished(QNetworkReply*)), this,
         SLOT(namFinished(QNetworkReply*)));     
+    connect (netAM, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), this,
+        SLOT(namSslErrors(QNetworkReply*,QList<QSslError>)));     
 }
         
 PostSimpleHttp::~PostSimpleHttp() {
@@ -131,6 +133,64 @@ void PostSimpleHttp::namFinished (QNetworkReply * reply) {
     
     reply->deleteLater ();
 }
+
+void PostSimpleHttp::namSslErrors (QNetworkReply * reply, 
+    const QList<QSslError> & errors) {
+    
+    if (currentReply != reply) {
+        CRIT_STREAM << "Reply mismatch" << currentReply << reply;
+        reply->deleteLater();
+        return;
+    }
+    
+    const QSslError::SslError errorEnum = QSslError::NoError; 
+    int i = 0;
+    for (i = 0; errorEnum == QSslError::NoError && i < errors.size (); ++i) {
+        errorEnum = errors.at (i).error ();
+    }
+
+    if (firstError == QSslError::UnableToGetLocalIssuerCertificate) {
+        QSslCertificate cert = errors.at (i).certificate ();
+        if (!cert.isNull ()) {
+            QByteArray certDer = cert.toDer ();
+            QDBusInterface iface ("com.nokia.certman", "/com/nokia/certman");
+            if (iface.isValid ()) {
+                QDBusReply<bool> result = 
+                    iface.call ("CheckCertificate", certDer);
+                if (result) {
+                    reply->ignoreSslErrors ();
+                    return;
+                }
+            }
+        }
+    }
+
+    currentReply = 0;
+    reply->deleteLater ();
+
+    if (errorEnum == QSslError::NoError) {
+        qWarning() << "QNetworkAccessManager::sslErrors signal emitted with "
+            "no ssl errors - just marking transfer as failed";
+        Q_EMIT (mediaError(WebUpload::Error::transferFailed())); 
+        return;
+    }
+
+    WebUpload::Error error = WebUpload::Error::connectFailure();
+    switch (errorEnum) {
+        case QSslError::CertificateNotYetValid:
+            //% "Check device time and date."
+            error->setDescription (qtTrId ("qtn_tui_invalid_device_time"));
+            break;
+
+        default:
+            //% "Secure connection failed"
+            error->setDescription (qtTrId ("qtn_tui_ssl_connection_failed"));
+            break;
+    }
+
+    Q_EMIT (mediaError(error)); 
+}
+
 
 void PostSimpleHttp::nrUpProgress (qint64 bytesSent, qint64 bytesTotal) {
     
