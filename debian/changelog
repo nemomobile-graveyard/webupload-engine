@@ -1,3 +1,9 @@
+webupload-engine (0.3.11.1) unstable; urgency=low
+
+  * After tagging
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Fri, 11 Mar 2011 15:37:23 +0200
+
 webupload-engine (0.3.10.3) unstable; urgency=low
 
   * Fixes: NB#222671 - SSL errors are not handled correctly
