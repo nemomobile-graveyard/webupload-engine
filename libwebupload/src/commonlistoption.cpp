@@ -254,8 +254,8 @@ bool CommonListOptionPrivate::initImageResize () {
     }
 
     opt = new OptionValue ();
-    //% "Large (1920 px)"
-    opt->valueId = "qtn_tui_share_size4";
+    //% "Large (%L1 px)"
+    opt->valueId = qtTrId ("qtn_tui_share_size4").arg (1920);
     opt->value = (int)WebUpload::IMAGE_RESIZE_LARGE;
     m_valueList << opt;
     if (defVal == opt->value) {
@@ -263,8 +263,8 @@ bool CommonListOptionPrivate::initImageResize () {
     }
 
     opt = new OptionValue ();
-    //% "Medium (1280 px)"
-    opt->valueId = "qtn_tui_share_size2";
+    //% "Medium (%L1 px)"
+    opt->valueId = qtTrId ("qtn_tui_share_size2").arg (1280);
     opt->value = (int)WebUpload::IMAGE_RESIZE_MEDIUM;
     m_valueList << opt;
     if (defVal == opt->value) {
@@ -272,8 +272,8 @@ bool CommonListOptionPrivate::initImageResize () {
     }
 
     opt = new OptionValue ();
-    //% "Small (640 px)"
-    opt->valueId = "qtn_tui_share_size3";
+    //% "Small (%L1 px)"
+    opt->valueId = qtTrId ("qtn_tui_share_size3").arg (640);
     opt->value = (int)WebUpload::IMAGE_RESIZE_SMALL;
     m_valueList << opt;
     if (defVal == opt->value) {
