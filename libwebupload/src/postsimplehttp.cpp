@@ -108,11 +108,14 @@ void PostSimpleHttp::namFinished (QNetworkReply * reply) {
             Q_EMIT (stopped ());
             break;
             
+        case QNetworkReply::SslHandshakeFailedError:
+            // Error will be handled in namSslErrors slot
+            break;
+
         case QNetworkReply::ConnectionRefusedError:
         case QNetworkReply::RemoteHostClosedError:
         case QNetworkReply::HostNotFoundError:
         case QNetworkReply::TimeoutError:
-        case QNetworkReply::SslHandshakeFailedError:
         case QNetworkReply::ProxyConnectionRefusedError:
         case QNetworkReply::ProxyConnectionClosedError:
         case QNetworkReply::ProxyNotFoundError:

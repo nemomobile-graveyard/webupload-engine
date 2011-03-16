@@ -128,6 +128,14 @@ namespace WebUpload {
                  optionFailed signal when update is done.
          */
         virtual void addOptionValue (const QString &valueName);
+
+    private Q_SLOTS:
+
+        /*!
+          \brief Slot for QNetworkAccessManager::sslErrors
+         */
+        void namSslErrors (QNetworkReply * reply, 
+            const QList<QSslError> & errors);
     };
 }
 

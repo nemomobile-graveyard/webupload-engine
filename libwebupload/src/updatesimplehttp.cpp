@@ -24,6 +24,11 @@
 #include <QDebug>
 #include <QNetworkConfiguration>
 
+#include <QSslError>
+#include <QSslCertificate>
+#include <QDBusInterface>
+#include <QDBusReply>
+
 #define DBG_PREFIX "UpdateSHttp:"
 #define DBG_STREAM qDebug() << DBG_PREFIX
 #define WARN_STREAM qWarning() << DBG_PREFIX
@@ -37,6 +42,8 @@ UpdateSimpleHttp::UpdateSimpleHttp (QObject * parent) : UpdateBase (parent),
     // Connect signals
     connect (netAM, SIGNAL(finished(QNetworkReply*)), this,
         SLOT(NAMfinished(QNetworkReply*)));
+    connect (netAM, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), this,
+        SLOT(namSslErrors(QNetworkReply*,QList<QSslError>)));     
 }
         
 UpdateSimpleHttp::~UpdateSimpleHttp() {
@@ -130,6 +137,47 @@ void UpdateSimpleHttp::NAMfinished (QNetworkReply * reply) {
     reply->disconnect (this);    
     reply->deleteLater ();
     DBG_STREAM << "Nam finished: done";    
+}
+
+void UpdateSimpleHttp::namSslErrors (QNetworkReply * reply, 
+    const QList<QSslError> & errors) {
+    
+    if (currentReply != reply) {
+        CRIT_STREAM << "Reply mismatch" << currentReply << reply;
+        reply->deleteLater();
+        return;
+    }
+    
+    QSslError::SslError errorEnum = QSslError::NoError; 
+    int i = 0;
+    for (i = 0; errorEnum == QSslError::NoError && i < errors.size (); ++i) {
+        errorEnum = errors.at (i).error ();
+    }
+
+    if (errorEnum == QSslError::UnableToGetLocalIssuerCertificate) {
+        QSslCertificate cert = errors.at (i).certificate ();
+        if (!cert.isNull ()) {
+            QByteArray certDer = cert.toDer ();
+            QDBusInterface iface ("com.nokia.certman", "/com/nokia/certman");
+            if (iface.isValid ()) {
+                QDBusReply<bool> result = 
+                    iface.call ("CheckCertificate", certDer);
+                if (result) {
+                    reply->ignoreSslErrors ();
+                    return;
+                }
+            }
+        }
+    }
+
+    currentReply = 0;
+    reply->deleteLater ();
+
+    if (errorEnum == QSslError::CertificateNotYetValid) {
+        Q_EMIT (optionFailed(WebUpload::Error::CODE_INV_DATE_TIME)); 
+    } else {
+        Q_EMIT (optionFailed(WebUpload::Error::CODE_CONNECT_FAILURE)); 
+    }
 }
 
 QNetworkReply * UpdateSimpleHttp::generateAddRequest (

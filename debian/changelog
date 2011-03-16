@@ -1,8 +1,9 @@
 webupload-engine (0.3.11.1) unstable; urgency=low
 
   * Changed the handling of qtn_tui_share_size* to match UI specs v1.12
+  * Fixes: NB#222673 - Completion signal is not emitted while updating/creating album when incorrect date and time is set on the device (if it results in an SSL error being emitted)
 
- -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Tue, 15 Mar 2011 12:20:04 +0530
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 16 Mar 2011 16:22:57 +0530
 
 webupload-engine (0.3.10.3) unstable; urgency=low
 
