@@ -132,6 +132,8 @@ namespace WebUpload {
         QNetworkAccessManager * netAM; //!< Manager used for connections
         QNetworkReply * currentReply; //!< Reply received from generateRequest()
 
+        bool uploadStopped; //!< Has upload stopped been called?
+
     private Q_SLOTS:
 
         /*!

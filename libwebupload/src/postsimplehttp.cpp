@@ -36,7 +36,8 @@
 using namespace WebUpload;
 
 PostSimpleHttp::PostSimpleHttp (QObject * parent) : PostBase (parent),
-    netAM (new QNetworkAccessManager(this)), currentReply (0) {
+    netAM (new QNetworkAccessManager(this)), currentReply (0), 
+    uploadStopped (false) {
    
     // Connect signals
     connect (netAM, SIGNAL(finished(QNetworkReply*)), this,
@@ -55,6 +56,7 @@ PostSimpleHttp::~PostSimpleHttp() {
 }
 
 void PostSimpleHttp::stopMediaUpload () {
+    uploadStopped = true;
     if (currentReply != 0 && currentReply->isRunning()) {
         currentReply->abort();
     } else {
@@ -66,6 +68,7 @@ void PostSimpleHttp::stopMediaUpload () {
 void PostSimpleHttp::uploadMedia (Media * media) {
 
     DBG_STREAM << "Calling generateRequest";
+    uploadStopped = false;
     currentReply = 0;
     
     if (media->type() == Media::TYPE_FILE) {        
@@ -218,6 +221,11 @@ void PostSimpleHttp::nrUpProgress (qint64 bytesSent, qint64 bytesTotal) {
 
 void PostSimpleHttp::nextNetworkRequest (WebUpload::Media * media,
     QVariantList options) {
+
+    if (uploadStopped == true) {
+        qDebug() << "Upload request had been stopped.";
+        return;
+    }
 
     DBG_STREAM << "Calling generateNextRequest";
     currentReply = 0;
