@@ -28,6 +28,8 @@
 #include <WebUpload/PostBase>
 #include <WebUpload/Media>
 
+#include <QVariantList>
+
 namespace WebUpload {
     /*!
        \class PostSimpleHttp
@@ -52,6 +54,20 @@ namespace WebUpload {
         
         virtual ~PostSimpleHttp ();
         
+    Q_SIGNALS:
+        
+        /*!
+          \brief Signal emitted by the plugin implementation when the upload
+                 request has more than one network requests associated with it,
+                 and the next request has to be sent
+          \param media Pointer to the media instance whose upload request is in
+                 process
+          \param options A QVariantList filled with values that would be
+                 required by the next upload request. 
+         */
+        void sendNextNetworkRequest (WebUpload::Media *media, 
+            QVariantList options);
+
     protected:
 
         /*!
@@ -91,6 +107,19 @@ namespace WebUpload {
                   be generated.
          */
         virtual QNetworkReply * generateRequest (WebUpload::Media * media) = 0;
+
+        /*!
+          \brief Called to generate and start request by using class variable
+                 netAM. Should be implemented by inheriting class.
+          \param media Media that should be uploaded to service
+          \param options A QVariantList filled with values that would be
+                 required by this next upload request.
+          \return Reply class generated. If null then assumed that request can't
+                  be generated.
+         */
+        virtual QNetworkReply * generateNextRequest (WebUpload::Media * media,
+            QVariantList options) = 0;
+
         
         /*!
           \brief Called when response is received and common errors are not
@@ -110,6 +139,20 @@ namespace WebUpload {
          */
         void namSslErrors (QNetworkReply * reply, 
             const QList<QSslError> & errors);
+
+        /*!
+          \brief Slot for signal sendNextNetworkRequest
+          \param options A QVariantList filled with values that would be
+                 required by the next upload request.
+         */
+        void nextNetworkRequest (WebUpload::Media * media, 
+            QVariantList options);
+
+    private:
+
+        //! Pointer to the current media being uploaded. This is being stored
+        // to support uploads that require multiple network requests
+        WebUpload::Media *m_currMedia;
     };
 }
 
