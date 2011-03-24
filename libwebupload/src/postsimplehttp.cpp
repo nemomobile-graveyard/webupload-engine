@@ -36,13 +36,18 @@
 using namespace WebUpload;
 
 PostSimpleHttp::PostSimpleHttp (QObject * parent) : PostBase (parent),
-    netAM (new QNetworkAccessManager(this)), currentReply (0) {
+    netAM (new QNetworkAccessManager(this)), currentReply (0), 
+    uploadStopped (false) {
    
     // Connect signals
     connect (netAM, SIGNAL(finished(QNetworkReply*)), this,
         SLOT(namFinished(QNetworkReply*)));     
     connect (netAM, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), this,
         SLOT(namSslErrors(QNetworkReply*,QList<QSslError>)));     
+
+    connect (this, 
+        SIGNAL(sendNextNetworkRequest(WebUpload::Media*,QVariantList)), this,
+        SLOT (nextNetworkRequest(WebUpload::Media*,QVariantList)));
 }
         
 PostSimpleHttp::~PostSimpleHttp() {
@@ -51,16 +56,19 @@ PostSimpleHttp::~PostSimpleHttp() {
 }
 
 void PostSimpleHttp::stopMediaUpload () {
+    uploadStopped = true;
     if (currentReply != 0 && currentReply->isRunning()) {
         currentReply->abort();
     } else {
         WARN_STREAM << "stopMediaUpload ignored, currentReply undefined";
+        Q_EMIT (stopped());
     }
 }
 
 void PostSimpleHttp::uploadMedia (Media * media) {
 
     DBG_STREAM << "Calling generateRequest";
+    uploadStopped = false;
     currentReply = 0;
     
     if (media->type() == Media::TYPE_FILE) {        
@@ -210,3 +218,42 @@ void PostSimpleHttp::nrUpProgress (qint64 bytesSent, qint64 bytesTotal) {
         DBG_STREAM << "undefined progress";
     }
 }
+
+void PostSimpleHttp::nextNetworkRequest (WebUpload::Media * media,
+    QVariantList options) {
+
+    if (uploadStopped == true) {
+        qDebug() << "Upload request had been stopped.";
+        return;
+    }
+
+    DBG_STREAM << "Calling generateNextRequest";
+    currentReply = 0;
+    
+    if (media->type() == Media::TYPE_FILE) {        
+        QString originalFilePath = media->srcFilePath ();
+        QString copyFilePath = media->copyFilePath ();
+        if (!QFile::exists (originalFilePath) ||
+            !QFile::exists (copyFilePath)) {
+
+            Q_EMIT (mediaError(WebUpload::Error::missingFiles()));
+            return;
+        }
+    }
+
+    currentReply = generateNextRequest (media, options);
+
+    if (currentReply == 0) {
+        WARN_STREAM << "Generate request returned null";
+        // Letting this stay as custom error, since this should not normally
+        // happen
+        Q_EMIT (mediaError(WebUpload::Error::custom ("System Failure",
+            "Failed to create request")));
+    } else {
+        // Connect progress signal
+        QObject::connect (currentReply, SIGNAL(uploadProgress(qint64,qint64)),
+            this, SLOT(nrUpProgress(qint64,qint64)));   
+    }
+}
+
+
