@@ -44,10 +44,12 @@ UpdateProcess::UpdateProcess (QObject * parent) :
         SIGNAL (updateFailedSignal(WebUpload::Error::Code,QStringList)), d_ptr,
         SLOT (failedSlot(WebUpload::Error::Code,QStringList)),
         Qt::QueuedConnection);
+#ifdef WARNINGS_ENABLED
     connect (&m_pdata,
         SIGNAL (updateWarningSignal(WebUpload::Error::Code,QStringList)), d_ptr,
         SLOT (warningSlot(WebUpload::Error::Code,QStringList)),
         Qt::QueuedConnection);
+#endif
 
 }
 
@@ -155,11 +157,13 @@ void UpdateProcessPrivate::failedSlot (const WebUpload::Error::Code errorId,
     }
 }
 
+#ifdef WARNINGS_ENABLED
 void UpdateProcessPrivate::warningSlot (const WebUpload::Error::Code warningId,
     const QStringList failedIds) {
 
     Q_EMIT (q_ptr->warning (warningId, failedIds));
 }
+#endif
 
 void UpdateProcessPrivate::stoppedSlot () {
     Q_EMIT (q_ptr->canceled());

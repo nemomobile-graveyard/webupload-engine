@@ -58,7 +58,4 @@ namespace PublishWidgets {
     };
 }
 
-Q_DECLARE_INTERFACE(PublishWidgets::FormWidgetInterface,
-    "com.meego.publish-widgets.form-widget-interface/0.2");
-
 #endif

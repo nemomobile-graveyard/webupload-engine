@@ -18,8 +18,9 @@
  * Inc., 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
  */
  
-#include <PublishWidgets/FormLoader>
+#include "PublishWidgets/FormLoader"
 #include "formloaderprivate.h"
+#include "PublishWidgets/FormWidgetProviderInterface"
 #include <QPluginLoader>
 #include <QDebug>
 #include <QFile>
@@ -66,11 +67,22 @@ FormWidgetInterface * FormLoader::formWidget (const QString & pluginName,
         qDebug() << "Received object" << obj;
         
         if (obj != 0) {
-            ret = dynamic_cast <PublishWidgets::FormWidgetInterface *> (obj);
-            qDebug() << "dynamic casting" << ret;
-            if (ret == 0) {
+            PublishWidgets::FormWidgetProviderInterface * provider;
+            provider = 
+                dynamic_cast <PublishWidgets::FormWidgetProviderInterface *> 
+                (obj);
+
+            qDebug() << "dynamic casting" << provider;
+            if (provider == 0) {
                 qWarning() << "Casting loader instance to"
                     "PublishWidgets::FormWidgetInterface resulted in NULL ptr";
+                return 0;
+            }
+
+            ret = provider->getCustomWidget ();
+            if (ret == 0) {
+                qWarning() << "Plugin" << pluginPath << 
+                    "did not provide custom widget";
                 return 0;
             }
             ret->setEntry (entry);

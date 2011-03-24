@@ -92,12 +92,14 @@ namespace WebUpload {
         void error (WebUpload::Error error);
 
 
+#ifdef WARNINGS_ENABLED
         /*!
           \brief Signal emitted when there was a non-fatal problem. This is 
                  connected to the corresponding signal in the parent class.
         \param error Warning message
         */
         void warning(WebUpload::Error warning);
+#endif
 
         /*!
           \brief Signal emitted when the upload is stopped. This is connected
@@ -134,8 +136,12 @@ namespace WebUpload {
         //! \brief Slot to receive mediaError signal from inheriting class.
         void mediaErrorSlot (WebUpload::Error error);
 
+#ifdef LBWEBUPLOAD_EXPERIENTAL
+#ifdef WARNINGS_ENABLED
         //! \brief Slot to receive mediaWarning signal from inheriting class.
         void mediaWarningSlot (WebUpload::Error warning);
+#endif
+#endif
 
         //! \brief Slot to recieve the reAuth signal from inheriting class.
         void reAuthSlot ();

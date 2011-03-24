@@ -1,8 +1,8 @@
-webupload-engine (0.3.11.2) unstable; urgency=low
+webupload-engine (0.3.12.1) unstable; urgency=low
 
-  * After tagging
+  * Added new class which is what is implemented by plugin provider of custom UI to return the new custom widget
 
- -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Thu, 17 Mar 2011 13:49:28 +0200
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 23 Mar 2011 15:26:06 +0530
 
 webupload-engine (0.3.11.1) unstable; urgency=low
 

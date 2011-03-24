@@ -44,8 +44,10 @@ PostBase::PostBase (QObject *parent) : PostInterface (parent),
         SIGNAL (mediaStarted(WebUpload::Media*)));
     connect (d_ptr, SIGNAL (error(WebUpload::Error)),
         this, SIGNAL (error(WebUpload::Error)));
+#ifdef WARNINGS_ENABLED
     connect (d_ptr, SIGNAL (warning(WebUpload::Error)),
              this, SIGNAL(warning(WebUpload::Error)));
+#endif
     connect (d_ptr, SIGNAL (stopped()), this, SIGNAL (stopped()));
     connect (d_ptr, SIGNAL (done()), this, SIGNAL (done()));
     connect (d_ptr, SIGNAL (nowUploadMedia(WebUpload::Media*)), this, 
@@ -56,8 +58,12 @@ PostBase::PostBase (QObject *parent) : PostInterface (parent),
     connect (this, SIGNAL (mediaError(WebUpload::Error)), d_ptr,
         SLOT (mediaErrorSlot(WebUpload::Error)), Qt::QueuedConnection);
 
+#ifdef LIBWEBUPLOAD_EXPERIENTAL
+#ifdef WARNINGS_ENABLED
     connect (this, SIGNAL (mediaWarning(WebUpload::Error)), d_ptr,
         SLOT (mediaWarningSlot(WebUpload::Error)), Qt::QueuedConnection);
+#endif
+#endif
 
     connect (this, SIGNAL (reAuth()), d_ptr, SLOT (reAuthSlot()), 
         Qt::QueuedConnection);
@@ -398,6 +404,8 @@ void PostBasePrivate::reAuthSlot () {
     startAuthentication ();
 }
 
+#ifdef LIBWEBUPLOAD_EXPERIENTAL
+#ifdef WARNINGS_ENABLED
 void PostBasePrivate::mediaWarningSlot(WebUpload::Error warningMessage)
 {
 
@@ -406,6 +414,8 @@ void PostBasePrivate::mediaWarningSlot(WebUpload::Error warningMessage)
     Q_EMIT(warning(warningMessage));
 
 }
+#endif
+#endif
 
 
 void PostBasePrivate::mediaErrorSlot (WebUpload::Error err) {

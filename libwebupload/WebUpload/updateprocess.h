@@ -89,10 +89,12 @@ Q_SIGNALS:
      */
     void failed (WebUpload::Error::Code error, QStringList failedIds);
 
+#ifdef WARNINGS_ENABLED
     /*!
       \brief Signal emitted when action raised a warning
      */
     void warning (WebUpload::Error::Code warning, QStringList failedIds);
+#endif
 
     /*!
       \brief Signal emitted when action is canceled
