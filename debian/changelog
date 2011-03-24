@@ -1,7 +1,12 @@
+webupload-engine (0.3.12.2) unstable; urgency=low
+
+  * Added handling of uploads that involve multiple network requests.
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Thu, 24 Mar 2011 11:30:30 +0530
+
 webupload-engine (0.3.12.1) unstable; urgency=low
 
   * Added new class which is what is implemented by plugin provider of custom UI to return the new custom widget
-  * Added handling of uploads that involve multiple network requests.
 
  -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 23 Mar 2011 15:26:06 +0530
 
