@@ -257,3 +257,12 @@ void PostSimpleHttp::nextNetworkRequest (WebUpload::Media * media,
 }
 
 
+QNetworkReply * PostSimpleHttp::generateNextRequest (WebUpload::Media * media,
+    QVariantList options) {
+
+    Q_UNUSED (media)
+    Q_UNUSED (options)
+
+    return 0;
+}
+

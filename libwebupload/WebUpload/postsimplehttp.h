@@ -110,7 +110,9 @@ namespace WebUpload {
 
         /*!
           \brief Called to generate and start request by using class variable
-                 netAM. Should be implemented by inheriting class.
+                 netAM. Should be implemented by inheriting class. Default
+                 implementation is an empty function, provided so that services
+                 that don't need this feature need not implement this function
           \param media Media that should be uploaded to service
           \param options A QVariantList filled with values that would be
                  required by this next upload request.
@@ -118,7 +120,7 @@ namespace WebUpload {
                   be generated.
          */
         virtual QNetworkReply * generateNextRequest (WebUpload::Media * media,
-            QVariantList options) = 0;
+            QVariantList options);
 
         
         /*!
