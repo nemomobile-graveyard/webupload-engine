@@ -82,6 +82,7 @@ namespace Metaman {
                                               QByteArray("cmt");
     const QByteArray ATOM_NAME_cNAM         = QByteArray("\xA9") +
                                               QByteArray("nam");
+    const QByteArray ATOM_NAME_UUID         = "uuid";
 
 
     // Properties of known atoms
@@ -109,7 +110,9 @@ namespace Metaman {
         {ATOM_NAME_ILST,        ATOM_TYPE_CONTAINER,    ATOM_STORAGE_MEMORY},
         {ATOM_NAME_cART,        ATOM_TYPE_CONTAINER,    ATOM_STORAGE_MEMORY},
         {ATOM_NAME_cCMT,        ATOM_TYPE_CONTAINER,    ATOM_STORAGE_MEMORY},
-        {ATOM_NAME_cNAM,        ATOM_TYPE_CONTAINER,    ATOM_STORAGE_MEMORY}
+        {ATOM_NAME_cNAM,        ATOM_TYPE_CONTAINER,    ATOM_STORAGE_MEMORY},
+        
+        {ATOM_NAME_UUID,        ATOM_TYPE_DATA,         ATOM_STORAGE_MEMORY}
     };
 
     // Standard ISO/3GPP style tags
@@ -127,6 +130,7 @@ namespace Metaman {
     const QByteArray ATOM_PATH_XMPDATA            = "moov.udta.XMP_";
     const QByteArray ATOM_PATH_AUTHOR_ALTERNATIVE = "moov.udta.auth";
     const QByteArray ATOM_PATH_GEOTAG_ALTERNATIVE = "moov.udta.loci";
+    const QByteArray ATOM_PATH_UUID               = "uuid";
 
     //iTunes style tags
     const QByteArray ATOM_PATH_ITUNESDATA =

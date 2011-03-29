@@ -38,6 +38,8 @@
 #include "xmphandler.h"
 #include "mpeg4atomutility.h"
 
+#define XMP_UUID_HEX "be7acfcb97a942e89c71999491e3afac"
+
 
 using namespace Metaman;
 
@@ -45,7 +47,8 @@ Mp4Backend::Mp4Backend(OperationMode operationMode)
  : m_rootAtom(0),
    m_sourceFile(0),
    m_operationMode(operationMode),
-   m_xmpHandler(0)
+   m_xmpHandler(0),
+   m_xmpReadFromUUID (false)
 {
     qDebug() << "Using Mp4Backend, operation mode: " << m_operationMode;
 }
@@ -699,8 +702,28 @@ OperationResult Mp4Backend::prepareXmpHandler()
 {
     qDebug() << "prepareXmpHandler()";
     
+    int preambleLength = ATOM_SIZE_PREAMBLE_LENGTH + ATOM_NAME_PREAMBLE_LENGTH;
+    
     m_xmpHandler = new XmpHandler;
+    
+    //Try first normal location of XMP data
     Atom* xmpAtom = Mpeg4AtomUtility::findAtom(ATOM_PATH_XMPDATA, m_rootAtom);
+    
+    //Try uuid alternative if not found
+    if (xmpAtom == 0) {
+        xmpAtom = Mpeg4AtomUtility::findAtom (ATOM_PATH_UUID, m_rootAtom);
+        if (xmpAtom != 0) {
+            QByteArray uuid = xmpAtom->collapse().mid (preambleLength, 16);
+            if (uuid.toHex() == XMP_UUID_HEX) {
+                m_xmpReadFromUUID = true;
+            } else {
+                xmpAtom = 0;
+            }
+        }
+    } else {
+        m_xmpReadFromUUID = false;
+    }
+
     QByteArray xmpData;
 
     if (xmpAtom != 0) {
@@ -708,8 +731,13 @@ OperationResult Mp4Backend::prepareXmpHandler()
         // size preambles. However, those cannot be passed to the xmp handler
         // and they need to be dropped from the xmp data.
         qint32 xmpAtomSize = xmpAtom->size();
-        int preambleLength = ATOM_SIZE_PREAMBLE_LENGTH + ATOM_NAME_PREAMBLE_LENGTH;
-        xmpData = xmpAtom->collapse().right(xmpAtomSize - preambleLength);
+        
+        if (m_xmpReadFromUUID == false) {
+            xmpData = xmpAtom->collapse().right(xmpAtomSize - preambleLength);
+        } else {
+            xmpData = xmpAtom->collapse().right (
+                xmpAtomSize - preambleLength - 16);
+        }
     }
 
     OperationResult result = OPERATION_OK;
@@ -735,8 +763,13 @@ OperationResult Mp4Backend::finalizeXmpProcessing()
 
     if (m_xmpHandler != 0) {
         QByteArray xmpData = m_xmpHandler->getProcessedData();
-        Atom* xmpAtom = Mpeg4AtomUtility::findAtom(ATOM_PATH_XMPDATA,
-                                                   m_rootAtom);
+        Atom* xmpAtom = 0;
+        
+        if (m_xmpReadFromUUID == false) {
+            xmpAtom = Mpeg4AtomUtility::findAtom(ATOM_PATH_XMPDATA, m_rootAtom);
+        } else {
+            xmpAtom = Mpeg4AtomUtility::findAtom (ATOM_PATH_UUID, m_rootAtom);
+        }
 
         if (xmpAtom == 0) {
            Atom* parent =
@@ -749,7 +782,14 @@ OperationResult Mp4Backend::finalizeXmpProcessing()
                                         parent);
         }
         else {
-            xmpAtom->setData(xmpData);
+        
+            if (m_xmpReadFromUUID == false) {
+                xmpAtom->setData(xmpData);
+            } else {
+                QByteArray uuidContent = QByteArray::fromHex (XMP_UUID_HEX);
+                uuidContent.append (xmpData);
+                xmpAtom->setData (uuidContent);
+            }
         }
 
         qDebug() << "output data: " << xmpData;

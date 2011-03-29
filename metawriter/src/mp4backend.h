@@ -168,6 +168,9 @@ private:
     /// A pointer to the XMP handler
     XmpHandler* m_xmpHandler;
     
+    // If true XMP was read from UUID
+    bool m_xmpReadFromUUID;
+    
 };
 
 }
