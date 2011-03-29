@@ -38,8 +38,9 @@
 #include "xmphandler.h"
 #include "mpeg4atomutility.h"
 
+//be7acfcb-97a9-42e8-9c71-999491e3afac is UUID for XMP data:
+//http://www.adobe.com/content/dam/Adobe/en/devnet/xmp/pdfs/XMPSpecificationPart3.pdf
 #define XMP_UUID_HEX "be7acfcb97a942e89c71999491e3afac"
-
 
 using namespace Metaman;
 
