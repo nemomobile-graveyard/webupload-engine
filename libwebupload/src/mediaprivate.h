@@ -32,6 +32,7 @@
 #include <QList>
 #include <QUrl>
 #include <QDateTime>
+#include <QMap>
 #include "WebUpload/geotaginfo.h"
 
 // If using qtsparql
@@ -132,6 +133,12 @@ namespace WebUpload {
                  called
          */
         bool getTagsFromTracker ();
+
+        /*!
+          \brief Get tags for the given set of media
+          \param mediaMap Map containing original file tracker uri and media pointer
+         */
+        bool getTagsFromTracker (const QMap<QString, MediaPrivate*> &mediaMap);
         
         bool initFromDataUri (const MDataUri & dUri);
         
@@ -139,6 +146,13 @@ namespace WebUpload {
           \brief Media::fastInitFromTrackerIri
          */
         bool fastInitFromTrackerIri (const QString & tIri,
+            const QString & fileUri, const QString &mimeType, qint64 size,
+            const QString &fileTitle, const QString &fileDesc);
+
+        /*!
+          \brief Media::fastInitFromTrackerIriNoTags
+         */
+        bool fastInitFromTrackerIriNoTags (const QString & tIri,
             const QString & fileUri, const QString &mimeType, qint64 size,
             const QString &fileTitle, const QString &fileDesc);
         

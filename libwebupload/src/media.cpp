@@ -91,6 +91,14 @@ bool Media::fastInitFromTrackerIri (const QString &tIri,
         fileTitle, fileDesc);
 }
 
+bool Media::fastInitFromTrackerIriNoTags (const QString &tIri,
+    const QString & fileUri, const QString &mimeType, qint64 size,
+    const QString & fileTitle, const QString & fileDesc) {
+
+    return d_ptr->fastInitFromTrackerIriNoTags (tIri, fileUri, mimeType, size,
+        fileTitle, fileDesc);
+}
+
 Media::~Media() {
     // Destroy the private pointer
     delete d_ptr;
@@ -618,6 +626,23 @@ void Media::clearGeotag () {
     d_ptr->m_geotag.clear ();
 }
 
+bool Media::getTagsFromTracker(const QList<Media*> &mediaList) {
+
+    QMap<QString, MediaPrivate*> mediaMap;
+
+    if (mediaList.isEmpty())
+        return true;
+
+    foreach (Media* media, mediaList) {
+        if (!media->d_ptr->m_origFileTrackerUri.isEmpty()) {
+            mediaMap.insert(media->d_ptr->m_origFileTrackerUri.toString(),
+                media->d_ptr);
+        }
+    }
+
+    return mediaList.first()->d_ptr->getTagsFromTracker(mediaMap);
+}
+
 
 
 /*******************************************************************************
@@ -912,21 +937,35 @@ bool MediaPrivate::fastInitFromTrackerIri (const QString & tIri,
     const QString & fileUri, const QString &mimeType, qint64 size,
     const QString & fileTitle, const QString & fileDesc) {
     
-    qDebug() << "Fast init of Media" << tIri;
+    bool success = fastInitFromTrackerIriNoTags(tIri, fileUri, mimeType, size,
+        fileTitle, fileDesc);
+
+    if (success) {
+        success = getTagsFromTracker ();
+    }
     
+    return success;
+}
+
+bool MediaPrivate::fastInitFromTrackerIriNoTags (const QString & tIri,
+    const QString & fileUri, const QString &mimeType, qint64 size,
+    const QString & fileTitle, const QString & fileDesc) {
+
+    qDebug() << "Fast init of Media" << tIri;
+
     m_origFileTrackerUri = tIri;
     m_origFileUri = fileUri;
     m_mimeType = mimeType;
     m_size = size;
     m_title = fileTitle;
     m_description = fileDesc;
-    
+
     QString filePath = srcFilePath ();
     m_fileName = QFileInfo(filePath).fileName();
     m_copyFileUri.clear();
     m_state = TRANSFER_STATE_PENDING;
-    
-    return getTagsFromTracker ();
+
+    return true;
 }
 
 bool MediaPrivate::getTagsFromTracker () {
@@ -989,6 +1028,85 @@ bool MediaPrivate::getTagsFromTracker () {
     }
 
     qDebug() << "PERF: Getting geotag for " << m_origFileUri << ": END";
+    return true;
+}
+
+bool MediaPrivate::getTagsFromTracker (const QMap<QString, MediaPrivate*> &mediaMap) {
+    qDebug() << "PERF: Getting tags for all media: START";
+
+    QString trackerUris;
+    foreach (const QString &uri, mediaMap.keys()) {
+        trackerUris.append(QString("'%1',").arg(uri));
+    }
+    trackerUris.chop(1);
+
+    QString queryString = QString("SELECT ?ieElem ?tagUrl ?tag WHERE { "
+        "?tagUrl a nao:Tag; nao:prefLabel ?tag . "
+        "?ieElem a nie:InformationElement; nao:hasTag ?tagUrl . "
+        "FILTER (str(?ieElem) in (%1)) }").arg(trackerUris);
+    QSparqlQuery query (queryString);
+
+    QSparqlResult * result = blockingSparqlQuery (query);
+    if (result == 0) {
+        return false;
+    } else {
+        // Query can have 0 rows as well - when there are no tags
+        while (result->next ()) {
+            QString ieElem(result->binding(0).value().toString());
+            QString tagUrl(result->binding(1).value().toString());
+            QString tag(result->binding(2).value().toString());
+
+            MediaPrivate *mediaPriv = mediaMap[ieElem];
+            if (mediaPriv != 0) {
+                mediaPriv->m_tags << tag;
+                mediaPriv->m_tagUrls << tagUrl;
+            }
+        }
+
+        delete result;
+    }
+
+    qDebug() << "PERF: Getting tags for all media: END";
+
+    qDebug() << "PERF: Getting geotags for all media: START";
+    QString geotagQueryString = QString(
+        "SELECT ?ieElem ?country ?city ?district WHERE { "
+        "?ieElem a nie:InformationElement . "
+        "    OPTIONAL { ?ieElem slo:location ?loc . "
+        "        OPTIONAL { ?loc slo:postalAddress ?pAdd . "
+        "            OPTIONAL { ?pAdd nco:country ?country . } "
+        "            OPTIONAL { ?pAdd nco:locality ?city . } "
+        "            OPTIONAL { ?pAdd nco:region ?district . } "
+        "        } "
+        "    } "
+        "FILTER (str(?ieElem) in (%1)) } ").arg(trackerUris);
+
+    QSparqlQuery geotagQuery (geotagQueryString);
+
+    result = blockingSparqlQuery (geotagQuery);
+    if (result == 0) {
+        return false;
+    } else {
+        // Query can have 0 rows as well - when there are no tags
+        while (result->next ()) {
+            MediaPrivate *mediaPriv = mediaMap[result->binding(0).value().toString()];
+            if (mediaPriv != 0) {
+                if (!result->binding(1).value().isNull()) {
+                    mediaPriv->m_geotag.setCountry (result->binding(1).value().toString());
+                }
+                if (!result->binding(2).value().isNull()) {
+                    mediaPriv->m_geotag.setCity (result->binding(2).value().toString());
+                }
+                if (!result->binding(3).value().isNull()) {
+                    mediaPriv->m_geotag.setDistrict (result->binding(3).value().toString());
+                }
+            }
+        }
+
+        delete result;
+    }
+
+    qDebug() << "PERF: Getting geotags for all media: END";
     return true;
 }
 

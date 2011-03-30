@@ -101,6 +101,21 @@ namespace WebUpload {
         bool fastInitFromTrackerIri (const QString &tIri,
             const QString & fileUri, const QString &mimeType, qint64 size,
             const QString & fileTitle, const QString & fileDesc);
+
+        /*!
+          \brief Same as fastInitFromTrackerIri, but does not set tags.
+          \param tIri IRI to file information in tracker
+          \param fileUri Files URI
+          \param mimeType Mime type of the file
+          \param size Size of the file in bytes
+          \param fileTitle Title of the file, as in tracker
+          \param fileDesc Description of the file, as in tracker
+          \return <code>true</code> or <code>false</code> depending on whether
+                  or not the structure could be filled
+         */
+        bool fastInitFromTrackerIriNoTags (const QString &tIri,
+            const QString & fileUri, const QString &mimeType, qint64 size,
+            const QString & fileTitle, const QString & fileDesc);
                     
         /*! 
           \brief  Get the pointer to the Entry class to which this media
@@ -383,6 +398,12 @@ namespace WebUpload {
           \brief Clear any geotag information associated with this media
          */
         void clearGeotag ();
+
+        /*!
+          \brief Updates media with tags read from tracker
+          \param mediaList List of media to update
+         */
+        static bool getTagsFromTracker(const QList<Media*> &mediaList);
         
     public Q_SLOTS:
 
