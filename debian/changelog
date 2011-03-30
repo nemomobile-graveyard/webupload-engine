@@ -1,8 +1,9 @@
 webupload-engine (0.3.13.1) unstable; urgency=low
 
   * Fixes: NB#238604 - Flickr: Creator & GPS metadata is not removed from video file even if Remove Creator & GPS option is set before uploading
+  * Fixes: NB#228944 - Sharing, Image size dialog in Publish to service UI keeps displays Latin Number instead of Hindi number in Arabic language
 
- -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Tue, 29 Mar 2011 14:59:36 +0530
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 30 Mar 2011 12:23:25 +0530
 
 webupload-engine (0.3.12.2) unstable; urgency=low
 

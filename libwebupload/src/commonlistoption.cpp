@@ -209,7 +209,7 @@ bool CommonListOptionPrivate::initMetadata () {
     int defVal = m_parent->account()->metadataFilters ();
     opt = new OptionValue ();
     //% "Keep all"
-    opt->valueId = "qtn_tui_share_keep_all";
+    opt->valueId = qtTrId ("qtn_tui_share_keep_all");
     opt->value = (int)WebUpload::METADATA_FILTER_NONE;
     m_valueList << opt;
     if (defVal == opt->value) {
@@ -218,7 +218,7 @@ bool CommonListOptionPrivate::initMetadata () {
 
     opt = new OptionValue ();
     //% "Remove GPS coordinates and creator name"
-    opt->valueId = "qtn_tui_share_remove_auth_gps";
+    opt->valueId = qtTrId ("qtn_tui_share_remove_auth_gps");
     opt->value = (int)WebUpload::METADATA_FILTER_AUTHOR_LOCATION;
     m_valueList << opt;
     if (defVal == opt->value) {
@@ -246,7 +246,7 @@ bool CommonListOptionPrivate::initImageResize () {
     OptionValue * opt;
     opt = new OptionValue ();
     //% "Original"
-    opt->valueId = "qtn_tui_share_size1";
+    opt->valueId = qtTrId ("qtn_tui_share_size1");
     opt->value = (int)WebUpload::IMAGE_RESIZE_NONE;
     m_valueList << opt;
     if (defVal == opt->value) {
@@ -301,7 +301,7 @@ bool CommonListOptionPrivate::initVideoResize () {
     OptionValue * opt;
     opt = new OptionValue ();
     //% "Original"
-    opt->valueId = "qtn_tui_share_video_size1";
+    opt->valueId = qtTrId ("qtn_tui_share_video_size1");
     opt->value = (int)WebUpload::VIDEO_RESIZE_NONE;
     m_valueList << opt;
     if (defVal == opt->value) {
@@ -310,7 +310,7 @@ bool CommonListOptionPrivate::initVideoResize () {
 
     opt = new OptionValue ();
     //% "Medium (480 px)"
-    opt->valueId = "qtn_tui_share_video_size2";
+    opt->valueId = qtTrId ("qtn_tui_share_video_size2");
     opt->value = (int)WebUpload::VIDEO_RESIZE_VGA_QVGA;
     m_valueList << opt;
     if (defVal == opt->value) {
@@ -319,7 +319,7 @@ bool CommonListOptionPrivate::initVideoResize () {
 
     opt = new OptionValue ();
     //% "Small (240 px)"
-    opt->valueId = "qtn_tui_share_video_size3";
+    opt->valueId = qtTrId ("qtn_tui_share_video_size3");
     opt->value = (int)WebUpload::VIDEO_RESIZE_QVGA_WQVGA;
     m_valueList << opt;
     if (defVal == opt->value) {
@@ -333,7 +333,9 @@ QStringList CommonListOptionPrivate::valueList () const {
 
     QStringList ret;
     for (int i = 0; i < m_valueList.size(); ++i) {
-        ret << qtTrId (m_valueList[i]->valueId.toAscii().constData());
+        // Translation should already have been done at initialization in the
+        // various init functions
+        ret << m_valueList[i]->valueId;
     }
 
     return ret;
