@@ -58,6 +58,7 @@ namespace WebUpload {
          */
         void askNetworkSession ();
 
+
     private Q_SLOTS:
         /*!
           \brief Slot to connect to the QNetworkSession::error signal
@@ -75,6 +76,11 @@ namespace WebUpload {
          */
         void createNetworkSession ();
 
+        /*!
+            \brief slot to listen configuration changed signal.
+        */
+        void configurationChanged ( const QNetworkConfiguration & config );
+
     private:
         //! is connection ready to start upload
         bool m_isConnectionReady;
@@ -85,6 +91,7 @@ namespace WebUpload {
         
         //! Network configuration manager
         QNetworkConfigurationManager m_manager;
+
     };
 }
 #endif 

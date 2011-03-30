@@ -75,6 +75,17 @@ void UploadProcess::stopUpload (UploadItem * item) {
     if (isActive ()) {
         m_stopping = true;
         send (m_pdata.stop ());
+        // Wait for the process to get completed. The default timeout for
+        // waitForFinished is 3000 ms. WaitForFinished will fail if the process is
+        // already terminated or time out. If timeout, kill the process explicitly.
+        if (m_currentProcess->waitForFinished() == false) {
+            if (m_currentProcess != 0) {
+                qDebug() << "Process termination timeout, " <<
+                    "killing process explicitly";
+                m_currentProcess->kill();
+                m_currentProcess = 0;
+            }
+        }
     }
     else {
         qCritical() << "The process was not active. Ignoring.";

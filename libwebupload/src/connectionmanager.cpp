@@ -51,7 +51,11 @@ ConnectionManagerPrivate::ConnectionManagerPrivate(QObject *parent,
     bool askConnection) : QObject(parent), m_askConnection(askConnection) {
 
     connect(&m_manager, SIGNAL(onlineStateChanged(bool)), this ,
-        SLOT(onlineStateChanged(bool)));    
+        SLOT(onlineStateChanged(bool)));
+
+    connect(&m_manager, SIGNAL(configurationChanged(const QNetworkConfiguration&)),this ,
+        SLOT(configurationChanged(const QNetworkConfiguration&)));
+
     m_isConnectionReady = m_manager.isOnline ();
     connect (this, SIGNAL (askNetworkSession()), this, 
         SLOT (createNetworkSession()), Qt::QueuedConnection);
@@ -120,3 +124,36 @@ void ConnectionManagerPrivate::onlineStateChanged(bool online) {
         Q_EMIT(disconnected());
     }
 }
+
+void ConnectionManagerPrivate::configurationChanged ( const QNetworkConfiguration & config ) {
+    qDebug() << __FUNCTION__ << "Some config changed .... " << 
+        "check the default config status";
+    QNetworkConfiguration cfg = m_manager.defaultConfiguration();
+
+    QNetworkConfiguration::StateFlags defaultConfigStateFlags = cfg.state();
+    QNetworkConfiguration::StateFlags newConfigStateFlags = config.state();
+
+    //default configuration active state
+    bool defaultConfigActive  = 
+        defaultConfigStateFlags.testFlag(QNetworkConfiguration::Active);
+
+    //new configuration active state
+    bool newConfigActive = 
+        newConfigStateFlags.testFlag(QNetworkConfiguration::Active);
+
+    //default configuration discovered state. If state set 
+    bool defaultConfigDiscovered = 
+        defaultConfigStateFlags.testFlag(QNetworkConfiguration::Discovered);
+
+    //Default configuration has changed its state to inactive, in this case,
+    //there will be no network available, so disconnect.
+    if((newConfigActive == true) && (defaultConfigActive == false)) {
+        onlineStateChanged(false);
+    } else {
+        //If default config is discovered, try to connect.
+        if (defaultConfigDiscovered == true) {
+            onlineStateChanged(true);
+        }
+    }
+}
+
