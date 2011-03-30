@@ -1,3 +1,9 @@
+webupload-engine (0.3.13.2) unstable; urgency=low
+
+  * After tagging
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 30 Mar 2011 15:48:48 +0530
+
 webupload-engine (0.3.13.1) unstable; urgency=low
 
   * Fixes: NB#238604 - Flickr: Creator & GPS metadata is not removed from video file even if Remove Creator & GPS option is set before uploading
