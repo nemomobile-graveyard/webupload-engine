@@ -110,7 +110,7 @@ void UploadEngine::newUploadReceived (const QString &path) {
 
     // Safety check for duplicate adding
     if ((queue.itemForEntryPath (path) != 0) || queue.isEntryInit (path))  {
-        qWarning() << "Entry" << path << "received multiple times. Ignored";
+        WARNSTREAM << "Entry" << path << "received multiple times. Ignored";
         return;
     }
 
@@ -431,36 +431,44 @@ void UploadEngine::uploadStopped (UploadItem * item) {
     } else if (getState () == OFFLINE) {
         item->markPending (UploadItem::PENDING_CONNECTIVITY);
     } else {
-        qDebug() << 
-            "Stop called, but handling after stop happened is not defined";
+        WARNSTREAM << "Stop called after stop";;
     }
 }
 
 void UploadEngine::uploadFailed (UploadItem * item, WebUpload::Error error) {
-    DBGSTREAM << "Upload failed signal from thread";
+    DBGSTREAM << "Upload failed signal" << error.code();
 
     Q_ASSERT (item != 0);
 
     if (m_stoppingItems.contains(item)) {
+        DBGSTREAM << "Fail: Marked to be cancelled";
         m_stoppingItems.removeAll(item);
         item->setCancelled();
     }
 
-    if (!item->isCancelled()) {
+    if (item->isCancelled() == false) {
         item->setOwner (UploadItem::OWNER_QUEUE);
 
         if (getState () == MASS_STORAGE) {
-            DBGSTREAM << "Mass storage is enabled. Error might have been"
-                "because of that";
+            DBGSTREAM << "Fail: Mass storage is enabled.";
             item->markPending (UploadItem::PENDING_MSM);
         } else if (error.code() == WebUpload::Error::CODE_NO_CONNECTION || 
             getState () == OFFLINE) {
+            
+            DBGSTREAM << "Fail: Connection lost";
 
             setState (OFFLINE);
             item->markPending (UploadItem::PENDING_CONNECTIVITY);
-        } else if (!item->markFailed (error)) {
-            item->setCancelled ();
-        } 
+        } else {
+        
+            DBGSTREAM << "Fail: Code:" << error.code();
+        
+            // Try to mark failed (cancel if failing)
+            if (item->markFailed (error) == false) {
+                WARNSTREAM << "Fail: No TUI: Cancel";
+                item->setCancelled ();
+            }
+        }
     }
 
     // Handling two cases here:
@@ -471,6 +479,7 @@ void UploadEngine::uploadFailed (UploadItem * item, WebUpload::Error error) {
     // (2) UploadEngine is not connected with the Transfer UI. In this case,
     // rather than letting a failed item stay in the queue, we should remove it
     if (item->isCancelled()) {
+        DBGSTREAM << "Fail: Removing from queue";
         tuiClient->removeTransfer (item->getTransferId ());
         Q_EMIT (removeUpload (item));
     }
@@ -481,22 +490,21 @@ void UploadEngine::repairError () {
     UploadItem * item = qobject_cast<UploadItem *>(QObject::sender());
     
     if (item == 0) {
-        WARNSTREAM << "Slot repairError called wrongly. QObject::sender() = "
+        WARNSTREAM << "Repair: Slot repairError called wrongly. Sender:"
             << QObject::sender();
         return;
     }
 
     if (item->getOwner () == UploadItem::OWNER_UPLOAD_THREAD) {
-        DBGSTREAM << "Repair error called on item already being uploaded. "
-            "Ignoring ...";
+        DBGSTREAM << "Repair: Ignoring repair (already uploading)";
         return;
     }
 
     if (item->isProcessed ()) {
-        DBGSTREAM << "Item is processed";
+        DBGSTREAM << "Repair: Item is processed";
         item->setOwner (UploadItem::OWNER_QUEUE);
         if (item == queue.getTop ()) {
-            qDebug () << "Item is the top item";
+            DBGSTREAM << "Repair: Item is the top item";
             queueTop (item);
         } else {
             item->markPending (UploadItem::PENDING_QUEUED);
@@ -505,7 +513,7 @@ void UploadEngine::repairError () {
         if (processThread) {
 
             if (item->getOwner () == UploadItem::OWNER_PROCESS_THREAD) {
-                DBGSTREAM << "Item is already being processed";
+                DBGSTREAM << "Repair: Item is already being processed";
                 return;
             }
 
@@ -528,7 +536,6 @@ void UploadEngine::repairError () {
 }
 
 void UploadEngine::cancelItem () {
-    qDebug() << "cancelItem begin";
 
     UploadItem * item = qobject_cast<UploadItem *>(QObject::sender());
     
@@ -577,8 +584,6 @@ void UploadEngine::cancelItem () {
             CRITSTREAM << "Cancel with invalid owner";
             break;
     }
-
-    qDebug() << "cancelItem end";
 }
 
 UploadEngine::State UploadEngine::getState () const {
@@ -619,31 +624,31 @@ void UploadEngine::usbModeChanged (MeeGo::QmUSBMode::Mode mode) {
 
     switch (mode) {
         case MeeGo::QmUSBMode::Connected :
-            qDebug() << "USB MODE --> Connected";
+            DBGSTREAM << "USB MODE --> Connected";
             break;
         case MeeGo::QmUSBMode::DataInUse :
-            qDebug() << "USB MODE --> DataInUse";
+            DBGSTREAM << "USB MODE --> DataInUse";
             break;
         case MeeGo::QmUSBMode::Disconnected :
-            qDebug() << "USB MODE --> Disconnected";
+            DBGSTREAM << "USB MODE --> Disconnected";
             break;
         case MeeGo::QmUSBMode::MassStorage :
-            qDebug() << "USB MODE --> MassStorage";
+            DBGSTREAM << "USB MODE --> MassStorage";
             break;
         case MeeGo::QmUSBMode::ChargingOnly :
-            qDebug() << "USB MODE --> ChargingOnly";
+            DBGSTREAM << "USB MODE --> ChargingOnly";
             break;
         case MeeGo::QmUSBMode::OviSuite :
-            qDebug() << "USB MODE --> OviSuite";
+            DBGSTREAM << "USB MODE --> OviSuite";
             break;
         case MeeGo::QmUSBMode::ModeRequest :
-            qDebug() << "USB MODE --> ModeRequest";
+            DBGSTREAM << "USB MODE --> ModeRequest";
             break;
         case MeeGo::QmUSBMode::Ask :
-            qDebug() << "USB MODE --> Ask";
+            DBGSTREAM << "USB MODE --> Ask";
             break;
         case MeeGo::QmUSBMode::Undefined :
-            qDebug() << "USB MODE --> Undefined";
+            DBGSTREAM << "USB MODE --> Undefined";
             break;
     }
     
@@ -676,7 +681,7 @@ void UploadEngine::usbModeChanged (MeeGo::QmUSBMode::Mode mode) {
             return;
         }
         
-        qDebug() << "Usb mode is" << mode;
+        DBGSTREAM << "Usb mode is" << mode;
         setState (IDLE);
 
         // First continue processing from where it was stopped
