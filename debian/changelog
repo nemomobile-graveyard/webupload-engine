@@ -1,6 +1,6 @@
 webupload-engine (0.3.13.2) unstable; urgency=low
 
-  * After tagging
+  * Fixes: NB#239721 - Reading tags from tracker is slow when many items are shared
 
  -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 30 Mar 2011 15:48:48 +0530
 

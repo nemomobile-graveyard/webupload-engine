@@ -136,6 +136,12 @@ namespace WebUpload {
           \return URI to file or empty string if not defined
          */
         QUrl origURI() const;
+
+        /*!
+          \brief Get original file tracker URI
+          \return Original file tracker URI or empty string if not defined
+         */
+        QUrl origFileTrackerURI() const;
         
         /*!
           \brief Get path to copy file made. This is the file which should be
@@ -398,12 +404,6 @@ namespace WebUpload {
           \brief Clear any geotag information associated with this media
          */
         void clearGeotag ();
-
-        /*!
-          \brief Updates media with tags read from tracker
-          \param mediaList List of media to update
-         */
-        static bool getTagsFromTracker(const QList<Media*> &mediaList);
         
     public Q_SLOTS:
 
@@ -436,12 +436,19 @@ namespace WebUpload {
           \param tagUrl String value of tag appended to media
          */            
         void appendTag (const QString &tagUrl);
-        
+
         /*!
           \brief Remove tag from media if found
           \param tagUrl String value of tag removed
          */            
         void removeTag (const QString &tagUrl);
+
+        /*!
+          \brief Append new tag to media
+          \param tagUrl Tracker Url of tag appended to media
+          \param tag String value of tag appended to media
+         */
+        void appendTag (const QUrl &tagUrl, const QString &tag);
         
         /*!
           \brief Clear all tags

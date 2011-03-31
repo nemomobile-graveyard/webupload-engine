@@ -134,12 +134,6 @@ namespace WebUpload {
          */
         bool getTagsFromTracker ();
 
-        /*!
-          \brief Get tags for the given set of media
-          \param mediaMap Map containing original file tracker uri and media pointer
-         */
-        bool getTagsFromTracker (const QMap<QString, MediaPrivate*> &mediaMap);
-        
         bool initFromDataUri (const MDataUri & dUri);
         
         /*!

@@ -273,6 +273,11 @@ namespace WebUpload {
         void setGeotag (GeotagInfo commonGeotag, 
             QList <GeotagInfo> partialGeotags);
 
+        /*!
+          \brief Reads tags from tracker and updates them to media
+        */
+        void getTagsFromTracker ();
+
 
         /*!
           \brief Get tag that are found in all media elements

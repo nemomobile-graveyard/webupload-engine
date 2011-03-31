@@ -605,6 +605,86 @@ void Entry::removeTagFromAllMedia (const QString & tag) {
     }
 }
 
+void Entry::getTagsFromTracker () {
+
+    qDebug() << "PERF: Getting tags for all media: START";
+
+    QString trackerUris;
+    QMap<QString, Media*> mediaMap;
+    foreach (Media *media, d_ptr->media) {
+        QString origFileTrackerUri(media->origFileTrackerURI().toString());
+        trackerUris.append(QString("'%1',").arg(origFileTrackerUri));
+        mediaMap.insert(origFileTrackerUri, media);
+    }
+    trackerUris.chop(1);
+
+    QString queryString = QString("SELECT ?ieElem ?tagUrl ?tag WHERE { "
+        "?tagUrl a nao:Tag; nao:prefLabel ?tag . "
+        "?ieElem a nie:InformationElement; nao:hasTag ?tagUrl . "
+        "FILTER (str(?ieElem) in (%1)) }").arg(trackerUris);
+    QSparqlQuery query (queryString);
+
+    QSparqlResult * result = d_ptr->blockingSparqlQuery (query);
+    if (result != 0) {
+        // Query can have 0 rows as well - when there are no tags
+        while (result->next ()) {
+            QString ieElem(result->binding(0).value().toString());
+            QString tagUrl(result->binding(1).value().toString());
+            QString tag(result->binding(2).value().toString());
+
+            Media *media = mediaMap[ieElem];
+            if (media != 0) {
+                media->appendTag(tagUrl, tag);
+            }
+        }
+
+        delete result;
+    }
+
+    qDebug() << "PERF: Getting tags for all media: END";
+
+    qDebug() << "PERF: Getting geotags for all media: START";
+    QString geotagQueryString = QString(
+        "SELECT ?ieElem ?country ?city ?district WHERE { "
+        "?ieElem a nie:InformationElement . "
+        "    OPTIONAL { ?ieElem slo:location ?loc . "
+        "        OPTIONAL { ?loc slo:postalAddress ?pAdd . "
+        "            OPTIONAL { ?pAdd nco:country ?country . } "
+        "            OPTIONAL { ?pAdd nco:locality ?city . } "
+        "            OPTIONAL { ?pAdd nco:region ?district . } "
+        "        } "
+        "    } "
+        "FILTER (str(?ieElem) in (%1)) } ").arg(trackerUris);
+
+    QSparqlQuery geotagQuery (geotagQueryString);
+
+    result = d_ptr->blockingSparqlQuery (geotagQuery);
+    if (result != 0) {
+        // Query can have 0 rows as well - when there are no tags
+        while (result->next ()) {
+            GeotagInfo geotagInfo;
+            Media *media = mediaMap[result->binding(0).value().toString()];
+            if (media != 0) {
+                if (!result->binding(1).value().isNull()) {
+                    geotagInfo.setCountry (result->binding(1).value().toString());
+                }
+                if (!result->binding(2).value().isNull()) {
+                    geotagInfo.setCity (result->binding(2).value().toString());
+                }
+                if (!result->binding(3).value().isNull()) {
+                    geotagInfo.setDistrict (result->binding(3).value().toString());
+                }
+                media->setGeotag(geotagInfo);
+            }
+        }
+
+        delete result;
+    }
+
+    qDebug() << "PERF: Getting geotags for all media: END";
+
+}
+
 void Entry::setImageResizeOption (ImageResizeOption resizeOption) {
     if ((resizeOption < IMAGE_RESIZE_NONE) ||
         (resizeOption >= IMAGE_RESIZE_N)) {
