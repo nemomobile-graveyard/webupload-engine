@@ -431,7 +431,7 @@ void UploadEngine::uploadStopped (UploadItem * item) {
     } else if (getState () == OFFLINE) {
         item->markPending (UploadItem::PENDING_CONNECTIVITY);
     } else {
-        WARNSTREAM << "Stop called after stop";;
+        WARNSTREAM << "Stop called after stop";
     }
 }
 
