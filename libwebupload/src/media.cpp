@@ -785,6 +785,13 @@ bool MediaPrivate::init(QDomElement & mediaElem) {
         }
     }
 
+    QString origString = mediaElem.attribute("original", "");
+    if (!origString.isEmpty()) {
+        m_origFileUri = QUrl::fromLocalFile (origString);
+    } else {
+        qDebug() << "entry xml created with older version";
+    }
+
     // Read tracker information after reading the rest of the information from
     // the xml file
     m_trackerURI = mediaElem.attribute("tracker", "");
@@ -1185,6 +1192,8 @@ QDomElement MediaPrivate::serializeToXML(QDomDocument & doc, int options) {
     // Store tracker iri of media transfer
     mediaTag.setAttribute ("tracker", m_trackerURI);
 
+    mediaTag.setAttribute ("original", m_origFileUri.toLocalFile ());
+
     // Store file path of copied file or textData
     if (m_copyFileUri.isEmpty() == false) {
         mediaTag.setAttribute ("copy", m_copyFileUri.toLocalFile());
@@ -1311,14 +1320,37 @@ bool MediaPrivate::readTrackerInfo() {
         "}";
     QSparqlQuery query (queryString);
     query.bindValue ("tUri", QUrl(m_trackerURI));
+    QSparqlResult * result;
 
-    QSparqlResult * result = blockingSparqlQuery (query, true);
-    if (result == 0) {
-        qCritical() << m_trackerURI << " is not a valid TransferElement uri";
-        return false;
+    while (true) {
+        result = blockingSparqlQuery (query, true);
+        if (result == 0) {
+            qCritical() << m_trackerURI << 
+                " is not a valid TransferElement uri";
+            return false;
+        }
+
+        result->first ();
+        QString fileUriFromTracker = result->binding(1).value().toString();
+        if (m_origFileUri.isEmpty ()) {
+            qDebug() << "Probably old version of libwebupload used to generate"
+                "this entry";
+            break;
+        }
+
+        QString filePath = srcFilePath ();
+        QFileInfo fInfo (filePath);
+        if ((QUrl(fileUriFromTracker) == m_origFileUri) ||
+            (fInfo.exists () == false)) {
+            break;
+        } else {
+            qDebug() << "Original file exists, but tracker is not giving"
+                "proper reply. Try again";
+            delete result;
+            sleep (500);
+        }
     }
 
-    result->first ();
     if (m_copiedTextData.isEmpty ()) {
         m_origFileTrackerUri = result->binding(0).value().toString();
         m_origFileUri = result->binding(1).value().toString();
