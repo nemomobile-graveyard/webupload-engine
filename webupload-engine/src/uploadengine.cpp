@@ -652,6 +652,8 @@ void UploadEngine::usbModeChanged (MeeGo::QmUSBMode::Mode mode) {
             break;
     }
     
+    // Handle only the MassStorage and Disconnected modes. Can ignore all the 
+    // other mode changes
     if (mode == MeeGo::QmUSBMode::MassStorage) {
         if (state == IDLE || state == MASS_STORAGE) {
             UploadItem * top = queue.getTop ();
@@ -674,14 +676,12 @@ void UploadEngine::usbModeChanged (MeeGo::QmUSBMode::Mode mode) {
         if (nowSending != 0) {
             Q_EMIT (stopUpload(nowSending));
         } 
-    } else {
-        // For now assuming this means that device is not in mass storage mode,
-        // and the MyDocs folder can be accessed
+    } else if (mode == MeeGo::QmUSBMode::Disconnected) {
         if (getState () != MASS_STORAGE) {
             return;
         }
         
-        DBGSTREAM << "Usb mode is" << mode;
+        DBGSTREAM << "Entering USB disconnected mode";
         setState (IDLE);
 
         // First continue processing from where it was stopped
@@ -711,6 +711,7 @@ void UploadEngine::fileSystemWillUnmount (MeeGo::QmUSBMode::MountPath path) {
 
     Q_UNUSED (path)
 
+    setState (MASS_STORAGE);
     UploadItem *nowSending = uploadProcess.currentlySendingMedia ();
     if (nowSending != 0) {
         Q_EMIT (stopUpload(nowSending));

@@ -1,8 +1,8 @@
-webupload-engine (0.3.13.3) unstable; urgency=low
+webupload-engine (0.3.14.1) unstable; urgency=low
 
-  * After tagging
+  * Fixes: NB#242547 - Transfer halts and no error message is displayed in TUI details dialog when USB is connected to the device in mass storage mode during an ongoing upload
 
- -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Fri, 01 Apr 2011 14:44:16 +0300
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Tue, 05 Apr 2011 17:08:58 +0530
 
 webupload-engine (0.3.13.2) unstable; urgency=low
 
