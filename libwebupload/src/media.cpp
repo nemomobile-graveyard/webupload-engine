@@ -1303,9 +1303,11 @@ bool MediaPrivate::readTrackerInfo() {
     // Normally mime type can be read from the xml file, and once we have the
     // xml file properly filled, we don't really require the original file name
     QString queryString = 
-        "SELECT ?ftUri ?fUri ?mime ?state ?startTime ?endTime WHERE {"
+        "SELECT ?state ?startTime ?endTime ?ftUri ?fUri ?mime WHERE {"
         "    ?:tUri a mto:TransferElement. "
         "    OPTIONAL { ?:tUri mto:state ?state . } "
+        "    OPTIONAL { ?:tUri mto:startedTime ?startTime . } "
+        "    OPTIONAL { ?:tUri mto:completedTime ?endTime . }"
         "    OPTIONAL {"
         "        ?:tUri mto:source ?ftUri. "
         "        OPTIONAL {"
@@ -1315,76 +1317,30 @@ bool MediaPrivate::readTrackerInfo() {
         "                nie:url ?fUri . "
         "        } "
         "    } "
-        "    OPTIONAL { ?:tUri mto:startedTime ?startTime . } "
-        "    OPTIONAL { ?:tUri mto:completedTime ?endTime . }"
         "}";
     QSparqlQuery query (queryString);
     query.bindValue ("tUri", QUrl(m_trackerURI));
     QSparqlResult * result;
 
-    while (true) {
-        result = blockingSparqlQuery (query, true);
-        if (result == 0) {
-            qCritical() << m_trackerURI << 
-                " is not a valid TransferElement uri";
-            return false;
-        }
-
-        result->first ();
-        QString fileUriFromTracker = result->binding(1).value().toString();
-        if (m_origFileUri.isEmpty ()) {
-            qDebug() << "Probably old version of libwebupload used to generate"
-                "this entry";
-            break;
-        }
-
-        QString filePath = srcFilePath ();
-        QFileInfo fInfo (filePath);
-        if ((QUrl(fileUriFromTracker) == m_origFileUri) ||
-            (fInfo.exists () == false)) {
-            break;
-        } else {
-            qDebug() << "Original file exists, but tracker is not giving"
-                "proper reply. Try again";
-            delete result;
-            sleep (500);
-        }
+    result = blockingSparqlQuery (query, true);
+    if (result == 0) {
+        qCritical() << m_trackerURI << 
+            " is not a valid TransferElement uri";
+        return false;
     }
 
-    if (m_copiedTextData.isEmpty ()) {
-        m_origFileTrackerUri = result->binding(0).value().toString();
-        m_origFileUri = result->binding(1).value().toString();
-        if (m_origFileTrackerUri.isEmpty ()) {
-            qCritical() << "Source not provided for TransferElement";
-            return false;
-        } else if(m_origFileUri.isEmpty()) {
-            qDebug() << "Looks like original file has been deleted";
-            // Can still continue
-        }
+    result->first ();
 
-        QString filePath = srcFilePath ();
-        m_fileName = QFileInfo(filePath).fileName();
-
-        if (m_mimeType.isEmpty ()) {
-            // If mime info could not be read from the xml file, only then do 
-            // we need it from tracker
-            m_mimeType = result->binding(2).value().toString();
-            if(m_mimeType.isEmpty()) {
-                qCritical() << "Media, failed to resolve mime type";
-                return false;
-            }
-        }
-    }
-
-    QVariant stateVariant = result->binding(3).value();
+    QVariant stateVariant = result->binding(0).value();
     if (!stateVariant.isNull()) {
         m_state = transferStateEnum(stateVariant.toString());
     } else {
-        // State value is not set in tracker for some reason. So considering this to be as yet not uploaded
+        // State value is not set in tracker for some reason. So considering
+        // this to be as yet not uploaded
         m_state = TRANSFER_STATE_PENDING;
     }
 
-    QVariant timeVariant = result->binding(4).value();
+    QVariant timeVariant = result->binding(1).value();
     if (timeVariant.isValid() && timeVariant.canConvert<QDateTime> ()) {
         QDateTime timeVal = timeVariant.toDateTime();
         if (timeVal.isValid()) {
@@ -1392,11 +1348,43 @@ bool MediaPrivate::readTrackerInfo() {
         }
     }
 
-    timeVariant = result->binding(5).value();
+    timeVariant = result->binding(2).value();
     if (timeVariant.isValid() && timeVariant.canConvert<QDateTime> ()) {
         QDateTime timeVal = timeVariant.toDateTime();
         if (timeVal.isValid()) {
             m_completedTime = timeVal;
+        }
+    }
+
+    if (m_copiedTextData.isEmpty ()) {
+        m_origFileTrackerUri = result->binding(3).value().toString();
+        if (m_origFileUri.isEmpty ()) {
+            qDebug() << "Using old xml file, so need file name from tracker";
+            m_origFileUri = result->binding(4).value().toString();
+            if (m_origFileUri.isEmpty ()) {
+                qWarning() << "Tracker indexing probably not done yet, but"
+                    "can't handle that with old xml file";
+            }
+        }
+
+        QString filePath = srcFilePath ();
+        QFileInfo fInfo (filePath);
+
+        if (m_origFileTrackerUri.isEmpty ()) {
+            qCritical() << "Source not provided for TransferElement";
+            return false;
+        } 
+
+        m_fileName = fInfo.fileName();
+
+        if (m_mimeType.isEmpty ()) {
+            // If mime info could not be read from the xml file, only then do 
+            // we need it from tracker
+            m_mimeType = result->binding(5).value().toString();
+            if(m_mimeType.isEmpty()) {
+                qCritical() << "Media, failed to resolve mime type";
+                return false;
+            }
         }
     }
 

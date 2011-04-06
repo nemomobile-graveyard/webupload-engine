@@ -38,6 +38,7 @@
 QUrl methodWeb("http://www.tracker-project.org/temp/mto#transfer-method-web");
 
 using namespace WebUpload;
+const QString xmlVersion = "1.0";
 
 Entry::Entry (QObject *parent) : QObject(parent),
     d_ptr(new EntryPrivate (this)) {
@@ -1096,6 +1097,7 @@ bool EntryPrivate::serialize(const QString & path) {
 
     QDomElement entryTag = doc.createElement("transfer");
     entryTag.setAttribute("tracker", trackerId);
+    entryTag.setAttribute("version", xmlVersion);
     doc.appendChild(entryTag);
 
     if ((image_resize_option > IMAGE_RESIZE_NONE) &&
