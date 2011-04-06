@@ -1,6 +1,6 @@
 webupload-engine (0.3.14.2) unstable; urgency=low
 
-  * After tagging
+  * Fixes: NB#239339 - Upload fails with 'Unable to share files. Unable to find selected files' error message in a particular scenari
 
  -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Tue, 05 Apr 2011 16:48:38 +0300
 
