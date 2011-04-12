@@ -550,7 +550,7 @@ QString UploadItem::iconForMedia (WebUpload::Media * media,
         iconId = "icon-m-content-image";
     } else if (mime.startsWith ("video/")) {
         isThumbnail = isFile;
-        iconId = "icon-m-content-video";
+        iconId = "icon-m-content-videos";
     } else if ((mime.compare ("text/x-url", Qt::CaseInsensitive) == 0) || 
         (mime.compare ("text/x-uri", Qt::CaseInsensitive) == 0)) {
 
