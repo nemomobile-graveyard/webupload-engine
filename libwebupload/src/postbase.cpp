@@ -151,7 +151,8 @@ bool PostBase::canRetry (WebUpload::Error error) {
         (code == WebUpload::Error::CODE_CONNECT_FAILURE) || 
         (code == WebUpload::Error::CODE_UPLOAD_LIMIT_EXCEEDED) ||
         (code == WebUpload::Error::CODE_INV_DATE_TIME) || 
-        (code == WebUpload::Error::CODE_ACCOUNT_DISABLED)) {
+        (code == WebUpload::Error::CODE_ACCOUNT_DISABLED) ||
+        (code == WebUpload::Error::CODE_SERVICE_TIME_OUT)) {
         
         return true;
     } 

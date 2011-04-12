@@ -124,6 +124,12 @@ namespace WebUpload {
           \return Error generated          
          */
         static Error connectFailure();
+
+        /*!
+          \brief Error shown when service connection times out
+          \return Error generated
+         */
+        static Error serviceTimeOut();
         
         /*!
           \brief Error for authorization failure
@@ -282,6 +288,7 @@ namespace WebUpload {
             CODE_ACCOUNT_DISABLED, 
             CODE_MISSING_FILES, //!< Files to be shared no longer exist
             CODE_UNIMPLEMENTED, //!< Called functionality not implemented,
+            CODE_SERVICE_TIME_OUT, //!< Service connection timed out
             
             CODE_CUSTOM = -1 //!< Custom service specific error
         };

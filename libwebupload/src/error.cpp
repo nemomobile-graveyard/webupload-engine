@@ -148,6 +148,12 @@ Error Error::connectFailure() {
     return error;
 }
 
+Error Error::serviceTimeOut () {
+    /* code, can continue?, repairable? */
+    Error error (CODE_SERVICE_TIME_OUT, false, true);
+    return error;
+}
+
 Error Error::authorizationFailed() {
     /* code, can continue?, repairable? */
     Error error (CODE_AUTH_FAILED, false, true);
@@ -313,6 +319,11 @@ QString Error::title () const {
             str = "!!Unimplemented!!";
             break;
 
+        case CODE_SERVICE_TIME_OUT:
+            //% "Service connection lost" 
+            str = qtTrId ("qtn_tui_service_connection_lost");
+            break;
+
         default:
             qDebug() << "Could not get error title string";
             break;
@@ -414,6 +425,11 @@ QString Error::description () const {
 
         case CODE_UNIMPLEMENTED:
             str = "!!Feature not implemented yet!!";
+            break;
+
+        case CODE_SERVICE_TIME_OUT:
+            //% "Service is not responding."
+            str = qtTrId ("qtn_tui_service_not_responding");
             break;
 
         default:

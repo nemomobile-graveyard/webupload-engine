@@ -1,8 +1,9 @@
 webupload-engine (0.3.15.1) unstable; urgency=low
 
   * Updated default icon name for videos as per v1.15 of specs
+  * Fixes: NB#240822 - Iterative upload images to facebook over WLAN, uploading fails with "Facebook currently unavailable"
 
- -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Tue, 12 Apr 2011 12:25:42 +0530
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Tue, 12 Apr 2011 14:20:43 +0530
 
 webupload-engine (0.3.14.3) unstable; urgency=low
 
