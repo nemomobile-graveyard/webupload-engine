@@ -186,13 +186,13 @@ namespace WebUpload {
                  NOTE: The plugin process should handle maintaining the changed
                  value in the current instance - this signal will have no
                  effect on the option values in the current plugin instance.
-          \param optionName Name of the option to be modified
+          \param optionId Id of the option to be modified
           \param optionValue QVariant containing value that needs to be changed
           \param mediaIndex -1 if the option to be changed is an option in
                     entry, otherwise index of the media for which the option is
                     to be changed.
          */
-        static QByteArray optionValueChanged (const QString & optionName,
+        static QByteArray optionValueChanged (const QString & optionId,
             const QVariant & optionValue, int mediaIndex);
 
         //------- FUNCTION CALLED BY BOTH -----------------------------------

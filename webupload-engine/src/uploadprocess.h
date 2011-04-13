@@ -122,13 +122,16 @@ private Q_SLOTS:
 
     /*!
       \brief Connects to ProcessExchangeDate::optionValueChangedSignal signal
-      \param optionName Name of the option that has changed
+      \param optionId Id of the option that has changed
       \param optionValue Changed value for the option
       \param mediaIndex  If this is -1, then the option applies to all media,
                 ie., it is an entry option, otherwise it is the index of the
                 medi for which the option change is applicable
+
+                If the index is greater than the count of media the entry has,
+                then the change request is ignored
      */
-    void optionValueChanged (QString optionName, QVariant optionValue,
+    void optionValueChanged (QString optionId, QVariant optionValue,
         int mediaIndex);
 
     //! \brief Connects to PluginProcess::currentProcessStopped signal

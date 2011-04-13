@@ -140,7 +140,7 @@ namespace WebUpload {
         /*!
           \brief Slot for PostInterface::optionValueChanged
          */
-        void postOptionValueChanged (const QString & optionName,
+        void postOptionValueChanged (const QString & optionId,
             const QVariant & optionValue, int mediaIndex);
                    
         /*!

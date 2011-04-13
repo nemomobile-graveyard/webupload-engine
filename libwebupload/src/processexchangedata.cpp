@@ -205,7 +205,7 @@ QByteArray ProcessExchangeData::updateFailed (
     return ProcessExchangeDataPrivate::wrapSize (data);
 }
 
-QByteArray ProcessExchangeData::optionValueChanged (const QString & optionName,
+QByteArray ProcessExchangeData::optionValueChanged (const QString & optionId,
     const QVariant & optionValue, int mediaIndex) {
 
     QByteArray data;
@@ -213,7 +213,7 @@ QByteArray ProcessExchangeData::optionValueChanged (const QString & optionName,
 
     ds << 
         (qint32)ProcessExchangeDataPrivate::CODE_REQUEST_OPTION_VALUE_CHANGED;
-    ds << optionName;
+    ds << optionId;
     ds << optionValue;
     ds << mediaIndex;
 
@@ -389,16 +389,16 @@ void ProcessExchangeDataPrivate::processByteArray (const QByteArray & recvdInfo)
 
             case CODE_REQUEST_OPTION_VALUE_CHANGED:
             {
-                QString optionName;
+                QString optionId;
                 QVariant optionValue;
                 int mediaIndex;
                 
-                requestStream >> optionName;
+                requestStream >> optionId;
                 requestStream >> optionValue;
                 requestStream >> mediaIndex;
 
                 qDebug() << "optionValueChangedSignal";
-                Q_EMIT (q_ptr->optionValueChangedSignal(optionName, optionValue,mediaIndex));
+                Q_EMIT (q_ptr->optionValueChangedSignal(optionId, optionValue,mediaIndex));
             }
 
             default:

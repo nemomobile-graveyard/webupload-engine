@@ -265,10 +265,10 @@ void PluginApplicationPrivate::postPending (
 }
 
 void PluginApplicationPrivate::postOptionValueChanged (
-    const QString & optionName, const QVariant & optionValue,
+    const QString & optionId, const QVariant & optionValue,
     int mediaIndex) {
 
-    send (m_coder.optionValueChanged (optionName, optionValue, mediaIndex));
+    send (m_coder.optionValueChanged (optionId, optionValue, mediaIndex));
 }
 
 void PluginApplicationPrivate::postMediaStarted (WebUpload::Media* media) {

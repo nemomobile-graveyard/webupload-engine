@@ -131,14 +131,14 @@ namespace WebUpload {
                  NOTE: The plugin process should handle maintaining the changed
                  value in the current instance - this signal will have no
                  effect on the option values in the current plugin instance.
-          \param optionName  Name of the changed option
+          \param optionId  Id of the changed option
           \param optionValue Changed value
           \param mediaIndex  If this is -1, then it means the option is 
                     applicable for all media (i.e. it is an entry-level
                     option), otherwise it contains the index of the media for
-                    which this change is applicable
+                    which this change is applicable.
          */
-        void optionValueChanged (const QString & optionName,
+        void optionValueChanged (const QString & optionId,
             const QVariant & optionValue, int mediaIndex);
 
         /*!
