@@ -174,6 +174,26 @@ namespace WebUpload {
         static QByteArray updateFailed (const WebUpload::Error::Code & errorId,
             const QStringList & failedIds);
 
+        /*!
+          \brief Function called by the upload process when there is some 
+                 option whose value needs to be modified. 
+                 Typical use case is where the user opts to upload to an album
+                 that has been deleted. Error might be shown to the user, and
+                 option given to upload to some default album. Since plugin
+                 process is not allowed to change the xml file, this signal can
+                 be emitted so that the upload engine can make the appropriate
+                 change to the xml file.
+                 NOTE: The plugin process should handle maintaining the changed
+                 value in the current instance - this signal will have no
+                 effect on the option values in the current plugin instance.
+          \param optionName Name of the option to be modified
+          \param optionValue QVariant containing value that needs to be changed
+          \param mediaIndex -1 if the option to be changed is an option in
+                    entry, otherwise index of the media for which the option is
+                    to be changed.
+         */
+        static QByteArray optionValueChanged (const QString & optionName,
+            const QVariant & optionValue, int mediaIndex);
 
         //------- FUNCTION CALLED BY BOTH -----------------------------------
         /*!
@@ -303,6 +323,18 @@ namespace WebUpload {
          */
         void updateFailedSignal (WebUpload::Error::Code errorId,
             QStringList failedIds);
+
+        /*!
+          \brief Signal emitted when the byte stream recieved corresponds to
+                 the optionValueChanged request.
+          \param optionName Name of the option to be modified
+          \param optionValue QVariant containing value that needs to be changed
+          \param mediaIndex -1 if the option to be changed is an option in
+                    entry, otherwise index of the media for which the option is
+                    to be changed.
+         */
+        void optionValueChangedSignal (QString optionName, QVariant
+            optionValue, int mediaIndex);
 
         /*!
           \brief Signal emitted when the byte steam recieved is not one of the

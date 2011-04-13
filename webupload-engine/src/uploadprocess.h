@@ -120,6 +120,17 @@ private Q_SLOTS:
      */
     void failed (WebUpload::Error error);
 
+    /*!
+      \brief Connects to ProcessExchangeDate::optionValueChangedSignal signal
+      \param optionName Name of the option that has changed
+      \param optionValue Changed value for the option
+      \param mediaIndex  If this is -1, then the option applies to all media,
+                ie., it is an entry option, otherwise it is the index of the
+                medi for which the option change is applicable
+     */
+    void optionValueChanged (QString optionName, QVariant optionValue,
+        int mediaIndex);
+
     //! \brief Connects to PluginProcess::currentProcessStopped signal
     void pluginProcessCrashed ();
 

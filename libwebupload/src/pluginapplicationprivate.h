@@ -136,6 +136,12 @@ namespace WebUpload {
          */
         void postPending (WebUpload::PostInterface::PendingReason reason,
             QString message);
+
+        /*!
+          \brief Slot for PostInterface::optionValueChanged
+         */
+        void postOptionValueChanged (const QString & optionName,
+            const QVariant & optionValue, int mediaIndex);
                    
         /*!
           \brief Start update all

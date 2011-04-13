@@ -177,6 +177,7 @@ void PluginApplicationPrivate::postStart (const QString & pathToEntry,
     connect (m_post, SIGNAL (error(WebUpload::Error)), this,
         SLOT (postError(WebUpload::Error)), Qt::QueuedConnection);
 
+
     #ifdef WARNINGS_ENABLED                
     connect (m_post, SIGNAL (warning(WebUpload::Error)), this,
         SLOT (postWarning(WebUpload::Error)), Qt::QueuedConnection);
@@ -194,6 +195,8 @@ void PluginApplicationPrivate::postStart (const QString & pathToEntry,
     connect (m_post, 
         SIGNAL (pending(WebUpload::PostInterface::PendingReason,QString)), this,
         SLOT (postPending(WebUpload::PostInterface::PendingReason,QString)));
+    connect (m_post, SIGNAL (optionValueChanged(QString,QVariant,int)), this,
+        SLOT (postOptionValueChanged(QString,QVariant,int)));
     
     m_post->upload (m_entry, error);    
 }
@@ -259,6 +262,13 @@ void PluginApplicationPrivate::postPending (
 
     Q_UNUSED (reason);
     Q_UNUSED (message);     
+}
+
+void PluginApplicationPrivate::postOptionValueChanged (
+    const QString & optionName, const QVariant & optionValue,
+    int mediaIndex) {
+
+    send (m_coder.optionValueChanged (optionName, optionValue, mediaIndex));
 }
 
 void PluginApplicationPrivate::postMediaStarted (WebUpload::Media* media) {

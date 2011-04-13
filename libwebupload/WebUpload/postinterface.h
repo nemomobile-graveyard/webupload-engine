@@ -120,6 +120,28 @@ namespace WebUpload {
         #endif
 
         /*!
+          \brief Signal emitted when some option value has been changed
+                 and the change has to be known even in the upload engine
+                 Typical use case is where the user opts to upload to an album
+                 that has been deleted. Error might be shown to the user, and
+                 option given to upload to some default album. Since plugin
+                 process is not allowed to change the xml file, this signal can
+                 be emitted so that the upload engine can make the appropriate
+                 change to the xml file.
+                 NOTE: The plugin process should handle maintaining the changed
+                 value in the current instance - this signal will have no
+                 effect on the option values in the current plugin instance.
+          \param optionName  Name of the changed option
+          \param optionValue Changed value
+          \param mediaIndex  If this is -1, then it means the option is 
+                    applicable for all media (i.e. it is an entry-level
+                    option), otherwise it contains the index of the media for
+                    which this change is applicable
+         */
+        void optionValueChanged (const QString & optionName,
+            const QVariant & optionValue, int mediaIndex);
+
+        /*!
           \brief Signal emitted when the upload is stopped.
          */
         void stopped ();

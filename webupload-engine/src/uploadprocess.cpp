@@ -39,6 +39,8 @@ UploadProcess::UploadProcess (QObject * parent) :
         Qt::QueuedConnection);
     connect (&m_pdata, SIGNAL (uploadFailedSignal(WebUpload::Error)), this, 
         SLOT (failed(WebUpload::Error)), Qt::QueuedConnection);
+    connect (&m_pdata, SIGNAL (optionValueChangedSignal(QString,QVariant,int)),
+        this, SLOT (optionValueChanged(QString,QVariant,int)));
 
     connect (this, SIGNAL(currentProcessStopped()), this, 
         SLOT (pluginProcessCrashed()), Qt::QueuedConnection);
@@ -218,6 +220,71 @@ void UploadProcess::failed (WebUpload::Error error) {
     m_currentProcess = 0;
 
     Q_EMIT (uploadFailed (m_currItem, error));
+}
+
+void UploadProcess::optionValueChanged (QString optionName, 
+    QVariant optionValue, int mediaIndex) {
+
+    qDebug() << "UploadProcess::" << __FUNCTION__ << optionName <<
+        optionValue << mediaIndex;
+    
+    if (mediaIndex >= (int)m_currEntry->mediaCount ()) {
+        qWarning () << "Invalid media index used" << mediaIndex;
+        return;
+    }
+
+    if (mediaIndex == -1) {
+        bool intValue = optionValue.canConvert<int>();
+        bool strValue = optionValue.canConvert<QString>();
+        if ((optionName == "image_resize") || (optionName == "video_resize")) {
+            qWarning () << "No sense asking for image/video resize option now";
+            qDebug () << "Ignoring option change request for" << optionName 
+                << "...";
+            return;
+        }
+
+        if (optionName == "metadata_filter") {
+            if (!intValue) {
+                qWarning () << "Invalid value passed for metadata_filter" <<
+                    optionValue;
+                return;
+            }
+
+            int value = optionValue.toInt (&intValue);
+            m_currEntry->setMetadataFilter (value);
+        } else {
+            if (!strValue) {
+                qWarning() << "Cannot handle non-string values for option" <<
+                    optionName << optionValue;
+                return;
+            }
+
+            QString value = optionValue.toString ();
+            m_currEntry->setOption (optionName, optionValue.toString());
+        }
+    } else {
+        WebUpload::Media * media = m_currEntry->mediaAt (m_currMediaIdx);
+
+        bool strValue = optionValue.canConvert<QString>();
+        if (!strValue) {
+            qWarning() << "Cannot handle non-string values for media options"
+                << optionName << optionValue;
+            return;
+        }
+
+        QString value = optionValue.toString ();
+        if (optionName == "title") {
+            media->setTitle (value);
+        } else if (optionName == "description") {
+            media->setDescription (value);
+        } else {
+            media->setOption (optionName, value);
+        }
+    }
+
+    // To ensure that the changed option gets written back to the xml file
+    m_currEntry->reSerialize ();
+    return;
 }
 
 

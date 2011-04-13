@@ -1,3 +1,9 @@
+webupload-engine (0.3.15.2) unstable; urgency=low
+
+  * Added new signal so upload process can indicate changed option value back to upload engine, so xml can be updated.
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 13 Apr 2011 13:27:25 +0530
+
 webupload-engine (0.3.15.1) unstable; urgency=low
 
   * Updated default icon name for videos as per v1.15 of specs

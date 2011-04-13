@@ -100,6 +100,7 @@ namespace WebUpload {
             CODE_REQUEST_STOPPED,
             CODE_REQUEST_UPLOAD_FAILED,
             CODE_REQUEST_UPDATE_FAILED,
+            CODE_REQUEST_OPTION_VALUE_CHANGED,
             #ifdef WARNINGS_ENABLED
             CODE_REQUEST_UPLOAD_WARNING,
             #endif
