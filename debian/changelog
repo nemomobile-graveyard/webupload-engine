@@ -1,3 +1,9 @@
+webupload-engine (0.3.15.3) unstable; urgency=low
+
+  * After tagging
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 13 Apr 2011 14:16:03 +0300
+
 webupload-engine (0.3.15.2) unstable; urgency=low
 
   * Added new signal so upload process can indicate changed option value back to upload engine, so xml can be updated.
