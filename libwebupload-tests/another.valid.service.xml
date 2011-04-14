@@ -42,7 +42,7 @@
         </formats>
       </option>
     </postOptions>
-    <media>
+    <media maxAmount="4">
       <formats>
         <mime>image/*</mime>
         <mime>video/*</mime>

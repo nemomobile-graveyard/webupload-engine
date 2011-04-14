@@ -169,11 +169,13 @@ namespace WebUpload {
           \return Name of plugin or empty string if plugin not defined.
          */
         QString publishPlugin() const;
-
+        
         /*!
-          \brief Deprecated use publishCustom
+          \brief Get maxium amount of media that single upload (entry) to this
+                 service should contain.
+          \return Number of media elements allowed. Or 0 if no limit defined.
          */
-        Q_DECL_DEPRECATED bool requiresCustomUI () const;
+        unsigned int maxMediaLimit() const;
         
     private:
         Q_DISABLE_COPY(Service)

@@ -112,6 +112,10 @@ namespace WebUpload {
         Service::PublishCustomLevel m_publishCustom;
         //! Name of publish plugin
         QString m_publishPlugin;
+        
+        //! Max amount of media elements allowed for this service (or 0 if
+        //  undefined)
+        unsigned int m_maxMedia;
     };
 }
 

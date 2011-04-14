@@ -158,11 +158,6 @@ bool Service::acceptsVideos() const {
     return d_ptr->hasMimePrefix ("video/");
 }
 
-bool Service::requiresCustomUI () const {
-    qCritical() << "Deprecated function requiresCustomUI called!";
-    return (d_ptr->m_publishCustom == PUBLISH_CUSTOM_TOTAL);
-}
-
 Service::PublishCustomLevel Service::publishCustom() const {
     return d_ptr->m_publishCustom;
 }
@@ -191,11 +186,15 @@ QString Service::publishPlugin() const {
     return d_ptr->m_publishPlugin;
 }
 
+unsigned int Service::maxMediaLimit() const {
+    return d_ptr->m_maxMedia;
+}
+
 /* --- Private functions ---------------------------------------------------- */
 
 ServicePrivate::ServicePrivate (Service * parent) : m_service (parent), 
     m_serviceOptionsLoaded (false),
-    m_publishCustom (Service::PUBLISH_CUSTOM_XML) {
+    m_publishCustom (Service::PUBLISH_CUSTOM_XML), m_maxMedia (0) {
 
     // Store account if relation between service and account
     if (m_service != 0) {
@@ -298,17 +297,23 @@ void ServicePrivate::populatePresentationData (const QDomElement & element) {
 }
 
 void ServicePrivate::populateMediaData (const QDomElement & element) {
+
+    //media amount limitations
+    QString value = element.attribute (QLatin1String("maxAmount"),
+        QLatin1String("0"));
+    m_maxMedia = value.toUInt (0, 10);
+
     QDomNode node = element.firstChild();
     while (node.isNull() == false) {
     
         if (node.isElement() == true) {
             QDomElement childElem = node.toElement();
 
-            if (childElem.tagName() == "formats") {
+            if (childElem.tagName() == QLatin1String("formats")) {
                 m_mimeTypes = XmlHelper::readMimeTypes (childElem);
             
             } else {
-                qWarning() << "Service: Media: Unknown tag"
+                qWarning() << "Service/Media: Unknown tag"
                     << childElem.tagName();
             }
         }

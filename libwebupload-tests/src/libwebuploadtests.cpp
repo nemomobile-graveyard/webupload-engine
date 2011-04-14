@@ -997,6 +997,7 @@ void LibWebUploadTests::checkServicePrivate() {
     QVERIFY (obj->initFromDefinition (dom.documentElement ()));
     QCOMPARE (obj->m_uploadPlugin, QString ("plugin name"));
     QVERIFY (obj->m_serviceOptionsLoaded == false);
+    QCOMPARE (obj->m_maxMedia, (unsigned int)0);
     //TODO: Option loading!
     delete obj;
     
@@ -1008,6 +1009,7 @@ void LibWebUploadTests::checkServicePrivate() {
     file.close();
     QVERIFY (obj->initFromDefinition (dom.documentElement ()));
     QVERIFY (obj->m_serviceOptionsLoaded == false);
+    QCOMPARE (obj->m_maxMedia, (unsigned int)0);
 
     WebUpload::CommonOption * titleOpt = 0, * descOpt = 0, * tagsOpt = 0;
     QListIterator<PostOption *> iter (obj->m_postOptions);
@@ -1065,6 +1067,7 @@ void LibWebUploadTests::checkServicePrivate() {
     file.close();
     QVERIFY (obj->initFromDefinition (dom.documentElement ()));
     QVERIFY (obj->m_serviceOptionsLoaded == false);
+    QCOMPARE (obj->m_maxMedia, (unsigned int)4);
 
     iter = QListIterator<PostOption *>(obj->m_postOptions);
     while (iter.hasNext ()) {
