@@ -1,8 +1,8 @@
 webupload-engine (0.3.15.3) unstable; urgency=low
 
-  * After tagging
+  * Fixes: NB#244059 - Webupload engine crashes (raise ..... UploadEngine::usbModeChanged) when upload plugin hangs & device is connected in Mass Storage Mode
 
- -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 13 Apr 2011 14:16:03 +0300
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Thu, 14 Apr 2011 15:15:51 +0530
 
 webupload-engine (0.3.15.2) unstable; urgency=low
 
