@@ -55,6 +55,14 @@ public:
 
     UploadItem * currentlySendingMedia() const;
 
+    /*!
+      \brief Checks whether the current process has been sent the stop request
+             already or not.
+      \return <bool>true</code> if the current process has been sent the stop
+              request, else <code>false</code>
+     */
+    bool isProcessStopping () const;
+
 Q_SIGNALS:
 
     /*!

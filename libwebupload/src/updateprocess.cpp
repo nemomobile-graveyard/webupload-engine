@@ -60,6 +60,10 @@ UpdateProcess::~UpdateProcess () {
     d_ptr = 0;
 }
 
+bool UpdateProcess::cancelCalled () const {
+    return d_ptr->m_cancelCalled;
+}
+
 void UpdateProcess::startUpdate (WebUpload::Account * account,
     WebUpload::ServiceOption * option) {
     
@@ -101,6 +105,7 @@ void UpdateProcess::startAddValue (WebUpload::Account * account,
 
 void UpdateProcess::cancel () {
     if (isActive()) {
+        d_ptr->m_cancelCalled = true;
         send (m_pdata.stop ());
     }
 }
@@ -125,7 +130,8 @@ void UpdateProcess::processStarted () {
 // -- private class functions -----------------------------------------------
 
 UpdateProcessPrivate::UpdateProcessPrivate(UpdateProcess *publicObject) :
-    QObject(publicObject), q_ptr(publicObject), m_account(0), m_option(0) {
+    QObject(publicObject), q_ptr(publicObject), m_account(0), m_option(0),
+    m_cancelCalled (false) {
 
 }
 
@@ -166,6 +172,7 @@ void UpdateProcessPrivate::warningSlot (const WebUpload::Error::Code warningId,
 #endif
 
 void UpdateProcessPrivate::stoppedSlot () {
+    m_cancelCalled = false;
     Q_EMIT (q_ptr->canceled());
 }
 

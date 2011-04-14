@@ -215,7 +215,18 @@ void UploadEngine::queueTop (UploadItem * item) {
         item->markPending (UploadItem::PENDING_PROCESSING);
         Q_EMIT (startProcess (item));
     } else {
-        Q_ASSERT (item->getOwner() == UploadItem::OWNER_QUEUE);
+        if (item->getOwner () == UploadItem::OWNER_UPLOAD_THREAD) {
+            // This can only happen if the previous upload attempt for the item
+            // was asked to be stopped, but plugin has not stopped - perhaps
+            // because it is stuck somewhere. In this case, we should
+            // explicitly kill the plugin
+            Q_ASSERT (uploadProcess.isProcessStopping() == true);
+            processStopped (item);
+        } else {
+            // Should never try to upload an item which is still being
+            // processed
+            Q_ASSERT (item->getOwner() == UploadItem::OWNER_QUEUE);
+        }
 
         DBGSTREAM << "Now checking for connection";
         // If we don't have connection ask for it

@@ -46,6 +46,11 @@ namespace WebUpload {
           \return true if there is active process
          */
         bool isActive() const;
+
+        /*!
+          \brief This function is called to kill the currently running process. 
+         */
+        void stopRunningProcess ();
         
         /*!
           \brief Way to kill all followed processes 

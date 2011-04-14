@@ -55,6 +55,13 @@ bool PluginProcess::isActive() const {
     
     return isRunning;
 }
+
+void PluginProcess::stopRunningProcess () {
+    if (m_currentProcess != 0) {
+        m_currentProcess->kill ();
+        m_currentProcess = 0;
+    }
+}
         
 void PluginProcess::killAll() {
     for (int i = 0; i < m_runningProcesses.size(); ++i) {
@@ -194,3 +201,4 @@ void PluginProcess::processFinished (int exitCode,
         Q_EMIT (noProcesses());
     }
 }
+

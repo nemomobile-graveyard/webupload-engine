@@ -47,6 +47,14 @@ public:
     UpdateProcess (QObject *parent = 0);
     virtual ~UpdateProcess();  
 
+    /*!
+      \brief Checks whether the current process has been sent the cancel
+             request already or not.
+      \return <bool>true</code> if the current process has been sent the cancel
+              request, else <code>false</code>
+     */
+    bool cancelCalled () const;
+
 public Q_SLOTS:
 
     /*!

@@ -82,6 +82,9 @@ private:
 
     QString m_value; //!< Value added if not empty
 
+    //! <code>true</code> if cancel has been called, else <code>false</code>
+    bool m_cancelCalled; 
+
     friend class UpdateProcess;
 
 };
