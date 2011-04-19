@@ -1,8 +1,8 @@
-webupload-engine (0.3.15.4) unstable; urgency=low
+webupload-engine (0.3.16.1) unstable; urgency=low
 
-  * After tagging
+  * Fixes: NB#248484 - <coverity> defects from webupload-engine/0.3.14.3_0m6
 
- -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Fri, 15 Apr 2011 12:22:06 +0530
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Tue, 19 Apr 2011 16:37:02 +0530
 
 webupload-engine (0.3.15.3) unstable; urgency=low
 

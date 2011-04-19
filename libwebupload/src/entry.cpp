@@ -873,7 +873,6 @@ bool EntryPrivate::init(const QString &path, Entry * entry, bool demandProper,
         if (result == 0) {
             qDebug() << "Could not find transfer" << trackerId;
             trackerId.clear();
-            delete result;
             return false;
         } else {
             result->next();
