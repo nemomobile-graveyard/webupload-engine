@@ -252,29 +252,31 @@ void ServicePrivate::populatePresentationData (const QDomElement & element) {
 
     QDomNode node = element.firstChild();
     while (!node.isNull()) {
-        QDomElement childElem = node.toElement();
+        if (node.isElement()) {
+            QDomElement childElem = node.toElement();
 
-        if (childElem.tagName() == "name") {
-            m_name = XmlHelper::getLocalizatedContent (childElem);
-            qDebug() << "Service with name" << m_name;            
-    
-        // To avoid loading unneeded information
-        } else if (loadPres == false && 
-            m_publishCustom == Service::PUBLISH_CUSTOM_XML) {
-            
-            qDebug() << "Service: skip tag" << element.tagName() << loadPres <<
-                m_publishCustom;
+            if (childElem.tagName() == "name") {
+                m_name = XmlHelper::getLocalizatedContent (childElem);
+                qDebug() << "Service with name" << m_name;
 
-        // Read things useful for other service types
-        } else {
-            CommonOption * option = CommonOption::getCommonOption (childElem,
-                m_service);
-            if (option != 0) {
-                PostOption::Type optType = option->type ();
-                if ((optType < PostOption::OPTION_TYPE_N) && 
-                    (optType >= PostOption::OPTION_TYPE_TITLE)) {
-                    addOption (option);
-                    commonOptionPresent [optType] = true;
+            // To avoid loading unneeded information
+            } else if (loadPres == false &&
+                m_publishCustom == Service::PUBLISH_CUSTOM_XML) {
+
+                qDebug() << "Service: skip tag" << element.tagName() << loadPres <<
+                    m_publishCustom;
+
+            // Read things useful for other service types
+            } else {
+                CommonOption * option = CommonOption::getCommonOption (childElem,
+                    m_service);
+                if (option != 0) {
+                    PostOption::Type optType = option->type ();
+                    if ((optType < PostOption::OPTION_TYPE_N) &&
+                        (optType >= PostOption::OPTION_TYPE_TITLE)) {
+                        addOption (option);
+                        commonOptionPresent [optType] = true;
+                    }
                 }
             }
         }

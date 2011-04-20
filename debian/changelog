@@ -1,6 +1,6 @@
 webupload-engine (0.3.16.2) unstable; urgency=low
 
-  * After tagging
+  * Fixed mime type xml comment parsing
 
  -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Tue, 19 Apr 2011 16:49:44 +0530
 

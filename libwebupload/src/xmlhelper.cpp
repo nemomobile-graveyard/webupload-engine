@@ -75,19 +75,16 @@ QStringList XmlHelper::readMimeTypes (const QDomElement & elem) {
         
     while (!mimeNode.isNull()) {
     
-        if (mimeNode.isElement() == false) {
-            continue;
-        }
-    
-        QDomElement mimeElem = mimeNode.toElement();
+        if (mimeNode.isElement() == true) {
+            QDomElement mimeElem = mimeNode.toElement();
 
-        if (mimeElem.tagName() == "mime") {
-            QString mime = mimeElem.text();
-            if (!mime.isEmpty()) {
-                retList.append (mime);
+            if (mimeElem.tagName() == "mime") {
+                QString mime = mimeElem.text();
+                if (!mime.isEmpty()) {
+                    retList.append (mime);
+                }
             }
         }
-
         mimeNode = mimeNode.nextSibling();
     } 
     
