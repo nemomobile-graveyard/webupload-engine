@@ -103,10 +103,16 @@ bool UploadItem::init (const QString & path, TransferUI::Client * tuiClient) {
         return false;
     }
     m_mediaIter->toFront();
-    QString transferName = media->title ();
     
+    //resolve name for transfer (presented to user via TUI)
+    QString transferName = media->option (
+        WebUpload::Media::PresentationOptionId);
     if (transferName.isEmpty() == true) {
-        transferName = media->fileName ();
+        transferName = media->title ();
+        
+        if (transferName.isEmpty() == true) {
+            transferName = media->fileName ();
+        }
     }
     
     m_tuiTransfer = tuiClient->registerTransfer (transferName,
