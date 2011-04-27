@@ -67,7 +67,12 @@ public:
       \param patterns the patterns to check against.
      */
     void setFilter (const QStringList & patterns);
-
+    
+    /*!
+      \brief Act as new function but check if logging should be enabled first
+      \return Pointer to logger or null if logging is not enabled
+     */
+    static Logger * newIfEnabled();
 
 private:
 

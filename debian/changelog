@@ -2,6 +2,7 @@ webupload-engine (0.3.17.1) unstable; urgency=low
 
   * Fixes: NB#250323 - TransferUI: Only Service name gets displayed in TUI when trying to share a URL to facebook with post to profile field empty
   * Added error handling for out of memory errors while processing upload
+  * Disable logging by default
 
  -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 27 Apr 2011 15:37:15 +0530
 

@@ -148,3 +148,19 @@ void Logger::messageHandler (QtMsgType type, const char *msg) {
             
     Logger::m_instance->m_mutex.unlock();
 }
+
+Logger * Logger::newIfEnabled() {
+    Logger * logger = 0;
+    
+    QString logFlag = QDir::homePath();
+    logFlag.append (QDir::separator());
+    logFlag.append (QLatin1String(".webuploadengine"));
+    logFlag.append (QDir::separator());
+    logFlag.append (QLatin1String("log"));
+    
+    if (QFile::exists(logFlag) == true) {
+        logger = new Logger();
+    }
+    
+    return logger;
+}

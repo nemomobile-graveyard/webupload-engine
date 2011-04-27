@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
     QCoreApplication::setOrganizationName (QLatin1String ("MeeGo"));
 
     // Let's use custom logging
-    Logger logger;
+    Logger * logger = Logger::newIfEnabled ();
     
     DBGSTREAM << "Web upload engine started";
 
@@ -75,5 +75,7 @@ int main(int argc, char **argv) {
     delete engine;
     
     DBGSTREAM << "Clean web upload engine shutdown" << ret;
+    
+    delete logger;    
     return ret;
 }
