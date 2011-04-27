@@ -216,6 +216,13 @@ namespace WebUpload {
           \return Error generated
          */
         static Error missingFiles();
+
+        /*!
+          \brief Transfer failed since the device does not have sufficient 
+                 memory to make copy 
+         \return Error generated
+        */
+        static Error outOfMemory ();
         
         /*!
           \brief Error for call of unimplemented functionality
@@ -289,6 +296,7 @@ namespace WebUpload {
             CODE_MISSING_FILES, //!< Files to be shared no longer exist
             CODE_UNIMPLEMENTED, //!< Called functionality not implemented,
             CODE_SERVICE_TIME_OUT, //!< Service connection timed out
+            CODE_OUT_OF_MEMORY, //!< Device does not have sufficient memory
             
             CODE_CUSTOM = -1 //!< Custom service specific error
         };

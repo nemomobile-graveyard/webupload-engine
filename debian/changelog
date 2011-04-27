@@ -1,8 +1,9 @@
-webupload-engine (0.3.16.3) unstable; urgency=low
+webupload-engine (0.3.17.1) unstable; urgency=low
 
-  * After tagging
+  * Fixed NB 250323 which is about text shown in TUI.
+  * Added error handling for out of memory errors while processing upload
 
- -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 20 Apr 2011 16:05:13 +0300
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 27 Apr 2011 15:11:30 +0530
 
 webupload-engine (0.3.16.2) unstable; urgency=low
 

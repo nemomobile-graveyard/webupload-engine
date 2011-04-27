@@ -230,6 +230,12 @@ Error Error::missingFiles() {
     return error;
 }
 
+Error Error::outOfMemory () {
+    /* code, can continue?, repairable? */
+    Error error (CODE_OUT_OF_MEMORY, true, false);
+    return error;
+}
+
 Error Error::unimplemented() {
     /* code, can continue?, repairable? */
     Error error (CODE_UNIMPLEMENTED, false, false);
@@ -295,6 +301,7 @@ QString Error::title () const {
         case CODE_TRANSFER_FAILED:
         case CODE_SERVICE_ERROR:
         case CODE_MISSING_FILES:
+        case CODE_OUT_OF_MEMORY:
         {
             // Sections 5.3.3, 5.3.4 and 5.3.5 of UI specs
             qDebug() << "Failed count = " << d_ptr->m_count;
@@ -430,6 +437,11 @@ QString Error::description () const {
         case CODE_SERVICE_TIME_OUT:
             //% "Service is not responding."
             str = qtTrId ("qtn_tui_service_not_responding");
+            break;
+
+        case CODE_OUT_OF_MEMORY:
+            //% "There is not enough free memory to share content.  Please delete some files to free up more memory"
+            str = qtTrId ("qtn_tui_low_system_memory_error");
             break;
 
         default:

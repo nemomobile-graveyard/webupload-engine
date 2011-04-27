@@ -257,6 +257,12 @@ private Q_SLOTS:
 private:
 
     /*!
+      \brief Get presentation string for given media
+      \return Presentation string - string to be shown in TUI for that media
+     */
+    static QString getPresentationString(WebUpload::Media * media);
+
+    /*!
       \brief Checks whether the mime suffix is for a text file or not
       \param suffix Suffix of the mime. It is assumed that the prefix is
                 either application/ or text/ when this is called

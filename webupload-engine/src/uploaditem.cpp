@@ -103,12 +103,7 @@ bool UploadItem::init (const QString & path, TransferUI::Client * tuiClient) {
         return false;
     }
     m_mediaIter->toFront();
-    QString transferName = media->title ();
-    
-    if (transferName.isEmpty() == true) {
-        transferName = media->fileName ();
-    }
-    
+    QString transferName = getPresentationString (media);
     m_tuiTransfer = tuiClient->registerTransfer (transferName,
         TransferUI::Client::TRANSFER_TYPES_UPLOAD);
     
@@ -327,19 +322,7 @@ bool UploadItem::markFailed (const WebUpload::Error & newError) {
             // The first unsent media would definitely have an error since we 
             // upload media sequentially.
             if (!media->isSent ()) {
-                QString transferName = media->title();
-                if (transferName.isEmpty() == true) {
-                    if (media->copiedTextData ().isEmpty ()) {
-                        // This is mostly a file
-                        transferName = media->fileName();
-                    } else {
-                        // This is a MDataUri
-                        MDataUri duri;
-                        duri.read (media->copiedTextData ());
-                        transferName = duri.textData ();
-                    }
-                }
-
+                QString transferName = getPresentationString (media);
                 m_tuiTransfer->setName (transferName);
 
                 if (media->origURI().isEmpty()) {
@@ -466,13 +449,8 @@ void UploadItem::mediaStarted (quint32 mediaIndex) {
     DBGSTREAM << "New Media uploading started";
     if ((m_tuiTransfer != 0) && (media != 0)) {
 
-        QString transferName = media->title();
-
-        if (transferName.isEmpty() == true) {
-            transferName = media->fileName();
-        }
-        
         bool isThumbnail = false;
+        QString transferName = getPresentationString (media);
         QString iconName = UploadItem::iconForMedia (media, isThumbnail);
         
         m_tuiTransfer->waitForCommit();
@@ -500,14 +478,8 @@ void UploadItem::mediaStarted (quint32 mediaIndex) {
 void UploadItem::mediaStarted (WebUpload::Media *media) {
     DBGSTREAM << "New Media uploading started";
     if ((m_tuiTransfer != 0) && (media != 0)) {
-
-        QString transferName = media->title();
-
-        if (transferName.isEmpty() == true) {
-            transferName = media->fileName();
-        }
-        
         bool isThumbnail = false;
+        QString transferName = getPresentationString (media);
         QString iconName = UploadItem::iconForMedia (media, isThumbnail);
 
         m_tuiTransfer->waitForCommit();
@@ -573,6 +545,26 @@ QString UploadItem::iconForMedia (WebUpload::Media * media,
     }
 
     return iconId;
+}
+
+QString UploadItem::getPresentationString (WebUpload::Media * media) {
+
+    QString presentationString;
+
+    presentationString = media->title ();
+    if (presentationString.isEmpty () == true) {
+        if (media->copiedTextData ().isEmpty ()) {
+            // This is mostly a file
+            presentationString = media->fileName();
+        } else {
+            // This is a MDataUri
+            MDataUri duri;
+            duri.read (media->copiedTextData ());
+            presentationString = duri.textData ();
+        }
+    }
+
+    return presentationString;
 }
 
 bool UploadItem::isTextMime (const QString & suffix) {

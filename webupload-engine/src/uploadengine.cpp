@@ -391,10 +391,23 @@ void UploadEngine::processThreadFailed (UploadItem *item,
     DBGSTREAM << "Handle process failed reponse" << processError;
 
     WebUpload::Error itemError;
-    if (processError == UploadItem::PROCESS_ERROR_FILE_NOT_FOUND) {
-        itemError = WebUpload::Error::missingFiles();
-    } else {
-        itemError = WebUpload::Error::transferFailed();
+    switch (processError) {
+        case UploadItem::PROCESS_ERROR_STORAGE_MEMORY_FULL:
+        case UploadItem::PROCESS_ERROR_OUT_OF_MEMORY:
+        {
+            itemError = WebUpload::Error::outOfMemory ();
+            break;
+        }
+
+        case UploadItem::PROCESS_ERROR_FILE_NOT_FOUND:
+        {
+            itemError = WebUpload::Error::missingFiles();
+            break;
+        }
+
+        default:
+            itemError = WebUpload::Error::transferFailed();
+            break;
     }
 
     WebUpload::Entry * entry = item->getEntry();
