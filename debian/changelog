@@ -1,10 +1,11 @@
-webupload-engine (0.3.17.1) unstable; urgency=low
+webupload-engine (0.3.18.1) unstable; urgency=low
 
   * Fixes: NB#250323 - TransferUI: Only Service name gets displayed in TUI when trying to share a URL to facebook with post to profile field empty
   * Added error handling for out of memory errors while processing upload
   * Disable logging by default
+  * Fixes: NB#250630 - Facebook : User defined caption is not displayed instead file name is shown in TransferUI
 
- -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 27 Apr 2011 15:37:15 +0530
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Mon, 02 May 2011 12:28:23 +0530
 
 webupload-engine (0.3.16.2) unstable; urgency=low
 

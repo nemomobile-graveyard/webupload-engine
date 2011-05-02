@@ -405,6 +405,12 @@ namespace WebUpload {
          */
         void clearGeotag ();
         
+        /*!
+          \brief Option id for presentation string. If this string is defined
+                 then it is used to present media item in UI
+         */
+         static const QString PresentationOptionId;
+
     public Q_SLOTS:
 
         /*!

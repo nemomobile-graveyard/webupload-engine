@@ -551,7 +551,7 @@ QString UploadItem::getPresentationString (WebUpload::Media * media) {
 
     QString presentationString;
 
-    presentationString = media->title ();
+    presentationString = media->option (media->PresentationOptionId);
     if (presentationString.isEmpty () == true) {
         if (media->copiedTextData ().isEmpty ()) {
             // This is mostly a file

@@ -164,3 +164,4 @@ Logger * Logger::newIfEnabled() {
     
     return logger;
 }
+

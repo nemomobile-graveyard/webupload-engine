@@ -45,6 +45,8 @@
 
 using namespace WebUpload;
 
+const QString Media::PresentationOptionId = QLatin1String ("_PRESENTATION");
+
 Media::Media(QObject *parent) : QObject(parent),
     d_ptr (new MediaPrivate(this)) {
     
