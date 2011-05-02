@@ -1,3 +1,9 @@
+webupload-engine (0.3.18.2) unstable; urgency=low
+
+  * After tagging
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Mon, 02 May 2011 11:49:55 +0300
+
 webupload-engine (0.3.18.1) unstable; urgency=low
 
   * Fixes: NB#250323 - TransferUI: Only Service name gets displayed in TUI when trying to share a URL to facebook with post to profile field empty
