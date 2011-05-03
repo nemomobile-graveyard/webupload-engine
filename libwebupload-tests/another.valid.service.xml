@@ -9,7 +9,7 @@
           <mime>video/*</mime>
         </formats>
       </title>
-      <description multiline="1" order="2">
+      <description multiline="1" order="2" prefill="0">
         <caption>Description for links</caption>
         <tooltip>Enter description</tooltip>
         <formats>

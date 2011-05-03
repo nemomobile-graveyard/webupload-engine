@@ -21,16 +21,16 @@
 #include <QDebug>
 #include "xmlhelper.h"
 #include "WebUpload/CommonTextOption"
+#include "commontextoptionprivate.h"
 
 using namespace WebUpload;
 
 CommonTextOption::CommonTextOption (QObject * parent) : CommonOption (parent),
-    m_isMultiline (false) {
-
+    d_ptr (new CommonTextOptionPrivate (this)) {
 }
 
 CommonTextOption::~CommonTextOption () {
-
+    delete d_ptr;
 }
 
 bool CommonTextOption::init (QDomElement & element) {
@@ -49,16 +49,19 @@ bool CommonTextOption::init (QDomElement & element) {
     } else {
         return false;
     }
-    m_isMultiline = XmlHelper::attributeValueToBool (element, "multiline",
-        defMultilineValue);
+    d_ptr->m_isMultiline = XmlHelper::attributeValueToBool (element,
+        "multiline", defMultilineValue);
+    d_ptr->m_prefill = XmlHelper::attributeValueToBool (element,
+        "prefill", true);
 
     QDomNodeList nodes = element.elementsByTagName ("tooltip");
     if (nodes.count () > 0) {
-        m_tooltip = XmlHelper::getLocalizatedContent (nodes.at(0).toElement());
+        d_ptr->m_tooltip = XmlHelper::getLocalizatedContent (
+            nodes.at(0).toElement());
     }
 
-    if (m_tooltip.isEmpty ()) {
-        m_tooltip = defaultTooltip ();
+    if (d_ptr->m_tooltip.isEmpty ()) {
+        d_ptr->m_tooltip = d_ptr->defaultTooltip ();
     }
 
     return true;
@@ -71,30 +74,43 @@ bool CommonTextOption::init (PostOption::Type optionType, QString caption) {
     }
 
     if (optionType == PostOption::OPTION_TYPE_DESC) {
-        m_isMultiline = true;
+        d_ptr->m_isMultiline = true;
     } else if (optionType == PostOption::OPTION_TYPE_TITLE) {
-        m_isMultiline = false;
+        d_ptr->m_isMultiline = false;
     } else {
         return false;
     }
 
-    m_tooltip = defaultTooltip ();
+    d_ptr->m_tooltip = d_ptr->defaultTooltip ();
 
     return true;
 }
 
 
 bool CommonTextOption::isMultiline () const {
-    return m_isMultiline;
+    return d_ptr->m_isMultiline;
 }
 
 QString CommonTextOption::tooltip () const {
-    return m_tooltip;
+    return d_ptr->m_tooltip;
 }
 
-QString CommonTextOption::defaultTooltip () const {
+bool CommonTextOption::prefill() const {
+    return d_ptr->m_prefill;
+}
+
+// -- private class -----------------------------------------------------------
+
+CommonTextOptionPrivate::CommonTextOptionPrivate(CommonTextOption * parent) :
+    m_parent (parent), m_isMultiline (false), m_prefill (true) {
+}
+
+CommonTextOptionPrivate::~CommonTextOptionPrivate() {
+}
+
+QString CommonTextOptionPrivate::defaultTooltip () const {
     QString ttip;
-    switch (type()) {
+    switch (m_parent->type()) {
         case PostOption::OPTION_TYPE_TITLE:
             //% "Add title"
             ttip = qtTrId ("qtn_comm_share_title_tooltip");
