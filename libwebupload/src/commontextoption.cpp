@@ -40,23 +40,19 @@ bool CommonTextOption::init (QDomElement & element) {
     }
 
     bool defMultilineValue;
-    bool defPrefillValue;
 
     PostOption::Type optType = type ();
     if (optType == PostOption::OPTION_TYPE_DESC) {
         defMultilineValue = true;
-        defPrefillValue = true; //? Not sure about this
     } else if (optType == PostOption::OPTION_TYPE_TITLE) {
         defMultilineValue = false;
-        // As per specs, title field will always be empty by default.
-        defPrefillValue = false; 
     } else {
         return false;
     }
     d_ptr->m_isMultiline = XmlHelper::attributeValueToBool (element,
         "multiline", defMultilineValue);
-    d_ptr->m_prefill = XmlHelper::attributeValueToBool (element,
-        "prefill", defPrefillValue);
+    d_ptr->m_prefill = XmlHelper::attributeValueToBool (element, "prefill",
+        true);
 
     QDomNodeList nodes = element.elementsByTagName ("tooltip");
     if (nodes.count () > 0) {

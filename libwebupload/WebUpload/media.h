@@ -199,31 +199,41 @@ namespace WebUpload {
         QString fileName() const;
                     
         /*!
+          \brief Get title - if the user has not changed the title, then the
+                 title from the media metadata will be returned.
+          \return Title of media
+         */
+        QString title() const;
+
+        /*!
           \brief Get title
-          \param prefill Boolean value which indicates whether or not to return
-                    the title in the file metadata. If the value is
+          \param getMetadataValue Boolean value which indicates whether or not
+                    to return the title in the file metadata. If the value is
                     <code>true</code>, then the title from the file metadata is
                     returned if the modified title has an empty string,
                     otherwise only the modified title is returned always.
-                    Default value of this parameter is <code>true</code> to
-                    match what the upload plugins would require
           \return Title of media
          */
-        QString title(bool prefill = true) const;
+        QString title(bool getMetadataValue) const;
                     
         /*!
-          \brief Get description.
-          \param prefill Boolean value which indicates whether or not to return
-                    the description in the file metadata. If the value is
-                    <code>true</code>, then the description from the file
-                    metadata is returned if the modified description has an
-                    empty string, otherwise only the modified description is
-                    returned always.
-                    Default value of this parameter is <code>true</code> to
-                    match what the upload plugins would require
+          \brief Get description - if the description has not been changed,
+                 then description as in the media metadata is returned
           \return Description of media
          */
-        QString description(bool prefill = true) const;
+        QString description() const;
+
+        /*!
+          \brief Get description.
+          \param getMetadataValue Boolean value which indicates whether or not
+                    to return the description in the file metadata. If the
+                    value is <code>true</code>, then the description from the
+                    file metadata is returned if the modified description has
+                    an empty string, otherwise only the modified description is
+                    returned always.
+          \return Description of media
+         */
+        QString description(bool getMetadataValue) const;
                        
         /*!
           \brief Get tags

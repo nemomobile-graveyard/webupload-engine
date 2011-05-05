@@ -111,12 +111,16 @@ void Media::setTitle(const QString &newTitle) {
     Q_EMIT (titleChanged (title()));
 }
 
-QString Media::title(bool prefill) const {
+QString Media::title () const {
+    return title (true);
+}
+
+QString Media::title(bool getMetadataValue) const {
     if ((entry() != 0) &&
         (entry()->checkShareFilter(METADATA_FILTER_TITLE))) {
         return "";
     } else {
-        if ((prefill == true) && (d_ptr->m_changedTitle.isEmpty ())) {
+        if ((d_ptr->m_changedTitle.isEmpty ()) && (getMetadataValue == true)) {
             return d_ptr->m_metadataTitle;
         } else {
             return d_ptr->m_changedTitle;
@@ -133,12 +137,18 @@ void Media::setDescription(const QString &newDescription) {
     Q_EMIT (descriptionChanged (description()));
 }
 
-QString Media::description(bool prefill) const {
+QString Media::description () const {
+    return description (true);
+}
+
+QString Media::description(bool getMetadataValue) const {
     if ((entry() != 0) &&
         (entry()->checkShareFilter(METADATA_FILTER_DESCRIPTION))) {
         return "";
     } else {
-        if ((prefill == true) && (d_ptr->m_changedDescription.isEmpty())) {
+        if ((d_ptr->m_changedDescription.isEmpty()) && 
+            (getMetadataValue == true)) {
+
             return d_ptr->m_metadataDescription;
         } else {
             return d_ptr->m_changedDescription;
