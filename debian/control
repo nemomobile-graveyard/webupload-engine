@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 5.0.0), transfer-ui-dev (>=0.2.43.1),
     libaccounts-qt-dev (>=0.19), libsignon-qt-dev (>= 3.2-1~),
     libquillmetadata-dev (>= 1.100604), libmdatauri-dev,
     aegis-builder, libqmsystem2-dev, libqtm-systeminfo-dev,
-    duicontrolpanel-certificatesapplet
+    duicontrolpanel-certificatesapplet, libcontentaction-dev
 Standards-Version: 3.8.0
 
 Package: webupload-engine

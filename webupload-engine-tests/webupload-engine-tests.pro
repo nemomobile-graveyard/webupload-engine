@@ -4,7 +4,7 @@ TEMPLATE     = app
 
 include (../config-flags.pri)
 
-PKGCONFIG += accounts-qt
+PKGCONFIG += accounts-qt contentaction-0.1
 
 QMAKE_CXXFLAGS += -Werror -Wall
 

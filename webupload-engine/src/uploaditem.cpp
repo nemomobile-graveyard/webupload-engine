@@ -25,6 +25,7 @@
 #include <QDebug>
 #include "logger.h"
 #include <MDataUri>
+#include <contentinfo.h>
 
 #define CLIENT_ERROR_WARNING_STMT \
     WARNSTREAM << "TUI client Error:" << m_tuiTransfer->lastError()
@@ -510,41 +511,21 @@ QString UploadItem::toString() const {
 QString UploadItem::iconForMedia (WebUpload::Media * media,
     bool & isThumbnail) {
     
-    isThumbnail = false;
-    
-    QString iconId = "icon-m-content-file-unknown";
-    
-    QString mime = media->mimeType();
     bool isFile = (media->type() == WebUpload::Media::TYPE_FILE);
+    QString mime = media->mimeType();
 
-    if (mime.startsWith ("image/")) {
+    if (mime.startsWith ("image/") || mime.startsWith ("video/")) {
         isThumbnail = isFile;
-        iconId = "icon-m-content-image";
-    } else if (mime.startsWith ("video/")) {
-        isThumbnail = isFile;
-        iconId = "icon-m-content-videos";
-    } else if ((mime.compare ("text/x-url", Qt::CaseInsensitive) == 0) || 
-        (mime.compare ("text/x-uri", Qt::CaseInsensitive) == 0)) {
-
-        iconId = "icon-m-content-url";
-
-    } else if (mime.startsWith("application/") || mime.startsWith("text/")) {
-        QString suffix = mime.mid (mime.indexOf ("/") + 1);
-        if (mime.contains ("pdf") || mime == "acrobat") {
-            // Matching mime types:
-            // application/pdf, application/x-pdf, application/acrobat,
-            // applications/vnd.pdf, text/pdf, text/x-pdf
-            iconId = "icon-m-content-pdf";
-        } else if (isTextMime (suffix)) {
-            iconId = "icon-m-content-word";
-        } else if (isPresentationMime (suffix)) {
-            iconId = "icon-m-content-powerpoint";
-        } else if (isSpreadSheetMime (suffix)) {
-            iconId = "icon-m-content-excel";
-        }
+    } else {
+        isThumbnail = false;
     }
 
-    return iconId;
+    ContentInfo cinfo = ContentInfo::forMime (mime);
+    if (cinfo.isValid () == false) {
+        return QLatin1String ("icon-m-content-file-unknown");
+    } else {
+        return cinfo.typeIcon ();
+    }
 }
 
 QString UploadItem::getPresentationString (WebUpload::Media * media) {
@@ -567,49 +548,3 @@ QString UploadItem::getPresentationString (WebUpload::Media * media) {
     return presentationString;
 }
 
-bool UploadItem::isTextMime (const QString & suffix) {
-    // Mime types to be handled here:
-    // text/plain
-    // application/txt
-    // application/rtf
-    // application/x-rtf
-    // text/rtf
-    // application/doc
-    // application/msword
-    // application/vnd.msword
-    // application/vnd.ms-word
-    // application/vnd.oasis.opendocument.text
-    // application/x-vnd.oasis.opendocument.text
-    // application/vnd.openxmlformats-officedocument.wordprocessingml.document
-    return (suffix == "plain" || suffix == "txt" || suffix == "doc" ||
-            suffix.contains ("word") || suffix.contains ("text") || 
-            suffix.contains ("rtf"));
-}
-
-
-bool UploadItem::isPresentationMime (const QString & suffix) {
-    // Mime types to be handled here:
-    // application/vnd.oasis.opendocument.presentation
-    // application/x-vnd.oasis.opendocument.presentation
-    // application/vnd.ms-powerpoint
-    // application/mspowerpoint
-    // application/ms-powerpoint
-    // application/powerpoint
-    // application/vnd.openxmlformats-officedocument.presentationml.presentation
-    // application/vnd.openxmlformats-officedocument.presentationml.slideshow
-    return (suffix.contains ("presentation") || 
-            suffix.contains ("powerpoint"));
-}
-
-bool UploadItem::isSpreadSheetMime (const QString & suffix) {
-    // Mime types to be handled here
-    // application/vnd.oasis.opendocument.spreadsheet
-    // application/x-vnd.oasis.opendocument.spreadsheet
-    // application/vnd.ms-excel
-    // application/msexcel
-    // application/x-msexcel
-    // application/vnd.ms-excel
-    // application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
-    return (suffix.contains ("excel") || suffix.contains ("spreadsheet"));
-}
-    

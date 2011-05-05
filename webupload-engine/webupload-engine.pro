@@ -8,7 +8,7 @@ QT        += dbus network xml
 # QtGui component. Need to see how to handle that.
 # QT        -= gui
 
-PKGCONFIG += accounts-qt
+PKGCONFIG += accounts-qt contentaction-0.1
 
 # Need to first copy the interface xml file, because m-servicefwgen currently
 # works only on the current directory. Need to raise bug about this
