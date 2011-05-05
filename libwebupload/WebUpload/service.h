@@ -177,6 +177,16 @@ namespace WebUpload {
          */
         unsigned int maxMediaLimit() const;
         
+        /*!
+          \brief Give name for share button when entry defined is given. This
+                 function is not currently implemented but is here to allow
+                 functionality later.
+          \param entry Entry shared
+          \return String used in share button (can be empty if not defined for
+                  service)
+         */
+        QString shareButtonText (const Entry * entry) const;
+        
     private:
         Q_DISABLE_COPY(Service)
         ServicePrivate * const d_ptr; //!< Private data

@@ -21,10 +21,12 @@
 #ifndef _WEBUPLOAD_COMMON_TEXT_OPTION_H_
 #define _WEBUPLOAD_COMMON_TEXT_OPTION_H_
 
-#include "WebUpload/export.h"
-#include "WebUpload/CommonOption"
+#include <WebUpload/export.h>
+#include <WebUpload/CommonOption>
 
 namespace WebUpload {
+
+    class CommonTextOptionPrivate;
 
     /*!
         \class CommonTextOption
@@ -63,20 +65,15 @@ namespace WebUpload {
          */
         QString tooltip () const;
         
+        /*!
+          \brief If UI should prefill option for user
+          \return <code>true</code> if value should be autofilled
+         */
+        bool prefill() const;
+        
     private:
     
-        bool m_isMultiline; //!< Is the text widget multiline?
-        QString m_tooltip; //!< Tooltip string to show in the text entry widget if there is no value there.
-
-        /*!
-          \brief Get default localized tooltip for the text widget
-          \return Default localized tooltip string
-         */
-        QString defaultTooltip () const;
-
-#ifdef TESTING
-        friend class LibWebUploadTests; //!< For unit tests
-#endif
+        CommonTextOptionPrivate * const d_ptr; //!< private data
            
     };
 }

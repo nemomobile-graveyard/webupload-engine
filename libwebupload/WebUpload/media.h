@@ -200,15 +200,30 @@ namespace WebUpload {
                     
         /*!
           \brief Get title
+          \param prefill Boolean value which indicates whether or not to return
+                    the title in the file metadata. If the value is
+                    <code>true</code>, then the title from the file metadata is
+                    returned if the modified title has an empty string,
+                    otherwise only the modified title is returned always.
+                    Default value of this parameter is <code>true</code> to
+                    match what the upload plugins would require
           \return Title of media
          */
-        QString title() const;
+        QString title(bool prefill = true) const;
                     
         /*!
           \brief Get description.
+          \param prefill Boolean value which indicates whether or not to return
+                    the description in the file metadata. If the value is
+                    <code>true</code>, then the description from the file
+                    metadata is returned if the modified description has an
+                    empty string, otherwise only the modified description is
+                    returned always.
+                    Default value of this parameter is <code>true</code> to
+                    match what the upload plugins would require
           \return Description of media
          */
-        QString description() const;
+        QString description(bool prefill = true) const;
                        
         /*!
           \brief Get tags

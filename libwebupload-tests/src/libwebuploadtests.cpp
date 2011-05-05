@@ -1097,12 +1097,6 @@ void LibWebUploadTests::checkServicePrivate() {
             case PostOption::OPTION_TYPE_SERVICE:
             {
                 ServiceOption *sOpt = qobject_cast <ServiceOption*> (option);
-                /**
-                QVERIFY (sOpt->validForMimeType ("image/jpeg"));
-                QVERIFY (!sOpt->validForMimeType ("video/mpeg"));
-                QVERIFY (!sOpt->validForMimeType ("text/x-url"));
-                QVERIFY (!sOpt->validForMimeType ("text/x-uri"));
-                **/
                 QVERIFY (sOpt->id () == "album");
                 QVERIFY (sOpt->isUpdatable ());
                 QVERIFY (sOpt->isChangeable ());
@@ -1116,21 +1110,17 @@ void LibWebUploadTests::checkServicePrivate() {
 
     QVERIFY (titleOpt);
     QVERIFY (titleOpt->caption() == "Caption for images and videos");
-    /**
-    QVERIFY (titleOpt->validForMimeType ("image/jpeg"));
-    QVERIFY (titleOpt->validForMimeType ("video/mpeg"));
-    QVERIFY (!titleOpt->validForMimeType ("text/x-url"));
-    QVERIFY (!titleOpt->validForMimeType ("text/x-uri"));
-    **/
+    
+    CommonTextOption * textOpt = qobject_cast <CommonTextOption*> (titleOpt);
+    QVERIFY (textOpt);
+    QVERIFY (textOpt->prefill() == true);
 
     QVERIFY (descOpt);
     QVERIFY (descOpt->caption() == "Description for links");
-    /**
-    QVERIFY (!descOpt->validForMimeType ("image/jpeg"));
-    QVERIFY (!descOpt->validForMimeType ("video/mpeg"));
-    QVERIFY (descOpt->validForMimeType ("text/x-url"));
-    QVERIFY (descOpt->validForMimeType ("text/x-uri"));
-    **/
+    
+    textOpt = qobject_cast <CommonTextOption*> (descOpt);
+    QVERIFY (textOpt);
+    QVERIFY (textOpt->prefill() == false);
 
     QVERIFY (tagsOpt == 0);
     

@@ -66,8 +66,13 @@ namespace WebUpload {
         QString m_mimeType; //!< Mime type of the media
         qint64 m_size; //!< Size of the media in bytes
 
-        QString m_title; //!< Title of media
-        QString m_description; //!< Description of media
+        QString m_metadataTitle; //!< Title of media as present in the metadata
+        //! Description of media as present in the metadata
+        QString m_metadataDescription; 
+
+        QString m_changedTitle; //!< Title changed by user
+        QString m_changedDescription; //!< Description changed by user
+
         QList<QUrl> m_tagUrls; //!< Url of all the tags
         QStringList m_tags; //!< Tags (keywords) of media
 

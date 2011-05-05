@@ -107,16 +107,20 @@ Media::~Media() {
 }
 
 void Media::setTitle(const QString &newTitle) {
-    d_ptr->m_title = newTitle;
+    d_ptr->m_changedTitle = newTitle;
     Q_EMIT (titleChanged (title()));
 }
 
-QString Media::title() const {
+QString Media::title(bool prefill) const {
     if ((entry() != 0) &&
-        (entry()->checkShareFilter(METADATA_FILTER_ALL))) {
+        (entry()->checkShareFilter(METADATA_FILTER_TITLE))) {
         return "";
     } else {
-        return d_ptr->m_title;
+        if ((prefill == true) && (d_ptr->m_changedTitle.isEmpty ())) {
+            return d_ptr->m_metadataTitle;
+        } else {
+            return d_ptr->m_changedTitle;
+        }
     }
 }
 
@@ -125,16 +129,20 @@ QString Media::fileName() const {
 }
 
 void Media::setDescription(const QString &newDescription) {
-    d_ptr->m_description = newDescription;
+    d_ptr->m_changedDescription = newDescription;
     Q_EMIT (descriptionChanged (description()));
 }
 
-QString Media::description() const {
+QString Media::description(bool prefill) const {
     if ((entry() != 0) &&
-        (entry()->checkShareFilter(METADATA_FILTER_ALL))) {
+        (entry()->checkShareFilter(METADATA_FILTER_DESCRIPTION))) {
         return "";
     } else {
-        return d_ptr->m_description;
+        if ((prefill == true) && (d_ptr->m_changedDescription.isEmpty())) {
+            return d_ptr->m_metadataDescription;
+        } else {
+            return d_ptr->m_changedDescription;
+        }
     }
 }
 
@@ -272,7 +280,7 @@ const QList<QUrl> Media::trackerTypes() const {
 
 QList<QUrl> Media::tagUrls() const {
     if ((entry() != 0) &&
-        (entry()->checkShareFilter(METADATA_FILTER_ALL))) {
+        (entry()->checkShareFilter(METADATA_FILTER_TAGS))) {
         return QList<QUrl>();
     } else {
         return d_ptr->m_tagUrls;
@@ -281,7 +289,7 @@ QList<QUrl> Media::tagUrls() const {
 
 QStringList Media::tags() const {
     if ((entry() != 0) &&
-        (entry()->checkShareFilter(METADATA_FILTER_ALL))) {
+        (entry()->checkShareFilter(METADATA_FILTER_TAGS))) {
         return QStringList();
     } else {
         return d_ptr->m_tags;
@@ -290,7 +298,7 @@ QStringList Media::tags() const {
 
 QStringList Media::allTags() const {
     QStringList alltags;
-    if ((entry() != 0) && (!entry()->checkShareFilter(METADATA_FILTER_ALL))) {
+    if ((entry() != 0) && (!entry()->checkShareFilter(METADATA_FILTER_TAGS))) {
         alltags = d_ptr->m_tags;
         if (!d_ptr->m_geotag.isEmpty ()) {
             alltags << d_ptr->m_geotag.country();
@@ -725,9 +733,9 @@ bool MediaPrivate::init(QDomElement & mediaElem) {
         }
         
         if(e.tagName() == "title") {
-            m_title = e.text();
+            m_metadataTitle = e.text();
         } else if(e.tagName() == "description") {
-            m_description = e.text();
+            m_metadataDescription = e.text();
         } else if(e.tagName() == "tags") {
             QDomNode n1 = e.firstChild();
             while(!n1.isNull()) {
@@ -973,8 +981,8 @@ bool MediaPrivate::fastInitFromTrackerIriNoTags (const QString & tIri,
     m_origFileUri = fileUri;
     m_mimeType = mimeType;
     m_size = size;
-    m_title = fileTitle;
-    m_description = fileDesc;
+    m_metadataTitle = fileTitle;
+    m_metadataDescription = fileDesc;
 
     QString filePath = srcFilePath ();
     m_fileName = QFileInfo(filePath).fileName();
@@ -1163,8 +1171,8 @@ bool MediaPrivate::initFromDataUri (const MDataUri & dUri) {
     
     MDataUri myUri (dUri);
     
-    m_title = myUri.attribute("title");
-    m_description = myUri.attribute("description");
+    m_metadataTitle = myUri.attribute("title");
+    m_metadataDescription = myUri.attribute("description");
     m_mimeType = myUri.mimeType();
     m_size = myUri.data().size();
     
@@ -1215,19 +1223,13 @@ QDomElement MediaPrivate::serializeToXML(QDomDocument & doc, int options) {
 
     // Title
     QDomElement dataTag = doc.createElement("title");
-    if (m_title.isEmpty() == false && (options != METADATA_FILTER_TITLE)) {
-       dataTag.appendChild(doc.createTextNode(m_title));
-       mediaTag.appendChild(dataTag);
-    }
+    dataTag.appendChild(doc.createTextNode(m_media->title (true)));
+    mediaTag.appendChild(dataTag);
 
     // Description
     dataTag = doc.createElement("description");
-    if (m_description.isEmpty() == false &&
-        (options != METADATA_FILTER_DESCRIPTION)) {
-
-        dataTag.appendChild(doc.createTextNode (m_description));
-        mediaTag.appendChild(dataTag);
-    }
+    dataTag.appendChild(doc.createTextNode(m_media->description (true)));
+    mediaTag.appendChild(dataTag);
 
     // Tags
     if (options != METADATA_FILTER_TAGS) {
@@ -1877,8 +1879,8 @@ Media::CopyResult MediaPrivate::filterAndSyncVideoMetadata(
             arguments << "-c";
         }
 
-        arguments << "--title" << m_media->title();
-        arguments << "--description" << m_media->description();
+        arguments << "--title" << m_media->title(true);
+        arguments << "--description" << m_media->description(true);
     }
 
     QProcess metaSyncProcess (this);
@@ -1934,10 +1936,12 @@ Media::CopyResult MediaPrivate::filterAndSyncImageMetadata(
         metadataWritten = emptyMetadata.write(targetPath);
     } else {     
         // These media functions will return empty if filter is on
-        originalMetadata.setEntry (QuillMetadata::Tag_Title, m_media->title());
+        originalMetadata.setEntry (QuillMetadata::Tag_Title, 
+            m_media->title(true));
         originalMetadata.setEntry (QuillMetadata::Tag_Description,
-            m_media->description());
-        originalMetadata.setEntry (QuillMetadata::Tag_Subject, m_media->tags());
+            m_media->description(true));
+        originalMetadata.setEntry (QuillMetadata::Tag_Subject,
+            m_media->tags());
 
         originalMetadata.setEntry (QuillMetadata::Tag_Country,
             m_geotag.country());
