@@ -116,6 +116,11 @@ namespace WebUpload {
         //! Max amount of media elements allowed for this service (or 0 if
         //  undefined)
         unsigned int m_maxMedia;
+        
+        //! Mime to share button map. Actually key is regexp so this isn't 
+        //  usually used as map but instead iterated until proper value is
+        //  found.
+        QMap <QString, QString> m_shareButtonTexts;
     };
 }
 

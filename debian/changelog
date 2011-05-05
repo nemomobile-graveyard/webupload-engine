@@ -1,8 +1,9 @@
 webupload-engine (0.3.18.2) unstable; urgency=low
 
   * Changed to use content action for mime icons
+  * Added code to handle disabling prefilling title etc
 
- -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Thu, 05 May 2011 15:29:37 +0530
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Thu, 05 May 2011 16:30:44 +0530
 
 webupload-engine (0.3.18.1) unstable; urgency=low
 

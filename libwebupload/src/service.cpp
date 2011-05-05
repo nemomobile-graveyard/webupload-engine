@@ -21,6 +21,7 @@
 #include "WebUpload/Service"
 #include "WebUpload/Account"
 #include "WebUpload/System"
+#include "WebUpload/Media"
 #include "serviceprivate.h"
 #include "WebUpload/CommonOption"
 #include "WebUpload/ServiceOption"
@@ -190,6 +191,39 @@ unsigned int Service::maxMediaLimit() const {
     return d_ptr->m_maxMedia;
 }
 
+QString Service::shareButtonText (const Entry * entry) const {
+    
+    // Currently we only use first media to find the button text
+    Media * media = entry->mediaAt (0);
+    if (media == 0) {
+        return QString();
+    }
+    
+    QString ret;
+    
+    //Try if mime type is defined in the list
+    ret = d_ptr->m_shareButtonTexts.value (media->mimeType(), QString());
+    
+    //Also check reqexps if not found
+    if (ret.isEmpty()) {   
+        QRegExp rx ("*");
+        rx.setPatternSyntax (QRegExp::Wildcard);
+        
+        QMapIterator<QString, QString> iter (d_ptr->m_shareButtonTexts);
+        while (iter.hasNext()) {
+            iter.next();
+            
+            rx.setPattern (iter.key());
+            if (rx.exactMatch(media->mimeType())) {
+                ret = iter.value();
+                break;
+            }
+        }
+    }
+
+    return ret;
+}
+
 /* --- Private functions ---------------------------------------------------- */
 
 ServicePrivate::ServicePrivate (Service * parent) : m_service (parent), 
@@ -255,7 +289,7 @@ void ServicePrivate::populatePresentationData (const QDomElement & element) {
         if (node.isElement()) {
             QDomElement childElem = node.toElement();
 
-            if (childElem.tagName() == "name") {
+            if (childElem.tagName() == QLatin1String ("name")) {
                 m_name = XmlHelper::getLocalizatedContent (childElem);
                 qDebug() << "Service with name" << m_name;
 
@@ -267,7 +301,18 @@ void ServicePrivate::populatePresentationData (const QDomElement & element) {
                     m_publishCustom;
 
             // Read things useful for other service types
+            } else if (childElem.tagName() == QLatin1String ("share_button")) {
+            
+                QString value = XmlHelper::getLocalizatedContent (childElem);
+                QString mime = childElem.attribute (QLatin1String ("mime"),
+                    QLatin1String ("*"));
+                    
+                if (value.isEmpty() == false) {
+                    m_shareButtonTexts.insert (mime, value);
+                }
+            
             } else {
+            
                 CommonOption * option = CommonOption::getCommonOption (childElem,
                     m_service);
                 if (option != 0) {
@@ -346,7 +391,7 @@ bool ServicePrivate::initFromDefinition (const QDomElement & element) {
     QDomElement docElem = element;
     clear();
     
-    //TODO: Check version
+    //TODO: Check version (when 1.0 is finalized)
     QString version = docElem.attribute ("version", "1.0");
     qDebug() << "Used input definition version" << version; 
     

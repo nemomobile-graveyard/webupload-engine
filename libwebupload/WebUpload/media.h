@@ -199,16 +199,41 @@ namespace WebUpload {
         QString fileName() const;
                     
         /*!
-          \brief Get title
+          \brief Get title - if the user has not changed the title, then the
+                 title from the media metadata will be returned.
           \return Title of media
          */
         QString title() const;
+
+        /*!
+          \brief Get title
+          \param getMetadataValue Boolean value which indicates whether or not
+                    to return the title in the file metadata. If the value is
+                    <code>true</code>, then the title from the file metadata is
+                    returned if the modified title has an empty string,
+                    otherwise only the modified title is returned always.
+          \return Title of media
+         */
+        QString title(bool getMetadataValue) const;
                     
         /*!
-          \brief Get description.
+          \brief Get description - if the description has not been changed,
+                 then description as in the media metadata is returned
           \return Description of media
          */
         QString description() const;
+
+        /*!
+          \brief Get description.
+          \param getMetadataValue Boolean value which indicates whether or not
+                    to return the description in the file metadata. If the
+                    value is <code>true</code>, then the description from the
+                    file metadata is returned if the modified description has
+                    an empty string, otherwise only the modified description is
+                    returned always.
+          \return Description of media
+         */
+        QString description(bool getMetadataValue) const;
                        
         /*!
           \brief Get tags
