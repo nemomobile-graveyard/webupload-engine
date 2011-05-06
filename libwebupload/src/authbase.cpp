@@ -109,11 +109,6 @@ bool AuthBase::isAuthOngoing () {
 }
 
 
-bool AuthBase::isAuthReqd () {
-    qCritical() << "Deprecated" << __FUNCTION__ << "called";
-    return isAuthRequired ();
-}
-
 bool AuthBase::isAuthRequired () {
     // Default implementation - no authentication is required
     return false;

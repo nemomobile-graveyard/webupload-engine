@@ -197,27 +197,6 @@ namespace WebUpload {
          */
         static EngineResponse validateEntry (WebUpload::Entry * entry);
 
-        /*!
-          \brief Deprecated, use allAccounts
-         */
-        Q_DECL_DEPRECATED QList <QSharedPointer<Account> > * accounts (
-            bool includeCustomUI = false);
-            
-        /*!
-          \brief Deprecated use setAccountListenerEnabled
-         */
-        Q_DECL_DEPRECATED void enableAccountListener (bool on = true); 
-        
-        /*!
-          \brief Use loadPresentationDataEnabled
-         */
-        Q_DECL_DEPRECATED static bool loadPresentationData();
-        
-        /*!
-          \brief Use setLoadPresentationDataEnabled
-         */        
-        Q_DECL_DEPRECATED static void setLoadPresentationData (bool load);        
-        
     Q_SIGNALS:
     
         /*!

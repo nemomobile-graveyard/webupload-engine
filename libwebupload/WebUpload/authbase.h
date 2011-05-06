@@ -172,11 +172,6 @@ namespace WebUpload {
          */
         virtual AuthData getAuthData ();
         
-        /*!
-          \brief Use isAuthRequired
-         */
-        Q_DECL_DEPRECATED virtual bool isAuthReqd ();        
-
     private:
 
         Q_DISABLE_COPY(AuthBase)

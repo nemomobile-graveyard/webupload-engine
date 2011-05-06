@@ -44,11 +44,6 @@ bool HttpMultiContentIO::setDefaultTemplate(const QString &tmplt) {
     return true;
 }
 
-const QString & HttpMultiContentIO::getDefaultTemplate() const {
-    qCritical() << "Using deprecated function" << __FUNCTION__;
-    return d_ptr->defaultTemplate;
-}
-
 QString HttpMultiContentIO::defaultTemplate() const {
     return d_ptr->defaultTemplate;
 }
@@ -60,11 +55,6 @@ void HttpMultiContentIO::clearDefaultTemplate() {
 bool HttpMultiContentIO::setBoundaryString(const QString &bdry) {
     d_ptr->boundaryString = bdry;
     return true;
-}
-
-const QString & HttpMultiContentIO::getBoundaryString() const {
-    qCritical() << "Using deprecated function" << __FUNCTION__;
-    return d_ptr->boundaryString;
 }
 
 QString HttpMultiContentIO::boundaryString() const {

@@ -136,14 +136,6 @@ QString System::serializeEntryToOutbox (Entry * entry) {
     }
 }
 
-QList <QSharedPointer<Account> > * System::accounts (bool includeCustomUI) {
-    qCritical() << "Do not use WebUpload::System::accounts anymore!";
-    
-    QList <QSharedPointer<Account> > list = allAccounts (!includeCustomUI);
-    
-    return new QList <QSharedPointer<Account> > (list);
-}
-
 QList <QSharedPointer<Account> > System::allAccounts (bool filterOutCustomUI) {
     return d_ptr->loadAccounts ("sharing", !filterOutCustomUI);
 }
@@ -178,27 +170,12 @@ Account * System::account (const QString & stringId, QObject * parent) {
     return account;
 }
 
-void System::enableAccountListener (bool on) {
-    qCritical() << "Deprecated function" << __FUNCTION__ << "called.";
-    setAccountListenerEnabled (on);
-}
-
 void System::setAccountListenerEnabled (bool enabled) {
     d_ptr->enableAccountListener (enabled);
 }
 
-bool System::loadPresentationData() {
-    qCritical() << "Deprecated function" << __FUNCTION__ << "called";
-    return loadPresentationDataEnabled();
-}
-
 bool System::loadPresentationDataEnabled() {
     return SystemPrivate::m_loadPresentationData;
-}
-
-void System::setLoadPresentationData (bool load) {
-    qCritical() << "Deprecated function" << __FUNCTION__ << "called";
-    setLoadPresentationDataEnabled (load);
 }
 
 void System::setLoadPresentationDataEnabled (bool load) {

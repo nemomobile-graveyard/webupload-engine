@@ -193,16 +193,6 @@ namespace WebUpload {
         bool atEnd () const;
         /*! \reimp_end */
         
-        /*!
-          \brief Deprecated, use defaultTemplate
-         */
-        Q_DECL_DEPRECATED const QString &getDefaultTemplate() const;
-        
-        /*!
-           \brief Deprecated, use boundaryString()
-         */
-        Q_DECL_DEPRECATED const QString &getBoundaryString() const;
-
     protected:
 
         /*! \reimp */
