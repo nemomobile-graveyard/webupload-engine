@@ -26,6 +26,7 @@
 #include "logger.h"
 #include <MDataUri>
 #include <contentinfo.h>
+#include <QRegExp>
 
 #define CLIENT_ERROR_WARNING_STMT \
     WARNSTREAM << "TUI client Error:" << m_tuiTransfer->lastError()
@@ -513,6 +514,14 @@ QString UploadItem::iconForMedia (WebUpload::Media * media,
     
     bool isFile = (media->type() == WebUpload::Media::TYPE_FILE);
     QString mime = media->mimeType();
+
+    // Check for urls
+    if (!isFile) {
+        QRegExp urlExp ("text/x-ur[li]", Qt::CaseInsensitive);
+        if (urlExp.exactMatch (mime)) {
+            return QLatin1String ("icon-m-content-url");
+        }
+    }
 
     if (mime.startsWith ("image/") || mime.startsWith ("video/")) {
         isThumbnail = isFile;
