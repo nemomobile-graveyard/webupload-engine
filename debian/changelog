@@ -1,3 +1,9 @@
+webupload-engine (0.3.19.3) unstable; urgency=low
+
+  * New version after tagging
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Tue, 10 May 2011 16:42:07 +0530
+
 webupload-engine (0.3.19.2) unstable; urgency=low
 
   * Fixes: NB#253185 - Unknown file type icon is shown in TransferUI while sharing links from Feeds or browser
