@@ -1,6 +1,6 @@
 webupload-engine (0.3.19.3) unstable; urgency=low
 
-  * New version after tagging
+  * Fixes: NB#254613 - webupload-engine is missing capabilities
 
  -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Tue, 10 May 2011 16:42:07 +0530
 
