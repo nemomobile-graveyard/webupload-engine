@@ -51,6 +51,9 @@ class LibWebUploadTests : public QObject {
 
         // Load enties with errors
         void loadEntryInvalid();
+
+        // Test the geotaginfo class
+        void testGeotagInfo ();
         
 #if 0
         // Test system class

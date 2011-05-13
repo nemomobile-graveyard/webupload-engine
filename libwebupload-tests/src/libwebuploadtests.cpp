@@ -247,6 +247,35 @@ void LibWebUploadTests::loadEntryInvalid() {
 
     delete entry;
 }
+
+void LibWebUploadTests::testGeotagInfo () {
+    GeotagInfo *gInfo = new GeotagInfo ();
+
+    QVERIFY (gInfo->isEmpty ());
+    gInfo->setCountry (QLatin1String ("COUNTRY"));
+    QVERIFY (!gInfo->isEmpty ());
+    gInfo->clear ();
+    QVERIFY (gInfo->isEmpty ());
+
+    gInfo->setCountry (QLatin1String ("COUNTRY"));
+    gInfo->setCity (QLatin1String ("CITY"));
+    gInfo->setDistrict (QLatin1String ("DISTRICT"));
+    QVERIFY (!gInfo->isEmpty ());
+    QVERIFY (gInfo->country() == QLatin1String ("COUNTRY"));
+
+    GeotagInfo gInfo1 (0, QLatin1String ("COUNTRY"), QLatin1String ("CITY"),
+            QLatin1String ("DISTRICT"));
+    QVERIFY (gInfo1 == *gInfo);
+    delete gInfo;
+
+    GeotagInfo gInfo2 (gInfo1);
+    QVERIFY (!gInfo2.isEmpty ());
+    QVERIFY (gInfo1 == gInfo2);
+
+    GeotagInfo gInfo3 = gInfo1;
+    QVERIFY (!gInfo3.isEmpty ());
+    QVERIFY (gInfo3 == gInfo2);
+}
 	
 void LibWebUploadTests::loadEntry() {
     createEntry (TEMP_ENTRY_PATH);

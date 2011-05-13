@@ -6,6 +6,10 @@
       <pre_steps>
         <step>sh /usr/share/libwebupload-tests/tracker-copy.sh</step>
       </pre_steps>
+      <case name="testGeotagInfo" type="Functional" level="Component">
+        <description>Check GeotagInfo class</description>
+        <step>sh /usr/share/libwebupload-tests/run-test.sh testGeotagInfo</step>
+      </case>
       <case name="checkServicePrivate" type="Functional" level="Component">
         <description>Unit test Service by calling private class</description>
         <step>sh /usr/share/libwebupload-tests/run-test.sh checkServicePrivate</step>
