@@ -75,6 +75,12 @@ namespace WebUpload {
          */
         virtual void stopMediaUpload();
 
+#ifdef UNIT_TESTING
+    public Q_SLOTS:
+        // This slot is a public slot for unit testing purposes.
+        virtual void nrUpProgress (qint64 bytesSent, qint64 bytesTotal);
+#endif
+
     protected Q_SLOTS:
 
         /*!
@@ -84,11 +90,14 @@ namespace WebUpload {
          */        
         virtual void namFinished (QNetworkReply * reply);
         
+#ifndef UNIT_TESTING
+        // This slot is a public slot for unit testing purposes.
         /*!
           \brief Slot for QNetworkReply::uploadProgress. Will calculate
                  progress and then emit mediaProgress with float value.
          */        
         virtual void nrUpProgress (qint64 bytesSent, qint64 bytesTotal);
+#endif
         
         /*!
           \brief Implements uploadMedia by calling generateRequest() and then
@@ -157,6 +166,7 @@ namespace WebUpload {
         //! Pointer to the current media being uploaded. This is being stored
         // to support uploads that require multiple network requests
         WebUpload::Media *m_currMedia;
+
     };
 }
 

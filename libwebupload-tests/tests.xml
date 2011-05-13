@@ -90,6 +90,10 @@
         <description>Tests ProcessExchangeData class</description>
         <step>/usr/bin/libwebupload-tests testProcessExchangeData</step>
       </case>
+      <case name="testPost" type="Functional" level="Component">
+        <description>Tests Post classes</description>
+        <step>/usr/bin/libwebupload-tests testPost</step>
+      </case>
       <environments>
         <scratchbox>true</scratchbox>
         <hardware>true</hardware>

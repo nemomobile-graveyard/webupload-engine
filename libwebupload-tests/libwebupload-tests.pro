@@ -32,8 +32,8 @@ QMAKE_CXXFLAGS += -ftest-coverage -fprofile-arcs -Werror
 
 include (../libwebupload/libwebupload-sources.pri)
 
-SOURCES += libwebuploadtests.cpp 
-HEADERS += libwebuploadtests.h 
+SOURCES += libwebuploadtests.cpp dummypost.cpp
+HEADERS += libwebuploadtests.h dummypost.h
 
 LIBS += -lgcov
 LIBS += ../webupload-service/libwebupload-service.so

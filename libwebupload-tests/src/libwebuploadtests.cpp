@@ -53,6 +53,7 @@
 #include "xmlhelper.h"
 #include "WebUpload/CommonTextOption"
 #include "commonoptionprivate.h"
+#include "dummypost.h"
 
 #define TEMP_ENTRY_PATH "/tmp/entry.xml"
 
@@ -1602,5 +1603,130 @@ void LibWebUploadTests::testProcessExchangeData () {
 }
 
 
+void LibWebUploadTests::testPost () {
+    DummyPost postInst (0);
+    WebUpload::Error wError;
+    QSignalSpy errorSpy (&postInst, SIGNAL (error(WebUpload::Error)));
+    QSignalSpy doneSpy (&postInst, SIGNAL (done()));
+    QSignalSpy mediaStartedSpy (&postInst, 
+        SIGNAL (mediaStarted(WebUpload::Media*)));
+    QSignalSpy errorFixedSpy (&postInst, SIGNAL (errorFixed()));
+    QSignalSpy errorFixFailedSpy (&postInst, 
+        SIGNAL (errorFixFailed(WebUpload::Error)));
+    QList<QVariant> spyArgs;
+    QVariant firstArg;
+
+    // Since entry has not been set yet
+    QVERIFY (postInst.unsentCount() == 0);
+
+    createEntry (TEMP_ENTRY_PATH);
+    Entry * entry = new Entry ();
+
+    postInst.upload (entry, wError);
+    QCOMPARE (doneSpy.count (), 1);
+    doneSpy.clear ();
+
+    wError = WebUpload::Error::fileError ();
+    postInst.upload (entry, wError);
+    QCOMPARE (errorFixFailedSpy.count (), 1);
+    spyArgs = errorFixFailedSpy.takeFirst ();
+    QCOMPARE (spyArgs.count (), 1);
+    firstArg = spyArgs[0];
+    QVERIFY (firstArg.canConvert<WebUpload::Error>() == true);
+    WebUpload::Error errorGot = firstArg.value <WebUpload::Error>();
+    QVERIFY (errorGot.code () == wError.code ());
+    errorFixFailedSpy.clear ();
+
+    wError = WebUpload::Error::dateTimeError ();
+    postInst.upload (entry, wError);
+    QCOMPARE (errorFixedSpy.count (), 1);
+    errorFixedSpy.clear ();
+    if (QCoreApplication::hasPendingEvents ()) {
+        QCoreApplication::processEvents ();
+    }
+    QCOMPARE (doneSpy.count (), 1);
+    doneSpy.clear ();
+
+    errorSpy.clear ();
+    entry->init (TEMP_ENTRY_PATH);
+    wError.clearError ();
+    postInst.upload (entry, wError);
+    QCOMPARE (mediaStartedSpy.count (), 1);
+    mediaStartedSpy.clear ();
+    // Since auth ptr is NULL, auth will fail
+    if (QCoreApplication::hasPendingEvents ()) {
+        QCoreApplication::processEvents ();
+    }
+    QCOMPARE (errorSpy.count (), 1);
+    spyArgs = errorSpy.takeFirst ();
+    QCOMPARE (spyArgs.count (), 1);
+    firstArg = spyArgs[0];
+    QVERIFY (firstArg.canConvert<WebUpload::Error>() == true);
+    errorGot = firstArg.value <WebUpload::Error>();
+    QVERIFY (errorGot.code() == WebUpload::Error::CODE_TRANSFER_FAILED);
+    errorSpy.clear ();
+
+    postInst.setEntry (entry);
+    QVERIFY (postInst.unsentCount () == entry->mediaCount ());
+
+    // Now checking the percent handling
+    QSignalSpy progressSpy(&postInst, SIGNAL (progress(float)));
+    postInst.nrUpProgress (-1, 1);
+    if (QCoreApplication::hasPendingEvents ()) {
+        QCoreApplication::processEvents ();
+    }
+    // We don't seem to emit progress of 0.0
+    QCOMPARE (progressSpy.count (), 0);
+
+    postInst.nrUpProgress (0, 1);
+    if (QCoreApplication::hasPendingEvents ()) {
+        QCoreApplication::processEvents ();
+    }
+    // We don't seem to emit progress of 0.0
+    QCOMPARE (progressSpy.count (), 0);
+
+    postInst.nrUpProgress (1, 2);
+    if (QCoreApplication::hasPendingEvents ()) {
+        QCoreApplication::processEvents ();
+    }
+    QCOMPARE (progressSpy.count (), 1);
+    spyArgs = progressSpy.takeFirst ();
+    QCOMPARE (spyArgs.count (), 1);
+    firstArg = spyArgs[0];
+    QVERIFY (firstArg.canConvert<float>() == true);
+    qDebug() << firstArg.toFloat ();
+    QVERIFY (firstArg.toFloat () > 0.0);
+    QVERIFY (firstArg.toFloat () <= 1.0);
+    progressSpy.clear ();
+
+    postInst.nrUpProgress (1, 1);
+    if (QCoreApplication::hasPendingEvents ()) {
+        QCoreApplication::processEvents ();
+    }
+    QCOMPARE (progressSpy.count (), 1);
+    spyArgs = progressSpy.takeFirst ();
+    QCOMPARE (spyArgs.count (), 1);
+    firstArg = spyArgs[0];
+    QVERIFY (firstArg.canConvert<float>() == true);
+    QVERIFY (firstArg.toFloat () > 0.0);
+    QVERIFY (firstArg.toFloat () <= 1.0);
+    progressSpy.clear ();
+
+    postInst.nrUpProgress (2, 1);
+    if (QCoreApplication::hasPendingEvents ()) {
+        QCoreApplication::processEvents ();
+    }
+    QCOMPARE (progressSpy.count (), 1);
+    spyArgs = progressSpy.takeFirst ();
+    QCOMPARE (spyArgs.count (), 1);
+    firstArg = spyArgs[0];
+    QVERIFY (firstArg.canConvert<float>() == true);
+    QVERIFY (firstArg.toFloat () > 0.0);
+    QVERIFY (firstArg.toFloat () <= 1.0);
+    progressSpy.clear ();
+
+    entry->cancel ();
+    delete entry;
+}
 
 QTEST_MAIN(LibWebUploadTests)

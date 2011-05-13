@@ -68,6 +68,11 @@ namespace WebUpload {
          */
         unsigned int unsentCount () const;
                 
+#ifdef UNIT_TESTING
+        // Function added only to enable testing
+        void setEntry (WebUpload::Entry * entry);
+#endif
+
     public Q_SLOTS:
 
         /*! \reimp */

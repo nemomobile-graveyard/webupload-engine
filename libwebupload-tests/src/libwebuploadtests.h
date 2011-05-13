@@ -94,6 +94,8 @@ class LibWebUploadTests : public QObject {
 
         void testProcessExchangeData ();
 
+        void testPost ();
+
     private:
 
         inline void createAccounts ();

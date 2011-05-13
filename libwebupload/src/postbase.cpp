@@ -110,6 +110,12 @@ unsigned int PostBase::unsentCount () const {
         return d_ptr->entry->mediaCount() - d_ptr->entry->mediaSentCount ();
 }
 
+#ifdef UNIT_TESTING
+void PostBase::setEntry (WebUpload::Entry * entry) {
+    d_ptr->setEntry (entry);
+}
+#endif
+
 void PostBase::stop () {
     if (d_ptr->state == MyPrivate::STATE_UPLOAD_PENDING) {
         d_ptr->state = MyPrivate::STATE_CANCEL_PENDING;
@@ -135,6 +141,7 @@ void PostBase::fixError (WebUpload::Entry * entry, WebUpload::Error error) {
     if (canRetry (error)) {
         Q_EMIT (errorFixed ());
     } else {
+        d_ptr->reset ();
         // Since the plugin is not handling the error, there is nothing more
         // that can be done
         Q_EMIT (errorFixFailed (error));
@@ -238,8 +245,14 @@ void PostBasePrivate::errorFixed (AuthBase *authP) {
 
     entry->clearFailed();
     media = entry->nextUnsentMedia ();
-    Q_EMIT (mediaStarted (media));
-    startAuthentication (authP);
+    if (media == 0) {
+        reset ();
+        DBG_STREAM << "done";        
+        Q_EMIT (done());
+    } else {
+        Q_EMIT (mediaStarted (media));
+        startAuthentication (authP);
+    }
 }
 
 
