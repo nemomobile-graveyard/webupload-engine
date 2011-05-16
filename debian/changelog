@@ -1,8 +1,8 @@
-webupload-engine (0.3.19.3) unstable; urgency=low
+webupload-engine (0.3.20.1) unstable; urgency=low
 
   * Fixes: NB#254613 - webupload-engine is missing capabilities
 
- -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Tue, 10 May 2011 16:42:07 +0530
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Mon, 16 May 2011 11:45:17 +0530
 
 webupload-engine (0.3.19.2) unstable; urgency=low
 

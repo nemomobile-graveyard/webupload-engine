@@ -76,23 +76,23 @@
       </case>
       <case name="testError" type="Functional" level="Component">
         <description>Tests the error class</description>
-        <step>/usr/bin/libwebupload-tests testError</step>
+        <step>sh /usr/share/libwebupload-tests/run-test.sh testError</step>
       </case>
       <case name="testErrorSerialization" type="Functional" level="Component">
         <description>Tests the serialization/deserialization of the error class</description>
-        <step>/usr/bin/libwebupload-tests testErrorSerialization</step>
+        <step>sh /usr/share/libwebupload-tests/run-test.sh testErrorSerialization</step>
       </case>
       <case name="testXmlHelper" type="Functional" level="Component">
         <description>Tests XML helper class</description>
-        <step>/usr/bin/libwebupload-tests testXmlHelper</step>
+        <step>sh /usr/share/libwebupload-tests/run-test.sh testXmlHelper</step>
       </case>
       <case name="testProcessExchangeData" type="Functional" level="Component">
         <description>Tests ProcessExchangeData class</description>
-        <step>/usr/bin/libwebupload-tests testProcessExchangeData</step>
+        <step>sh /usr/share/libwebupload-tests/run-test.sh testProcessExchangeData</step>
       </case>
       <case name="testPost" type="Functional" level="Component">
         <description>Tests Post classes</description>
-        <step>/usr/bin/libwebupload-tests testPost</step>
+        <step>sh /usr/share/libwebupload-tests/run-test.sh testPost</step>
       </case>
       <environments>
         <scratchbox>true</scratchbox>
