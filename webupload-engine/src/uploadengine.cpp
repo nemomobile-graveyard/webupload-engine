@@ -644,37 +644,10 @@ void UploadEngine::disconnected () {
 
 
 void UploadEngine::usbModeChanged (MeeGo::QmUSBMode::Mode mode) {
-    currentUSBMode = mode;
 
-    switch (mode) {
-        case MeeGo::QmUSBMode::Connected :
-            DBGSTREAM << "USB MODE --> Connected";
-            break;
-        case MeeGo::QmUSBMode::DataInUse :
-            DBGSTREAM << "USB MODE --> DataInUse";
-            break;
-        case MeeGo::QmUSBMode::Disconnected :
-            DBGSTREAM << "USB MODE --> Disconnected";
-            break;
-        case MeeGo::QmUSBMode::MassStorage :
-            DBGSTREAM << "USB MODE --> MassStorage";
-            break;
-        case MeeGo::QmUSBMode::ChargingOnly :
-            DBGSTREAM << "USB MODE --> ChargingOnly";
-            break;
-        case MeeGo::QmUSBMode::OviSuite :
-            DBGSTREAM << "USB MODE --> OviSuite";
-            break;
-        case MeeGo::QmUSBMode::ModeRequest :
-            DBGSTREAM << "USB MODE --> ModeRequest";
-            break;
-        case MeeGo::QmUSBMode::Ask :
-            DBGSTREAM << "USB MODE --> Ask";
-            break;
-        case MeeGo::QmUSBMode::Undefined :
-            DBGSTREAM << "USB MODE --> Undefined";
-            break;
-    }
+    DBGSTREAM << "USB Mode:" << (int)currentUSBMode << "-->" << (int)mode;
+
+    currentUSBMode = mode;
     
     // Handle only the MassStorage and Disconnected modes. Can ignore all the 
     // other mode changes
