@@ -55,10 +55,8 @@ class LibWebUploadTests : public QObject {
         // Test the geotaginfo class
         void testGeotagInfo ();
         
-#if 0
         // Test system class
         void systemChecks();
-#endif
         
         // Change media metadata values
         void modifyMediaFields();
