@@ -62,6 +62,16 @@ bool Media::init(QDomElement &mediaElem) {
     return d_ptr->init(mediaElem);
 }
 
+bool Media::initNoTrackerInfo(QDomElement &mediaElem) {
+    // Check that element has correct name
+    if(mediaElem.tagName() != "item") {
+        qWarning() << "Invalid XML data";
+        return false;
+    }
+
+    return d_ptr->initNoTrackerInfo(mediaElem);
+}
+
 const Entry* Media::entry() const {
     QObject *parentPtr = parent();
 
@@ -672,6 +682,10 @@ void Media::clearGeotag () {
     d_ptr->m_geotag.clear ();
 }
 
+bool Media::readTrackerInfo(QSparqlResult *result) {
+    return d_ptr->readTrackerInfo(result);
+}
+
 /*******************************************************************************
  * Definition of functions for MediaPrivate
  ******************************************************************************/
@@ -689,20 +703,38 @@ MediaPrivate::~MediaPrivate() {
 
 bool MediaPrivate::init(QDomElement & mediaElem) {
 
-    m_copiedTextData = mediaElem.attribute("textData", "");    
+    if (!initNoTrackerInfo(mediaElem))
+        return false;
+
+    // Read tracker information after reading the rest of the information from
+    // the xml file
+    if (m_trackerURI.isEmpty() == false && readTrackerInfo() == false) {
+        m_copiedTextData.clear();
+        m_trackerURI.clear();
+        return false;
+    }
     
+    return true;
+}
+
+bool MediaPrivate::initNoTrackerInfo(QDomElement & mediaElem) {
+
+    m_trackerURI = mediaElem.attribute("tracker", "");
+
+    m_copiedTextData = mediaElem.attribute("textData", "");
+
     // Always read size
     m_size = 0;
     QString temp = mediaElem.attribute("size", "");
     if(temp.isEmpty() == false) {
         bool ok;
         m_size = temp.toLongLong (&ok, 10);
-        
+
         if (ok == false) {
             m_size = 0;
         }
     }
-    
+
     // Check other attributes
     if ((m_state == TRANSFER_STATE_CANCELLED) ||
         (m_state == TRANSFER_STATE_DONE)) {
@@ -712,14 +744,14 @@ bool MediaPrivate::init(QDomElement & mediaElem) {
             return false;
         }
     } else {
-    
+
         QString mimeType = mediaElem.attribute("mime", "");
         if (mimeType.isEmpty() == false) {
             m_mimeType = mimeType;
         }
 
         QString copyString = mediaElem.attribute("copy", "");
-        
+
         if (!copyString.isEmpty()) {
             QFileInfo fileInfo(copyString);
             m_size = fileInfo.size();
@@ -741,7 +773,7 @@ bool MediaPrivate::init(QDomElement & mediaElem) {
         if(e.isNull()) {
             continue;
         }
-        
+
         if(e.tagName() == "title") {
             m_metadataTitle = e.text();
         } else if(e.tagName() == "description") {
@@ -785,7 +817,7 @@ bool MediaPrivate::init(QDomElement & mediaElem) {
             }
         } else if (e.tagName() == "cleanUpFile") {
             m_cleanUpFiles << e.text();
-            
+
         } else if(e.tagName() == "options") {
             QDomNode n1 = e.firstChild();
             while(n1.isNull() == false) {
@@ -799,7 +831,7 @@ bool MediaPrivate::init(QDomElement & mediaElem) {
 
                 n1 = n1.nextSibling();
             }
-            
+
         } else {
             qWarning() << "Unknown tag under media:" << e.tagName();
         }
@@ -812,15 +844,6 @@ bool MediaPrivate::init(QDomElement & mediaElem) {
         qDebug() << "entry xml created with older version";
     }
 
-    // Read tracker information after reading the rest of the information from
-    // the xml file
-    m_trackerURI = mediaElem.attribute("tracker", "");
-    if (m_trackerURI.isEmpty() == false && readTrackerInfo() == false) {
-        m_copiedTextData.clear();
-        m_trackerURI.clear();
-        return false;
-    }
-    
     return true;
 }
 
@@ -1345,6 +1368,17 @@ bool MediaPrivate::readTrackerInfo() {
 
     result->first ();
 
+    bool rv = readTrackerInfo(result);
+
+    qDebug() << "PERF: TrackerMediaRead END";
+    return rv;
+}
+
+bool MediaPrivate::readTrackerInfo(QSparqlResult *result) {
+
+    if (result == 0)
+        return false;
+
     QVariant stateVariant = result->binding(0).value();
     if (!stateVariant.isNull()) {
         m_state = transferStateEnum(stateVariant.toString());
@@ -1387,12 +1421,12 @@ bool MediaPrivate::readTrackerInfo() {
         if (m_origFileTrackerUri.isEmpty ()) {
             qCritical() << "Source not provided for TransferElement";
             return false;
-        } 
+        }
 
         m_fileName = fInfo.fileName();
 
         if (m_mimeType.isEmpty ()) {
-            // If mime info could not be read from the xml file, only then do 
+            // If mime info could not be read from the xml file, only then do
             // we need it from tracker
             m_mimeType = result->binding(5).value().toString();
             if(m_mimeType.isEmpty()) {
@@ -1402,8 +1436,8 @@ bool MediaPrivate::readTrackerInfo() {
         }
     }
 
-    qDebug() << "PERF: TrackerMediaRead END";
     return true;
+
 }
 
 QUrl MediaPrivate::addToTracker() {

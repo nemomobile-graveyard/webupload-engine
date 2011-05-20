@@ -907,7 +907,7 @@ bool EntryPrivate::init(const QString &path, Entry * entry, bool demandProper,
         if(!e.isNull()) {
             if(e.tagName() == "item") {
                 Media *newMedia = new Media(entry);
-                if(!newMedia->init(e)) {
+                if(!newMedia->initNoTrackerInfo(e)) {
                     delete newMedia;
                     qWarning() << "Could not fill a file information";
                     // Media init'ing failing means there is something gone
@@ -983,9 +983,89 @@ bool EntryPrivate::init(const QString &path, Entry * entry, bool demandProper,
         }
         n = n.nextSibling();
     }
+
+    if (!readMediaTrackerInfo())
+        return false;
     
     m_allowSerialize = allowSerialize;
     return true;
+}
+
+bool EntryPrivate::readMediaTrackerInfo() {
+
+    qDebug() << "PERF: Reading media info from tracker: START";
+
+    QString trackerUris;
+    QMap<QString, Media*> mediaMap;
+    foreach (Media *m, media) {
+        QString trackerIri = m->trackerIri();
+        trackerUris.append(QString("'%1',").arg(trackerIri));
+        mediaMap.insert(trackerIri, m);
+    }
+    trackerUris.chop(1);
+
+    // Normally mime type can be read from the xml file, and once we have the
+    // xml file properly filled, we don't really require the original file name
+    QString queryString = QString(
+        "SELECT ?state ?startTime ?endTime ?ftUri ?fUri ?mime ?tUri WHERE {"
+        "    ?tUri a mto:TransferElement. "
+        "    OPTIONAL { ?tUri mto:state ?state . } "
+        "    OPTIONAL { ?tUri mto:startedTime ?startTime . } "
+        "    OPTIONAL { ?tUri mto:completedTime ?endTime . }"
+        "    OPTIONAL {"
+        "        ?tUri mto:source ?ftUri. "
+        "        OPTIONAL {"
+        "            ?ftUri a nie:InformationElement; "
+        "                nie:mimeType ?mime . "
+        "            ?ftUri a nie:DataObject; "
+        "                nie:url ?fUri . "
+        "        } "
+        "    } "
+        "   FILTER (str(?tUri) in (%1)) "
+        "}").arg(trackerUris);
+    QSparqlQuery query (queryString);
+    QSparqlResult * result = blockingSparqlQuery (query);
+    if (result == 0) {
+        qCritical() << "Failed to get media info from tracker";
+        return false;
+    }
+
+    qDebug() << "Number of items in sparql query result:" << result->size();
+    if (result->size() != mediaMap.size()) {
+        qWarning() << "Info not found for all media. Media count:" << mediaMap.size();
+
+        delete result;
+        result = 0;
+        return false;
+    }
+
+    bool rv = true;
+
+    while (result->next()) {
+        QString trackerUri = result->binding(6).value().toString();
+        Media *m = mediaMap[trackerUri];
+        if (m == 0) {
+            qWarning() << "No such tracker URI in media map:" << trackerUri;
+            rv = false;
+            break;
+        }
+        else if (!m->readTrackerInfo(result)) {
+            media.remove(media.indexOf(m));
+            mediaMap.remove(trackerUri);
+            delete m;
+            m = 0;
+            qWarning() << "Could not get media info from tracker";
+            rv = false;
+            break;
+        }
+    }
+
+    delete result;
+    result = 0;
+
+    qDebug() << "PERF: Reading media info from tracker: END";
+
+    return rv;
 }
 
 QSparqlResult * EntryPrivate::blockingSparqlQuery (const QSparqlQuery &query,

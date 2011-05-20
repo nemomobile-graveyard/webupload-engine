@@ -101,6 +101,12 @@ namespace WebUpload {
          */
         bool init (const QString &path, Entry *entry,
             bool demandProper = true, bool allowSerialization = true);
+
+        /*!
+          \brief Read tracker info for all media
+          \return Was tracker info read successfully
+        */
+        bool readMediaTrackerInfo();
         
         /*!
           \brief Serialize entry to defined path

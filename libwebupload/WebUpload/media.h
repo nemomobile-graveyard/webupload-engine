@@ -34,6 +34,7 @@
 #include <WebUpload/GeotagInfo>
 
 class MDataUri;
+class QSparqlResult;
 
 namespace WebUpload {
 
@@ -429,7 +430,22 @@ namespace WebUpload {
           \brief Clear any geotag information associated with this media
          */
         void clearGeotag ();
+
+        /*!
+          \brief Initialize media from XML data, do not read info from tracker
+          \param mediaElem Media XML element
+          \return true/false depending on whether or not the structure
+                  could be filled.
+         */
+        bool initNoTrackerInfo (QDomElement &mediaElem);
         
+        /*!
+          \brief Reads media data from sparql query result
+          \param result Source query result
+          \return Was reading successful
+        */
+        bool readTrackerInfo (QSparqlResult *result);
+
         /*!
           \brief Option id for presentation string. If this string is defined
                  then it is used to present media item in UI

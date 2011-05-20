@@ -111,6 +111,14 @@ namespace WebUpload {
         bool init (QDomElement &mediaElem);
 
         /*!
+          \brief Create media from XML data, do not read tracker info
+          \param mediaElem Media XML element
+          \return true/false depending on whether or not the structure
+                  could be filled
+        */
+        bool initNoTrackerInfo (QDomElement &mediaElem);
+
+        /*!
           \brief Create media from tracker URI
           \param tUri Tracker IRI
           \return true/false depending on whether or not the structure
@@ -170,7 +178,18 @@ namespace WebUpload {
          */
         QString srcFilePath () const;
         
+        /*!
+          \brief Reads media data from tracker
+          \return Was reading successful
+        */
         bool readTrackerInfo();
+
+        /*!
+          \brief Reads media data from sparql query result
+          \param result Source query result
+        */
+        bool readTrackerInfo(QSparqlResult *result);
+
         bool updateTracker(bool updateState = false);
         QUrl addToTracker();
                 
