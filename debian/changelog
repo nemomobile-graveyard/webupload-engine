@@ -1,6 +1,6 @@
 webupload-engine (0.3.20.3) unstable; urgency=low
 
-  * After tagging
+  * Optimizations for Entry initialization with large number of media items
 
  -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Tue, 17 May 2011 16:36:55 +0300
 
