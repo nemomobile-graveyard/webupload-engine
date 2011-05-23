@@ -735,8 +735,8 @@ VideoResizeOption Entry::videoResizeOption () const {
 
 bool Entry::checkShareFilter (MetadataFilter metad) const {
     bool ret = d_ptr->metadataFilter.testFlag (metad);
-    qDebug() << "Entry check metadata flag" << metad << "against"
-        << d_ptr->metadataFilter << ret;
+    //qDebug() << "Entry check metadata flag" << metad << "against"
+    //    << d_ptr->metadataFilter << ret;
     return ret;
 }
 
@@ -1260,10 +1260,11 @@ bool EntryPrivate::serialize(const QString & path) {
         entryTag.appendChild(optionsTag);
     }
 
-    qDebug() << "Writing to xml file :" << doc.toByteArray(2);
+    //qDebug() << "Writing to xml file :" << doc.toByteArray(2);
     file.write(doc.toByteArray(2));
     file.close();
     serialized_to = path;
+
     return true;
 }
 

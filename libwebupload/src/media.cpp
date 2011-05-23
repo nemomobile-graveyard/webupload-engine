@@ -695,10 +695,6 @@ MediaPrivate::MediaPrivate (Media * parent) : QObject (parent),
 }
 
 MediaPrivate::~MediaPrivate() {
-    if (m_sparqlConnection != 0) {
-        delete m_sparqlConnection;
-        m_sparqlConnection = 0;
-    }
 }
 
 bool MediaPrivate::init(QDomElement & mediaElem) {
@@ -1170,11 +1166,12 @@ bool MediaPrivate::initFromTrackerIri (const QString &tUri) {
 QSparqlResult * MediaPrivate::blockingSparqlQuery (const QSparqlQuery &query,
     bool singleResponse) {
 
+    static QSparqlConnection connection("QTRACKER");
+
     if (m_sparqlConnection == 0) {
-        m_sparqlConnection = new QSparqlConnection ("QTRACKER");
+        m_sparqlConnection = &connection;
         if (!m_sparqlConnection->isValid ()) {
             qDebug() << "Could not create valid QSparqlConnection";
-            delete m_sparqlConnection;
             m_sparqlConnection = 0;
             return 0;
         }
