@@ -1,6 +1,7 @@
-webupload-engine (0.3.20.3) unstable; urgency=low
+webupload-engine (0.3.21.1) unstable; urgency=low
 
   * Optimizations for Entry initialization with large number of media items
+  * Fixes: NB#258197 - webupload-engine-doc package does not have any content
 
  -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Tue, 17 May 2011 16:36:55 +0300
 

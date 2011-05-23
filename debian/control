@@ -52,12 +52,6 @@ Architecture: all
 Depends: ${misc:Depends}
 Description: Contains engineering english translation for webupload-engine and the plugin it provides to share-ui
 
-Package: webupload-engine-doc
-Section: doc
-Architecture: all
-Depends: ${misc:Depends}
-Description: Documentation for Webupload Engine
-
 Package: libwebupload0
 Section: libs
 Architecture: any
