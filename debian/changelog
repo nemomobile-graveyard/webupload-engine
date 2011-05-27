@@ -1,6 +1,6 @@
 webupload-engine (0.3.21.2) unstable; urgency=low
 
-  * After tagging
+  * Removed obsolete reference to webupload-engine-doc
 
  -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Mon, 23 May 2011 16:01:13 +0300
 

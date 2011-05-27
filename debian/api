@@ -12,7 +12,6 @@ scope: Platform
 state: stable
 libs-pkg: webupload-engine
 dev-pkg: webupload-engine-dev
-doc: webupload-engine-doc
 
 interface: Publish Widgets
 type: library
