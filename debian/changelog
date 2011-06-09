@@ -1,3 +1,9 @@
+webupload-engine (0.3.23.2) unstable; urgency=low
+
+  * After tagging
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Thu, 09 Jun 2011 13:35:34 +0530
+
 webupload-engine (0.3.23.1) unstable; urgency=low
 
   * Fixes: NB#260253 - nokia-publish-ui provides dev package with unresolved dependencies
