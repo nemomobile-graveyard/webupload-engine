@@ -1,8 +1,8 @@
 webupload-engine (0.3.23.2) unstable; urgency=low
 
-  * After tagging
+  * Fixes: NB#264333 - webupload-engine provides dev package with unresolved dependencies
 
- -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Thu, 09 Jun 2011 13:35:34 +0530
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Fri, 10 Jun 2011 12:23:54 +0530
 
 webupload-engine (0.3.23.1) unstable; urgency=low
 

@@ -113,7 +113,8 @@ Package: libpublishwidgets-dev
 Section: libdevel
 Architecture: all
 Depends: ${misc:Depends}, libpublishwidgets0 (>= ${source:Version}),
- libpublishwidgets0 (<< ${source:Version}.1~)
+ libpublishwidgets0 (<< ${source:Version}.1~), 
+ libwebupload-dev (= ${binary:Version}), libshare-ui-dev
 Description: Publish widgets development files
 
 Package: libpublishwidgets-doc
