@@ -1,3 +1,9 @@
+webupload-engine (1.0.27.1) unstable; urgency=low
+
+  * Stable branch
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 06 Jul 2011 15:28:23 +0300
+
 webupload-engine (0.3.23.3) unstable; urgency=low
 
   * After tagging
