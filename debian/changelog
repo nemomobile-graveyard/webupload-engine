@@ -1,6 +1,7 @@
 webupload-engine (1.1.27.1) unstable; urgency=low
 
   * Unstable branch (1.1)
+  * Fixes: NB#268038 - Twitter : Incorrect error message displayed during sharing login recovery when incorrect time zone is set on the device.
 
  -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 06 Jul 2011 15:32:52 +0300
 

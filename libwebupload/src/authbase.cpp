@@ -192,6 +192,7 @@ void AuthBasePrivate::sessionError (const SignOn::Error & err) {
             break;
 
         case SignOn::Error::Ssl:
+        case SignOn::Error::IncorrectDate:
             Q_EMIT (authResult (AuthBase::RESULT_CONN_DATE_ERROR));
             break;
 
