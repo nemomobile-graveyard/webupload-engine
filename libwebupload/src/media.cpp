@@ -130,7 +130,7 @@ QString Media::title(bool getMetadataValue) const {
         (entry()->checkShareFilter(METADATA_FILTER_TITLE))) {
         return "";
     } else {
-        if ((d_ptr->m_changedTitle.isEmpty ()) && (getMetadataValue == true)) {
+        if ((d_ptr->m_changedTitle.trimmed().isEmpty ()) && (getMetadataValue == true)) {
             return d_ptr->m_metadataTitle;
         } else {
             return d_ptr->m_changedTitle;

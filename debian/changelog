@@ -1,6 +1,6 @@
 webupload-engine (1.1.29.2) unstable; urgency=low
 
-  * After tagging
+  * Use trimmed title when comparing if it is empty and possibly replacing it with metadata title
 
  -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 20 Jul 2011 15:16:33 +0300
 
