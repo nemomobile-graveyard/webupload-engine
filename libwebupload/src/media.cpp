@@ -156,7 +156,7 @@ QString Media::description(bool getMetadataValue) const {
         (entry()->checkShareFilter(METADATA_FILTER_DESCRIPTION))) {
         return "";
     } else {
-        if ((d_ptr->m_changedDescription.isEmpty()) && 
+        if ((d_ptr->m_changedDescription.trimmed().isEmpty()) &&
             (getMetadataValue == true)) {
 
             return d_ptr->m_metadataDescription;
