@@ -1,3 +1,9 @@
+webupload-engine (1.1.32.2) unstable; urgency=low
+
+  * After tagging
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Mon, 8 Aug 2011 12:38:00 +0300
+
 webupload-engine (1.1.32.1) unstable; urgency=low
 
   * Use trimmed title when comparing if it is empty and possibly replacing it with metadata title
