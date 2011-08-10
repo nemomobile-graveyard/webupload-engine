@@ -1,6 +1,6 @@
 webupload-engine (1.1.32.2) unstable; urgency=low
 
-  * After tagging
+  * Fixed Coverity issues
 
  -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Mon, 8 Aug 2011 12:38:00 +0300
 

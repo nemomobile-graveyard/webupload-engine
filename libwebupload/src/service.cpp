@@ -317,7 +317,7 @@ void ServicePrivate::populatePresentationData (const QDomElement & element) {
                     m_service);
                 if (option != 0) {
                     PostOption::Type optType = option->type ();
-                    if ((optType < PostOption::OPTION_TYPE_N) &&
+                    if ((optType < PostOption::OPTION_TYPE_COMMON_TYPES_N) &&
                         (optType >= PostOption::OPTION_TYPE_TITLE)) {
                         addOption (option);
                         commonOptionPresent [optType] = true;

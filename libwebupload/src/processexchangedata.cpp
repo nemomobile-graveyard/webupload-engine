@@ -399,6 +399,7 @@ void ProcessExchangeDataPrivate::processByteArray (const QByteArray & recvdInfo)
 
                 qDebug() << "optionValueChangedSignal";
                 Q_EMIT (q_ptr->optionValueChangedSignal(optionId, optionValue,mediaIndex));
+                break;
             }
 
             default:
