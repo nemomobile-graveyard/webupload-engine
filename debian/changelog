@@ -1,6 +1,6 @@
 webupload-engine (1.1.33.1) unstable; urgency=low
 
-  * After tagging
+  * Replaced bad assert with a null check, will fix bug 276948
 
  -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Fri, 12 Aug 2011 11:26:00 +0300
 
