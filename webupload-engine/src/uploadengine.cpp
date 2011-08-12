@@ -191,7 +191,10 @@ void UploadEngine::queueDone () {
 }
 
 void UploadEngine::queueTop (UploadItem * item) {
-    Q_ASSERT (item != 0);
+    if (item == 0) {
+        DBGSTREAM << "Queue is empty, ignoring queueTop call";
+        return;
+    }
 
     DBGSTREAM << "New top in queue"; 
 
