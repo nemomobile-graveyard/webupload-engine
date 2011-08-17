@@ -519,7 +519,8 @@ QString UploadItem::iconForMedia (WebUpload::Media * media,
     if (!isFile) {
         QRegExp urlExp ("text/x-ur[li]", Qt::CaseInsensitive);
         if (urlExp.exactMatch (mime)) {
-            return QLatin1String ("icon-m-content-url");
+            //return QLatin1String ("icon-m-content-url");
+            return QLatin1String ("icon-m-content-event");
         }
     }
 
