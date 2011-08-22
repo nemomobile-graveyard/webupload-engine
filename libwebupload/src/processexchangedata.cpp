@@ -205,6 +205,26 @@ QByteArray ProcessExchangeData::updateFailed (
     return ProcessExchangeDataPrivate::wrapSize (data);
 }
 
+QByteArray ProcessExchangeData::updateFailed (
+    const Error & error, const QStringList & failedIds) {
+
+    QByteArray data;
+    QDataStream ds (&data, QIODevice::WriteOnly);
+
+    ds << (qint32) ProcessExchangeDataPrivate::CODE_REQUEST_UPDATE_FAILED_ALTERNATIVE;
+
+    QByteArray errArray = error.serialize ();
+    ds << (quint32)errArray.size ();
+    ds.writeRawData (errArray.data(), errArray.size());
+
+    ds << (quint32)failedIds.count ();
+    for (int i = 0; i < failedIds.count (); i++) {
+        ds << failedIds[i];
+    }
+
+    return ProcessExchangeDataPrivate::wrapSize (data);
+}
+
 QByteArray ProcessExchangeData::optionValueChanged (const QString & optionId,
     const QVariant & optionValue, int mediaIndex) {
 
@@ -387,6 +407,10 @@ void ProcessExchangeDataPrivate::processByteArray (const QByteArray & recvdInfo)
                 parseUpdateFailedRequest (requestStream);
                 break;
 
+            case CODE_REQUEST_UPDATE_FAILED_ALTERNATIVE:
+                parseUpdateFailedRequestAlternative (requestStream);
+                break;
+
             case CODE_REQUEST_OPTION_VALUE_CHANGED:
             {
                 QString optionId;
@@ -493,4 +517,28 @@ void ProcessExchangeDataPrivate::parseUpdateFailedRequest (QDataStream & ds) {
 
     qDebug() << "updateFailedSignal";
     Q_EMIT (q_ptr->updateFailedSignal ((Error::Code)errCode, failedIds));
+}
+
+void ProcessExchangeDataPrivate::parseUpdateFailedRequestAlternative (QDataStream & ds) {
+    quint32 errArraySize;
+    quint32 failedCount;
+    QStringList failedIds;
+
+    ds >> errArraySize;
+
+    char errArray [errArraySize];
+    ds.readRawData (errArray, errArraySize);
+    QByteArray errByteArray (errArray, errArraySize);
+
+    Error error (errByteArray);
+
+    ds >> failedCount;
+    for (quint32 i = 0; i < failedCount; i++) {
+        QString errString;
+        ds >> errString;
+        failedIds.append (errString);
+    }
+
+    qDebug() << "updateFailedSignal";
+    Q_EMIT (q_ptr->updateFailedSignal (error, failedIds));
 }

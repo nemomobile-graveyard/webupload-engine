@@ -316,6 +316,9 @@ bool PluginApplicationPrivate::initUpdate (const QString & accountStringId,
     connect (m_update, SIGNAL (error(WebUpload::Error::Code,QStringList)), this,
         SLOT (updateError(WebUpload::Error::Code,QStringList)),
         Qt::QueuedConnection);
+    connect (m_update, SIGNAL (error(WebUpload::Error,QStringList)), this,
+        SLOT (updateError(WebUpload::Error,QStringList)),
+        Qt::QueuedConnection);
     
     return true;
 }
@@ -377,6 +380,15 @@ void PluginApplicationPrivate::updateError(WebUpload::Error::Code error,
     
     m_update->disconnect (this);
     
+    send (m_coder.updateFailed (error, failedIds));
+    shutdown ();
+}
+
+void PluginApplicationPrivate::updateError(WebUpload::Error error,
+    QStringList failedIds) {
+
+    m_update->disconnect (this);
+
     send (m_coder.updateFailed (error, failedIds));
     shutdown ();
 }

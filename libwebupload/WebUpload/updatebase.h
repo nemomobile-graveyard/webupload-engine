@@ -125,6 +125,13 @@ namespace WebUpload {
         void optionFailed (WebUpload::Error::Code updateError);
 
         /*!
+           \brief Alternative option fail signal to be able to specify custom
+                  error strings.
+           \param error Error
+         */
+        void optionFailed (WebUpload::Error error);
+
+        /*!
           \brief Notification that some problem with the authentication caused
                  the update to fail. The plugin emits this signal when it is
                  possible to continue with the update with a fresh auth-update

@@ -166,6 +166,11 @@ namespace WebUpload {
           \brief Slot for UpdateInterface::updateError
          */
         void updateError(WebUpload::Error::Code error, QStringList failedIds);
+
+        /*!
+          \brief Alternative Slot for UpdateInterface::updateError
+         */
+        void updateError(WebUpload::Error error, QStringList failedIds);
         
     Q_SIGNALS:
         

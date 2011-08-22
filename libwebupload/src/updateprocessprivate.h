@@ -60,6 +60,11 @@ public Q_SLOTS:
      */
     void failedSlot (WebUpload::Error::Code errorId, QStringList failedIds);
 
+    /*!
+      \brief Alternative slot for ProcessExchangeData::updateFailedSignal
+     */
+    void failedSlot (WebUpload::Error error, QStringList failedIds);
+
 #ifdef WARNINGS_ENABLED
     /*!
       \brief Slot for ProcessExchangeData::updateWarningSignal

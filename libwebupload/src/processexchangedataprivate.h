@@ -86,6 +86,15 @@ namespace WebUpload {
          */
         void parseUpdateFailedRequest (QDataStream & ds);
 
+        /*!
+          \brief Parses the data stream which contains the alternative data for a
+                 updateFailed request and emits the updateFailedSignal with the
+                 parsed data
+          \param ds Datastream containing the parameters for the
+                    updateFailedSignal
+         */
+        void parseUpdateFailedRequestAlternative (QDataStream & ds);
+
     private:
 
         enum RequestEnums {
@@ -100,6 +109,7 @@ namespace WebUpload {
             CODE_REQUEST_STOPPED,
             CODE_REQUEST_UPLOAD_FAILED,
             CODE_REQUEST_UPDATE_FAILED,
+            CODE_REQUEST_UPDATE_FAILED_ALTERNATIVE,
             CODE_REQUEST_OPTION_VALUE_CHANGED,
             #ifdef WARNINGS_ENABLED
             CODE_REQUEST_UPLOAD_WARNING,

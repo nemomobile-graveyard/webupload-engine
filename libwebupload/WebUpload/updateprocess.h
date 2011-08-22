@@ -97,6 +97,12 @@ Q_SIGNALS:
      */
     void failed (WebUpload::Error::Code error, QStringList failedIds);
 
+    /*!
+      \brief Alternative signal emitted when action has failed with custom
+             error string
+     */
+    void failed (WebUpload::Error error, QStringList failedIds);
+
 #ifdef WARNINGS_ENABLED
     /*!
       \brief Signal emitted when action raised a warning

@@ -119,6 +119,15 @@ namespace WebUpload {
         void error (WebUpload::Error::Code error, QStringList failedIds);
 
         /*!
+          \brief Signal emitted when whole entry upload failed and upload
+                 stopped. This is connected to the corresponding signal in the
+                 parent PostBase class
+          \param error Error
+          \param failedIds Options not updated
+         */
+        void error (WebUpload::Error error, QStringList failedIds);
+
+        /*!
           \brief Signal emitted when the upload is stopped. This is connected
                  to the corresponding signal in the parent PostBase class
          */
@@ -153,6 +162,13 @@ namespace WebUpload {
          */
         virtual void optionFailedSlot (WebUpload::Error::Code errCode);
         
+        /*!
+          \brief Alternative optionFailed slot supporting custom strings.
+                 Will check error type and either emit error signal or
+                 continue with next option
+         */
+        virtual void optionFailedSlot (WebUpload::Error optionError);
+
         /*!
           \brief Slot for optionAdded signal
          */

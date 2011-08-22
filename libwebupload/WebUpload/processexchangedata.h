@@ -175,6 +175,18 @@ namespace WebUpload {
             const QStringList & failedIds);
 
         /*!
+          \brief Alternative function called by the update process when
+                 update/add request has failed
+          \param error Error object
+          \param failedIds List of options for which update failed. This string
+                    list is empty in case the update was called for a single
+                    option or if it was an add request that failed
+          \return QByteArray corresponding to the failed request
+         */
+        static QByteArray updateFailed (const Error & error,
+            const QStringList & failedIds);
+
+        /*!
           \brief Function called by the upload process when there is some 
                  option whose value needs to be modified. 
                  Typical use case is where the user opts to upload to an album
@@ -322,6 +334,17 @@ namespace WebUpload {
                     option or if it was an add request that failed
          */
         void updateFailedSignal (WebUpload::Error::Code errorId,
+            QStringList failedIds);
+
+        /*!
+          \brief Alternative signal emitted when the byte array recieved
+                 corresponds to the updateFailed request
+          \param error Error object
+          \param failedIds List of options for which update failed. This string
+                    list is empty in case the update was called for a single
+                    option or if it was an add request that failed
+         */
+        void updateFailedSignal (WebUpload::Error error,
             QStringList failedIds);
 
         /*!
