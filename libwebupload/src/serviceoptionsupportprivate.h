@@ -25,6 +25,8 @@
 
 namespace WebUpload {
 
+    class ServiceOption;
+
     /*!
       \class UpdateValueSettingsPrivate
       \brief Private class for WebUpload::UpdateValueSettings
@@ -56,7 +58,10 @@ namespace WebUpload {
 
         //! String to be shown in the button in the add dialog, clicking on
         // which starts the add process
-        QString m_addButton; 
+        QString m_addButton;
+
+        //! Service options related to add settings, for example privacy
+        QList<ServiceOption *> m_serviceOptions;
     };
 }
 

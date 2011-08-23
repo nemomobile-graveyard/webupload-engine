@@ -408,6 +408,17 @@ bool ServiceOptionPrivate::readAddValueSettings (QDomElement & element) {
             if (inputValid == true) {
                 m_addSettings->setMaxLength (lenInt);
             }
+        } else if (childElem.tagName () == "option" &&
+                   m_parent != 0 && m_parent->parent() != 0) {
+
+            ServiceOption *option = new ServiceOption(m_parent->parent());
+            if (option->init(childElem) == true) {
+                m_addSettings->addServiceOption(option);
+            }
+            else {
+                delete option;
+                option = 0;
+            }
         }
 
         node = node.nextSibling ();

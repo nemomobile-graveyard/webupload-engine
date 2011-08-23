@@ -19,6 +19,7 @@
  */
 
 #include "WebUpload/serviceoptionsupport.h"
+#include "WebUpload/serviceoption.h"
 #include "serviceoptionsupportprivate.h"
 #include <QDebug>
 
@@ -142,4 +143,42 @@ void AddValueSettings::setAddButton (const QString & addButton) {
 
 const QString & AddValueSettings::addButton () const {
     return d_ptr->m_addButton;
+}
+
+QListIterator<ServiceOption *> AddValueSettings::serviceOptions() const {
+    QListIterator<ServiceOption *> iter (d_ptr->m_serviceOptions);
+    return iter;
+}
+
+ServiceOption * AddValueSettings::serviceOption (const QString & id) const {
+    ServiceOption * ret = 0;
+
+    QListIterator<ServiceOption *> iter (d_ptr->m_serviceOptions);
+    while (iter.hasNext() == true) {
+        ServiceOption * option = iter.next ();
+        if (option->id() == id) {
+            ret = option;
+            break;
+        }
+    }
+
+    return ret;
+}
+
+void AddValueSettings::addServiceOption (ServiceOption * option) {
+    if (option == 0) {
+        qWarning() << __FUNCTION__ << "called with null pointer";
+        return;
+    }
+
+    QList<ServiceOption *>::iterator iter;
+    for (iter = d_ptr->m_serviceOptions.begin();
+        iter != d_ptr->m_serviceOptions.end(); ++iter) {
+        if ((*iter)->order () > option->order ()) {
+            break;
+        }
+    }
+
+    d_ptr->m_serviceOptions.insert (iter, option);
+    return;
 }

@@ -24,11 +24,13 @@
 #include "WebUpload/export.h"
 
 #include <QString>
+#include <QListIterator>
 
 namespace WebUpload {
 
     class UpdateValueSettingsPrivate;
     class AddValueSettingsPrivate;
+    class ServiceOption;
 
     /*!
         \class UpdateValueSettings
@@ -160,6 +162,25 @@ namespace WebUpload {
           \return String to be displayed
          */
         const QString & addButton () const;
+
+        /*!
+           \brief Get iterator to service options of the add settings
+           \return Iterator to service options.
+         */
+        QListIterator<ServiceOption *> serviceOptions() const;
+
+        /*!
+          \brief Get the service option with id
+          \param id Service post option id
+          \return Pointer to service post option or null if not found
+         */
+        ServiceOption * serviceOption (const QString & id) const;
+
+        /*!
+           \brief Adds a service option to the add settings
+           \param option Service option to add
+         */
+        void addServiceOption(ServiceOption *option);
 
     private:
         AddValueSettingsPrivate * const d_ptr;
