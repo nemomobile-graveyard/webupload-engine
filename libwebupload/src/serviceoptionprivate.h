@@ -102,8 +102,6 @@ namespace WebUpload {
 
         bool m_changeable; //!< If value is marked as changeable
         AddValueSettings *m_addSettings; //!< Settings for add value
-        
-        Account * m_account; //!< Corresponding account
     };
 }
 

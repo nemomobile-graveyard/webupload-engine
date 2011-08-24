@@ -319,7 +319,7 @@ void ServiceOption::refresh (bool sync) {
 /* --- Private class functions ---------------------------------------------- */
 ServiceOptionPrivate::ServiceOptionPrivate (ServiceOption * parent) :
     m_parent (parent), m_updatable (false), m_updateSettings (0),
-    m_changeable (false), m_addSettings (0), m_account (0) {
+    m_changeable (false), m_addSettings (0) {
 
 }
 
