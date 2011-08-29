@@ -53,6 +53,8 @@ bool CommonTextOption::init (QDomElement & element) {
         "multiline", defMultilineValue);
     d_ptr->m_prefill = XmlHelper::attributeValueToBool (element, "prefill",
         true);
+    d_ptr->m_maxLength = XmlHelper::attributeValueToInt(element, "maxLength",
+        0);
 
     QDomNodeList nodes = element.elementsByTagName ("tooltip");
     if (nodes.count () > 0) {
@@ -99,10 +101,15 @@ bool CommonTextOption::prefill() const {
     return d_ptr->m_prefill;
 }
 
+int CommonTextOption::maxLength() const {
+    return d_ptr->m_maxLength;
+}
+
 // -- private class -----------------------------------------------------------
 
 CommonTextOptionPrivate::CommonTextOptionPrivate(CommonTextOption * parent) :
-    m_parent (parent), m_isMultiline (false), m_prefill (true) {
+    m_parent (parent), m_isMultiline (false), m_prefill (true),
+    m_maxLength(0) {
 }
 
 CommonTextOptionPrivate::~CommonTextOptionPrivate() {

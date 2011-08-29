@@ -52,6 +52,9 @@ namespace WebUpload {
         //! Tooltip string to show in the text entry widget if there is no
         //  value there.
         QString m_tooltip;
+
+        //! Text option max length
+        int m_maxLength;
     
     };
 }

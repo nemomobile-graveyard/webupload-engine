@@ -68,6 +68,21 @@ bool XmlHelper::attributeValueToBool (QDomElement & elem,
     }
 }
 
+int XmlHelper::attributeValueToInt (QDomElement & elem,
+    const QString & attribute, int defValue) {
+
+    int value = defValue;
+
+    QString str = elem.attribute (attribute, "");
+    bool inputValid = false;
+    value = str.toInt (&inputValid, 10);
+    if (inputValid == false) {
+        value = defValue;
+    }
+
+    return value;
+}
+
 QStringList XmlHelper::readMimeTypes (const QDomElement & elem) {
     
     QStringList retList;

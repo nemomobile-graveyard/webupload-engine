@@ -70,6 +70,12 @@ namespace WebUpload {
           \return <code>true</code> if value should be autofilled
          */
         bool prefill() const;
+
+        /*!
+          \brief Returns the maximum length of this text option
+          \return Maximum length
+        */
+        int maxLength() const;
         
     private:
     
