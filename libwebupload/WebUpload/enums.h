@@ -49,6 +49,7 @@ namespace WebUpload {
         IMAGE_RESIZE_LARGE, //!< Long edge is of length 1920 pixels
         IMAGE_RESIZE_MEDIUM, //!< Long edge is of length 1280 pixels
         IMAGE_RESIZE_SMALL, //!< Long edge is of length 640 pixels
+        IMAGE_RESIZE_SERVICE_DEFAULT, //!< Use service default image size
 
         IMAGE_RESIZE_N //!< Last value, do not use
     };

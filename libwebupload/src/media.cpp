@@ -909,6 +909,18 @@ Media::CopyResult MediaPrivate::scaleAndSaveImage (const QString & origPath,
         case IMAGE_RESIZE_SMALL:
             reSizeScale = 640;
             break;
+        case IMAGE_RESIZE_SERVICE_DEFAULT:
+            {
+                bool ok = false;
+                if (m_media->entry() != 0 && m_media->entry()->account() != 0) {
+                    reSizeScale = m_media->entry()->account()->value("default-image-size").toInt(&ok);
+                }
+                if (ok == false) {
+                    reSizeScale = 0;
+                    qWarning() << "Failed to read default image size for service from account, using original image size";
+                }
+            }
+            break;
         default: // None
             // Should never happen since we are checking before entering here
             qWarning () << "Invalid resize option " << imageResizeOption;

@@ -935,6 +935,8 @@ bool EntryPrivate::init(const QString &path, Entry * entry, bool demandProper,
                     this->image_resize_option = IMAGE_RESIZE_MEDIUM;
                 } else if (temp == "small") {
                     this->image_resize_option = IMAGE_RESIZE_SMALL;
+                } else if (temp == "default") {
+                    this->image_resize_option = IMAGE_RESIZE_SERVICE_DEFAULT;
                 } else {
                     this->image_resize_option = IMAGE_RESIZE_NONE;
                 }
@@ -1197,6 +1199,11 @@ bool EntryPrivate::serialize(const QString & path) {
             case IMAGE_RESIZE_SMALL:
                 qDebug() << "Saving attribute small to resize-option";
                 imageResizeOption.setAttribute ("resize-option", "small");
+                entryTag.appendChild(imageResizeOption);
+                break;
+            case IMAGE_RESIZE_SERVICE_DEFAULT:
+                qDebug() << "Saving attribute default to resize-option";
+                imageResizeOption.setAttribute ("resize-option", "default");
                 entryTag.appendChild(imageResizeOption);
                 break;
             default:
