@@ -35,7 +35,7 @@ namespace WebUpload {
         virtual ~CommonListOptionPrivate ();
 
         bool initMetadata ();
-        bool initImageResize ();
+        bool initImageResize (int defaultLimit = 0);
         bool initVideoResize ();
 
         QStringList valueList () const;

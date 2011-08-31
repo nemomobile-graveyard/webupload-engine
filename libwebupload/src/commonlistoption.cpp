@@ -51,7 +51,9 @@ bool CommonListOption::init (QDomElement & element) {
 
         case PostOption::OPTION_TYPE_IMAGE_RESIZE:
         {
-            initDone = d_ptr->initImageResize ();
+
+            initDone = d_ptr->initImageResize (
+                XmlHelper::attributeValueToInt(element, "default", 0));
 
             QStringList mimeList;
             mimeList << "image/*";
@@ -228,7 +230,7 @@ bool CommonListOptionPrivate::initMetadata () {
     return true;
 }
 
-bool CommonListOptionPrivate::initImageResize () {
+bool CommonListOptionPrivate::initImageResize (int defaultLimit) {
 
     if (!m_valueList.isEmpty ()) {
         qWarning() << "Option already been initialized earlier";
@@ -240,8 +242,8 @@ bool CommonListOptionPrivate::initImageResize () {
         return false;
     }
 
-    m_currentValueIndex = 0;
-    int defVal = m_parent->account()->imageResizeOption ();
+    QList<int> limits;
+    limits << 0 << 1920 << 1280 << 640;
 
     OptionValue * opt;
     opt = new OptionValue ();
@@ -249,35 +251,50 @@ bool CommonListOptionPrivate::initImageResize () {
     opt->valueId = qtTrId ("qtn_tui_share_size1");
     opt->value = (int)WebUpload::IMAGE_RESIZE_NONE;
     m_valueList << opt;
-    if (defVal == opt->value) {
-        m_currentValueIndex = 0;
-    }
 
     opt = new OptionValue ();
     //% "Large (%L1 px)"
-    opt->valueId = qtTrId ("qtn_tui_share_size4").arg (1920);
+    opt->valueId = qtTrId ("qtn_tui_share_size4").arg (limits[1]);
     opt->value = (int)WebUpload::IMAGE_RESIZE_LARGE;
     m_valueList << opt;
-    if (defVal == opt->value) {
-        m_currentValueIndex = 1;
-    }
 
     opt = new OptionValue ();
     //% "Medium (%L1 px)"
-    opt->valueId = qtTrId ("qtn_tui_share_size2").arg (1280);
+    opt->valueId = qtTrId ("qtn_tui_share_size2").arg (limits[2]);
     opt->value = (int)WebUpload::IMAGE_RESIZE_MEDIUM;
     m_valueList << opt;
-    if (defVal == opt->value) {
-        m_currentValueIndex = 2;
-    }
 
     opt = new OptionValue ();
     //% "Small (%L1 px)"
-    opt->valueId = qtTrId ("qtn_tui_share_size3").arg (640);
+    opt->valueId = qtTrId ("qtn_tui_share_size3").arg (limits[3]);
     opt->value = (int)WebUpload::IMAGE_RESIZE_SMALL;
     m_valueList << opt;
-    if (defVal == opt->value) {
-        m_currentValueIndex = 3;
+
+    if (defaultLimit > 0) {
+        QString serviceName;
+        Service *service = qobject_cast<Service*>(m_parent->parent());
+        if (service != 0) {
+            serviceName = service->name();
+        }
+        opt = new OptionValue ();
+        //% "%1 default (%L2 px)"
+        opt->valueId = qtTrId ("qtn_tui_share_size_service_default").
+            arg(serviceName).arg(defaultLimit);
+        opt->value = (int)WebUpload::IMAGE_RESIZE_SERVICE_DEFAULT;
+        m_valueList << opt;
+
+        m_parent->account()->setValue("default-image-size", QVariant::fromValue(defaultLimit));
+    }
+
+    if (m_parent->account()->value("image-resize").isValid()) {
+        m_currentValueIndex = m_parent->account()->imageResizeOption () -
+            (int)WebUpload::IMAGE_RESIZE_NONE;
+    }
+    else if (defaultLimit > 0) {
+        m_currentValueIndex = limits.size();
+    }
+    else {
+        m_currentValueIndex = 0;
     }
 
     return true;

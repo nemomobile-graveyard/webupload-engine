@@ -60,6 +60,17 @@ namespace WebUpload {
          */
         static bool attributeValueToBool (QDomElement & elem,
             const QString & attribute, bool defValue = false);
+
+        /*!
+         \brief Function to receive integer value from attribute
+         \param elem Element used
+         \param attName Attribute name used
+         \param defValue Default value returned if attribute not found or
+                         if it's value isn't valid.
+         \return attributes value or default if value not defined
+        */
+       static int attributeValueToInt (QDomElement & elem,
+           const QString & attribute, int defValue = 0);
             
         /*!
           \brief Resolve mime types under given tag
