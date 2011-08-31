@@ -1,6 +1,7 @@
-webupload-engine (1.1.33.2) unstable; urgency=low
+webupload-engine (1.2.35.1) unstable; urgency=low
 
-  * After tagging
+  * Fixes: NB#257651 - [TASK] Destination specific image re-size option
+  * Fixes: NB#272531 - Youtube: Transfer fails when trying to upload with title longer than 100 characters
 
  -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 17 Aug 2011 17:57:00 +0300
 
