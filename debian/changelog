@@ -1,6 +1,6 @@
 webupload-engine (1.1.33.2) unstable; urgency=low
 
-  * After tagging
+  * Added support for custom error strings for update options.
 
  -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 17 Aug 2011 17:57:00 +0300
 
