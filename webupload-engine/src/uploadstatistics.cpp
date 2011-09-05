@@ -39,11 +39,28 @@ UploadStatistics::UploadStatistics (unsigned int historySize, QObject * parent)
 UploadStatistics::~UploadStatistics () {
 }
 
+void UploadStatistics::reset() {
+
+    loopIndex = dones.size() - 1;
+    samplesReceived = 0;
+    secondsLeft = -1;
+    for (int i = 0; i < dones.size(); ++i) {
+        dones[i] = 0.0;
+        timestamps[i] = QDateTime();
+    }
+}
+
 void UploadStatistics::setSize (qint64 size) {
     byteSize = size;
 }
 
 bool UploadStatistics::nowDone (float done) {
+
+    if (done == 0) {
+        reset();
+        Q_EMIT (timeLeftEstimate (secondsLeft));
+        return true;
+    }
 
     // Return if done is same as last time or time is the same as the last time
     // Need to convert to time_t since QDateTime otherwise checks at

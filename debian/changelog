@@ -1,5 +1,6 @@
 webupload-engine (1.2.35.1) unstable; urgency=low
 
+  * Fixes: NB#271759 - Transfer details dialog shows progress bar when signon dialog is displayed
   * Fixes: NB#257651 - [TASK] Destination specific image re-size option
   * Fixes: NB#272531 - Youtube: Transfer fails when trying to upload with title longer than 100 characters
 

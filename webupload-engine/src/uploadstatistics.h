@@ -63,6 +63,11 @@ public:
       \return last progress sent
     */
     float lastProgressValue() const;
+
+    /*!
+      \brief Reset upload statistics
+     */
+    void reset();
     
 public Q_SLOTS:
     

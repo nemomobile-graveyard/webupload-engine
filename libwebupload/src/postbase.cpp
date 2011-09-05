@@ -258,6 +258,7 @@ void PostBasePrivate::errorFixed (AuthBase *authP) {
 
 void PostBasePrivate::startAuthentication (AuthBase *authP) {
     state = STATE_AUTH_PENDING;
+
     if (authP != 0) {
         if (authPtr != 0) {
             authPtr->disconnect (this);
@@ -415,6 +416,7 @@ void PostBasePrivate::mediaDoneSlot (QString destUrl) {
         
 void PostBasePrivate::reAuthSlot () {
     state = STATE_AUTH_PENDING;
+    Q_EMIT (progress (0));
     startAuthentication ();
 }
 
