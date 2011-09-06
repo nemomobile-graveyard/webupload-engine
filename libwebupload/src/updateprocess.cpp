@@ -44,6 +44,10 @@ UpdateProcess::UpdateProcess (QObject * parent) :
         SIGNAL (updateFailedSignal(WebUpload::Error::Code,QStringList)), d_ptr,
         SLOT (failedSlot(WebUpload::Error::Code,QStringList)),
         Qt::QueuedConnection);
+    connect (&m_pdata,
+        SIGNAL (updateFailedSignal(WebUpload::Error,QStringList)), d_ptr,
+        SLOT (failedSlot(WebUpload::Error,QStringList)),
+        Qt::QueuedConnection);
 #ifdef WARNINGS_ENABLED
     connect (&m_pdata,
         SIGNAL (updateWarningSignal(WebUpload::Error::Code,QStringList)), d_ptr,
@@ -160,6 +164,20 @@ void UpdateProcessPrivate::failedSlot (const WebUpload::Error::Code errorId,
         Q_EMIT(q_ptr->failed(WebUpload::Error::CODE_NO_CONNECTION, failedIds));
     } else {
         Q_EMIT (q_ptr->failed (errorId, failedIds));
+    }
+}
+
+void UpdateProcessPrivate::failedSlot (const WebUpload::Error error,
+    const QStringList failedIds) {
+
+    qDebug() << __FUNCTION__ << "(alternative)" << error.code() << ": Refreshing all options";
+    m_account->service()->refreshPostOptions();
+
+    ConnectionManager connection (this, false);
+    if (connection.isConnected () == false) {
+        Q_EMIT(q_ptr->failed(WebUpload::Error::CODE_NO_CONNECTION, failedIds));
+    } else {
+        Q_EMIT (q_ptr->failed (error, failedIds));
     }
 }
 

@@ -95,6 +95,11 @@ namespace WebUpload {
         void error (WebUpload::Error::Code error, QStringList failedIds);
 
         /*!
+          \brief Alternative error signal supporting custom notification strings.
+         */
+        void error (WebUpload::Error error, QStringList failedIds);
+
+        /*!
           \brief Signal emitted when the update is canceled
          */
         void canceled ();

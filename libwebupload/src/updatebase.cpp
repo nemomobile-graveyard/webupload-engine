@@ -36,6 +36,8 @@ UpdateBase::UpdateBase (QObject *parent) : UpdateInterface(parent),
     connect (d_ptr, SIGNAL (canceled()), this, SIGNAL (canceled()));
     connect (d_ptr, SIGNAL (error(WebUpload::Error::Code, QStringList)), this, 
         SIGNAL (error(WebUpload::Error::Code, QStringList)));
+    connect (d_ptr, SIGNAL (error(WebUpload::Error, QStringList)), this,
+        SIGNAL (error(WebUpload::Error, QStringList)));
 
     connect (d_ptr, SIGNAL (updateAuthDone()), this, SLOT (updateOption()));
     connect (d_ptr, SIGNAL (addAuthDone(QString)), this, 
@@ -47,6 +49,8 @@ UpdateBase::UpdateBase (QObject *parent) : UpdateInterface(parent),
         SLOT (optionAddedSlot(bool)));
     connect (this, SIGNAL (optionFailed(WebUpload::Error::Code)), d_ptr,
         SLOT (optionFailedSlot(WebUpload::Error::Code)));
+    connect (this, SIGNAL (optionFailed(WebUpload::Error)), d_ptr,
+        SLOT (optionFailedSlot(WebUpload::Error)));
     connect (this, SIGNAL (reAuth()), d_ptr, SLOT (reAuthSlot()), 
         Qt::QueuedConnection);
 }
@@ -363,6 +367,18 @@ void UpdateBasePrivate::optionFailedSlot (WebUpload::Error::Code errCode) {
     }
 
     reset (); 
+}
+
+void UpdateBasePrivate::optionFailedSlot (WebUpload::Error optionError) {
+
+    if (state == STATE_CANCEL) {
+        Q_EMIT (canceled());
+    } else {
+        QStringList failed;
+        Q_EMIT (error (optionError, failed));
+    }
+
+    reset ();
 }
 
 void UpdateBasePrivate::reAuthSlot () {
