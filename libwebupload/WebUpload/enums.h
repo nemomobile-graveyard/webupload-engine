@@ -37,7 +37,8 @@ namespace WebUpload {
         METADATA_FILTER_AUTHOR_LOCATION = 0x01, // !< Remove Author and location
         METADATA_FILTER_TITLE = 0x2, // !< Remove Title
         METADATA_FILTER_DESCRIPTION = 0x4, // !< Remove Description
-        METADATA_FILTER_TAGS = 0x8 // !< Remove Tags
+        METADATA_FILTER_TAGS = 0x8, // !< Remove Tags
+        METADATA_FILTER_REGIONS = 0x10// !< Remove region information (facetags)
     };
 
     Q_DECLARE_FLAGS(MetadataFilters, MetadataFilter)

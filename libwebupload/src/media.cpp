@@ -38,6 +38,8 @@
 #include <QImageWriter>
 #include <QtConcurrentRun>
 #include <quillmetadata/QuillMetadata>
+#include <quillmetadata/QuillMetadataRegion>
+#include <quillmetadata/QuillMetadataRegionList>
 
 // If using qtsparql
 #include <QtSparql>
@@ -2008,6 +2010,29 @@ Media::CopyResult MediaPrivate::filterAndSyncImageMetadata(
             qDebug() << "Calling removeEntries with TagGroup_GPS";
             originalMetadata.removeEntries (QuillMetadata::TagGroup_GPS);
         }
+
+        if (filters.testFlag(METADATA_FILTER_REGIONS)) {
+            qDebug() << "Removing regions from metadata";
+            originalMetadata.removeEntry (QuillMetadata::Tag_Regions);
+        }
+#if 0
+        else {
+            // Remove contact URN from regions.
+            QVariant variant = originalMetadata.entry(QuillMetadata::Tag_Regions);
+            if (!variant.isNull() && variant.canConvert<QuillMetadataRegionList>()) {
+                QuillMetadataRegionList regions = variant.value<QuillMetadataRegionList>();
+                QuillMetadataRegionList newRegions;
+                newRegions.setFullImageSize(regions.fullImageSize());
+                Q_FOREACH(const QuillMetadataRegion& region, regions) {
+                    QuillMetadataRegion newRegion(region);
+                    newRegion.setExtension("nco:PersonContact", "");
+                    newRegions.append(newRegion);
+                }
+                variant.setValue(newRegions);
+                originalMetadata.setEntry(QuillMetadata::Tag_Regions, variant);
+            }
+        }
+#endif
 
         metadataWritten = originalMetadata.write(targetPath);
     }
