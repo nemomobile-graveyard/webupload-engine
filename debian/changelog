@@ -1,3 +1,9 @@
+webupload-engine (1.2.38.2) unstable; urgency=low
+
+  * After tagging
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Mon, 19 Sep 2011 15:33:00 +0300
+
 webupload-engine (1.2.38.1) unstable; urgency=low
 
   * Fixes: NB#271759 - Transfer details dialog shows progress bar when signon dialog is displayed
