@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 5.0.0), transfer-ui-dev (>=0.2.43.1),
     libshare-ui-dev (>=0.2.33.3), libqt4-dev (>=4.6), doxygen, accounts-qt-dev,
     libmeegotouch-dev (>= 0.20.40), libqtsparql-dev,
     libaccounts-qt-dev (>=0.19), libsignon-qt-dev (>= 3.2-1~),
-    libquillmetadata-dev (>= 1.100604), libmdatauri-dev,
+    libquillmetadata-dev (>= 1.110818), libmdatauri-dev,
     aegis-builder, libqmsystem2-dev, libqtm-systeminfo-dev,
     duicontrolpanel-certificatesapplet, libcontentaction-dev
 Standards-Version: 3.8.0
