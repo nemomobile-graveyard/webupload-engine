@@ -28,6 +28,7 @@
 #include <WebUpload/Service>
 #include <WebUpload/Entry>
 #include <WebUpload/Account>
+#include <Accounts/Manager>
 
 namespace WebUpload {
 
@@ -157,6 +158,13 @@ namespace WebUpload {
                  instance has been created.
         */
         static void loadLocales();
+
+        /*!
+          \brief Returns a shared accounts manager instance for handling
+                 sharing accounts
+          \return Shared pointer to an accounts manager instance
+        */
+        static QSharedPointer<Accounts::Manager> accountsManager();
         
         /*!
           \brief Response codes for sendEntryToUploadEngine and validateEntry
