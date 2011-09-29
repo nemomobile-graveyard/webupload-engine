@@ -21,10 +21,11 @@
 #ifndef _WEBUPLOAD_SYSTEM_PRIVATE_H_
 #define _WEBUPLOAD_SYSTEM_PRIVATE_H_
 
+#include "WebUpload/System"
+#include <Accounts/Manager>
 #include <QObject>
 #include <QString>
-#include "WebUpload/System"
-#include <accounts-qt/manager.h>
+#include <QWeakPointer>
 
 namespace WebUpload {
 
@@ -64,13 +65,14 @@ namespace WebUpload {
         //! Static variable for metatype registering
         static bool m_metatypesRegistered;
 
+        //! Shared accounts manager instance
+        static QWeakPointer<Accounts::Manager> m_accountsManager;
+
         System * publicObject; //!< Public object                
     
         QString serviceDefinitionsPath; //!< Filepath to definitions
         QString entryOutboxPath; //!< Filepath to outbox
         QString m_pluginProcessPath; //!< Filepath to plugins
-
-        Accounts::Manager manager; //!< Account manager
 
         //!< If true account events are followed
         bool accountsListenerEnabled;

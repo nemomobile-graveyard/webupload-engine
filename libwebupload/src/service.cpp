@@ -518,8 +518,8 @@ bool ServicePrivate::loadServiceOptions () {
         return false;
     }
 
-    Accounts::Manager aManager ("sharing");
-    Accounts::Service * accountsService = aManager.service (m_accServiceName);
+    Accounts::Service * accountsService =
+        System::accountsManager()->service (m_accServiceName);
     
     if (accountsService == 0) {
         qWarning() << "Failed to load service" << m_accServiceName;    
@@ -540,6 +540,7 @@ bool ServicePrivate::loadServiceOptions () {
     }
     
     m_serviceOptionsLoaded = true;
+
     return true;
 }
 

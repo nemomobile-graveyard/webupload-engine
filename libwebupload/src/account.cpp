@@ -18,9 +18,9 @@
  * Inc., 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "WebUpload/Account"
 #include "accountprivate.h"
 #include "WebUpload/Account"
+#include "WebUpload/System"
 #include <QDebug>
 
 using namespace WebUpload;
@@ -209,7 +209,7 @@ void Account::setMetadataFilters (int flags) {
 /* -- private class functions ----------------------------------------------- */
 AccountPrivate::AccountPrivate (Account * parent) : QObject (parent),
     m_accountId (0), m_sAccount (parent), m_service (0), m_aAccount (0),
-    m_settings (new QSettings ("nokia", "webupload-engine")), m_aManager (0),
+    m_settings (new QSettings ("nokia", "webupload-engine")),
     m_accountEnabled (false), m_serviceEnabled (false) {
 
 }
@@ -221,10 +221,6 @@ AccountPrivate::~AccountPrivate() {
     
     if (m_aAccount != 0) {
         delete m_aAccount;
-    }
-    
-    if (m_aManager != 0) {
-        delete m_aManager;
     }
     
     if (m_settings != 0) {
@@ -289,8 +285,8 @@ bool AccountPrivate::load () {
         return false;
     }
     
-    if (m_aManager == 0) {
-        m_aManager = new Accounts::Manager ("sharing", m_sAccount);
+    if (m_aManager.isNull()) {
+        m_aManager = System::accountsManager();
     }
     
     m_aAccount = m_aManager->account (m_accountId);
@@ -346,8 +342,6 @@ void AccountPrivate::accountsRemoved () {
 
     delete m_aAccount;
     m_aAccount = 0;
-    delete m_aManager;
-    m_aManager = 0;
     
     m_accountId = 0;
     m_serviceName = "";
