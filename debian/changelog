@@ -1,3 +1,9 @@
+webupload-engine (1.1.39.2) unstable; urgency=low
+
+  * After tagging
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Thu, 29 Sep 2011 16:34:00 +0300
+
 webupload-engine (1.1.39.1) unstable; urgency=low
 
   * Fixes: NB#283955 - webupload-engine accounts.db file descriptor leakage in LPT testing
