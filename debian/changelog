@@ -1,3 +1,9 @@
+webupload-engine (1.1.40.1) unstable; urgency=low
+
+  * After tagging
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Fri, 30 Sep 2011 16:52:00 +0300
+
 webupload-engine (1.1.39.2) unstable; urgency=low
 
   * Fixed new configured accounts not showing up in share-ui for the first time
