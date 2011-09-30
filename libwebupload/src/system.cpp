@@ -39,7 +39,7 @@ using namespace WebUpload;
 //Set default values for static variables
 bool SystemPrivate::m_loadPresentationData = true;
 bool SystemPrivate::m_metatypesRegistered = false;
-QWeakPointer<Accounts::Manager> SystemPrivate::m_accountsManager;
+QWeakPointer<Accounts::Manager> SystemPrivate::s_accountsManager;
 
 System::System (QObject * parent) : QObject (parent),
     d_ptr (new SystemPrivate (this)) {
@@ -303,6 +303,8 @@ QString System::pluginProcessPath () {
 // -- private functions -------------------------------------------------------
 SystemPrivate::SystemPrivate (System * parent) : QObject (parent),
     publicObject (parent), accountsListenerEnabled (false) {
+
+    m_accountsManager = System::accountsManager();
     
     m_pluginProcessPath = QLatin1String("/usr/lib/webupload/plugins/");
     serviceDefinitionsPath = QLatin1String("/usr/share/webupload/services");
@@ -320,11 +322,11 @@ QList <QSharedPointer<Account> > SystemPrivate::loadAccounts (
     qDebug() << "PERF: LoadAccounts START";
     
     QList <QSharedPointer<Account> > retList;
-    QSharedPointer<Accounts::Manager> manager = System::accountsManager();
-    Accounts::AccountIdList idList = manager->accountList (serviceType);
+    Accounts::AccountIdList idList =
+        m_accountsManager->accountList (serviceType);
     
     for (int i = 0; i < idList.size (); ++i) {
-        Accounts::Account * aAccount = manager->account (idList [i]);
+        Accounts::Account * aAccount = m_accountsManager->account (idList [i]);
         
         if (aAccount == 0) {
             qWarning() << "Null account received" << i + 1;
@@ -376,15 +378,14 @@ void SystemPrivate::enableAccountListener (bool on) {
     }
     
     accountsListenerEnabled = on;
-
-    QSharedPointer<Accounts::Manager> manager = System::accountsManager();
     
     if (!on) {
         qDebug() << "Account listener disabled";
-        manager->disconnect (SIGNAL (accountCreated(Accounts::AccountId)), this);
+        m_accountsManager->disconnect (
+            SIGNAL (accountCreated(Accounts::AccountId)), this);
     } else {
         qDebug() << "Account listener enabled";
-        QObject::connect (manager.data(),
+        QObject::connect (m_accountsManager.data(),
             SIGNAL (accountCreated(Accounts::AccountId)), this,
             SLOT (accountsAccountCreated(Accounts::AccountId)));    
     }
@@ -399,7 +400,7 @@ void SystemPrivate::accountsAccountCreated (Accounts::AccountId id) {
     }
     
     //Check for sharing services under created account
-    Accounts::Account * aAcc = System::accountsManager()->account (id);
+    Accounts::Account * aAcc = m_accountsManager->account (id);
     if (aAcc == 0) {
         qWarning() << "Invalid account ID from Accounts Manager";
         return;
@@ -473,11 +474,11 @@ bool System::checkDiskSpace(QDir targetDir, WebUpload::Entry* entry)
 QSharedPointer<Accounts::Manager> System::accountsManager() {
 
     QSharedPointer<Accounts::Manager> manager =
-        SystemPrivate::m_accountsManager.toStrongRef();
+        SystemPrivate::s_accountsManager.toStrongRef();
     if (manager.isNull()) {
         manager = QSharedPointer<Accounts::Manager>(
             new Accounts::Manager("sharing"));
-        SystemPrivate::m_accountsManager = manager.toWeakRef();
+        SystemPrivate::s_accountsManager = manager.toWeakRef();
     }
 
     return manager;

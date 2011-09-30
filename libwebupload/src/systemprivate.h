@@ -25,6 +25,7 @@
 #include <Accounts/Manager>
 #include <QObject>
 #include <QString>
+#include <QSharedPointer>
 #include <QWeakPointer>
 
 namespace WebUpload {
@@ -66,7 +67,10 @@ namespace WebUpload {
         static bool m_metatypesRegistered;
 
         //! Shared accounts manager instance
-        static QWeakPointer<Accounts::Manager> m_accountsManager;
+        static QWeakPointer<Accounts::Manager> s_accountsManager;
+
+        //! Accounts manager instance
+        QSharedPointer<Accounts::Manager> m_accountsManager;
 
         System * publicObject; //!< Public object                
     
