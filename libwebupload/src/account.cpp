@@ -295,6 +295,7 @@ bool AccountPrivate::load () {
         return false;
     }
     
+    m_aAccount->selectService();
     m_accountEnabled = m_aAccount->enabled ();
 
     // Load Accounts' service
