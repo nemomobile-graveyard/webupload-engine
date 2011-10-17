@@ -1,3 +1,9 @@
+webupload-engine (1.2.42.2) unstable; urgency=low
+
+  * After tagging
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Mon, 17 Oct 2011 19:43:00 +0300
+
 webupload-engine (1.2.42.1) unstable; urgency=low
 
   * Fixes: NB#286447 - Disabled accounts are still displayed in ShareUI main view
