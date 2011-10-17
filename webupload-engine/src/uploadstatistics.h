@@ -40,7 +40,7 @@ public:
       \param historySize How many samples are stored to calculate estimates
       \param parent QObject parent
      */
-    UploadStatistics (unsigned int historySize = 5, QObject * parent = 0);
+    UploadStatistics (unsigned int historySize = 50, QObject * parent = 0);
     ~UploadStatistics ();
     
     /*!
