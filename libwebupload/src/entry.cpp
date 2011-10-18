@@ -29,6 +29,7 @@
 #include "WebUpload/Entry"
 #include "WebUpload/PostOption"
 #include "WebUpload/CommonListOption"
+#include "WebUpload/CommonSwitchOption"
 #include "WebUpload/ServiceOption"
 #include "WebUpload/Media"
 #include "internalenums.h"
@@ -1338,20 +1339,15 @@ bool EntryPrivate::addToTracker(void) {
 
 void EntryPrivate::syncPostOptions () {
 
-    // Account * acc = 0;
-    
-    if (m_account.isNull()/* == false*/) {
-        /*
-        acc = m_account.data();
-    } 
-    
-    if (acc == 0) {
-    */
+    if (m_account.isNull()) {
         qCritical() << "Can't sync without account";
         return;
     }
 
-    // QListIterator<PostOption *> options = acc->service()->postOptions();
+    if (publicObject != 0) {
+        publicObject->setMetadataFilter(METADATA_FILTER_NONE);
+    }
+
     QListIterator<PostOption *> options = m_account->service()->postOptions();
     while (options.hasNext ()) {
         PostOption * option = options.next ();
@@ -1366,7 +1362,21 @@ void EntryPrivate::syncPostOptions () {
                 CommonListOption * opt = 
                     qobject_cast<CommonListOption *>( option);
                 if (publicObject != 0 && opt != 0) {
-                    publicObject->setMetadataFilter (opt->currentValue());
+                    publicObject->setMetadataFilter (
+                        publicObject->metadataFilterOption() | opt->currentValue());
+                }
+                break;
+            }
+
+            case PostOption::OPTION_TYPE_FACE_TAGS:
+            {
+                CommonSwitchOption *opt =
+                    qobject_cast<CommonSwitchOption *>(option);
+                if (publicObject != 0 && opt != 0) {
+                    if (!opt->isChecked()) {
+                        publicObject->setMetadataFilter(
+                            publicObject->metadataFilterOption() | METADATA_FILTER_REGIONS);
+                    }
                 }
                 break;
             }
@@ -1406,12 +1416,6 @@ void EntryPrivate::syncPostOptions () {
                 break;
         }
     }
-
-    /*
-    if (m_account.isNull() == true) {
-        delete acc;
-    }
-    */
 }
 
 WebUpload::Account * EntryPrivate::loadAccount (QObject * parent) const {
