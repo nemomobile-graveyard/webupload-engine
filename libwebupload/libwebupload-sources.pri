@@ -13,6 +13,7 @@ HEADERS += WebUpload/account.h \
            WebUpload/commonoption.h \
            WebUpload/commontextoption.h \
            WebUpload/commonlistoption.h \
+           WebUpload/commonswitchoption.h \
            WebUpload/serviceoption.h \
            WebUpload/serviceoptionvalue.h \
            WebUpload/serviceoptionsupport.h \
@@ -57,6 +58,7 @@ SOURCES += account.cpp \
            commonoption.cpp \
            commontextoption.cpp \
            commonlistoption.cpp \
+           commonswitchoption.cpp \
            serviceoption.cpp \
            serviceoptionvalue.cpp \
            src/serviceoptionsupport.cpp \

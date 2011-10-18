@@ -26,6 +26,7 @@
 #include "xmlhelper.h"
 #include "WebUpload/CommonTextOption"
 #include "WebUpload/CommonListOption"
+#include "WebUpload/CommonSwitchOption"
 #include "WebUpload/Media"
 #include "WebUpload/Entry"
 
@@ -122,6 +123,7 @@ bool CommonOption::validForEntry (const Entry * entry) const {
         case PostOption::OPTION_TYPE_TAGS:
         case PostOption::OPTION_TYPE_METADATA:
         case PostOption::OPTION_TYPE_IMAGE_RESIZE:
+        case PostOption::OPTION_TYPE_FACE_TAGS:
             break;
 
         case PostOption::OPTION_TYPE_VIDEO_RESIZE:
@@ -165,6 +167,13 @@ CommonOption * CommonOption::getCommonOption (QDomElement & element,
             delete ret;
             ret = 0;
         }
+    } else if (type == PostOption::OPTION_TYPE_FACE_TAGS) {
+
+        ret = new CommonSwitchOption(parent);
+        if (ret->init(element) == false) {
+            delete ret;
+            ret = 0;
+        }
     } else {
         CommonListOption * option = new CommonListOption (parent);
         if (option->init (element) == false) {
@@ -196,6 +205,13 @@ CommonOption * CommonOption::getCommonOption (PostOption::Type type,
 
         ret = new CommonOption (parent);
         if (ret->init (type, caption) == false) {
+            delete ret;
+            ret = 0;
+        }
+    } else if (type == PostOption::OPTION_TYPE_FACE_TAGS) {
+
+        ret = new CommonSwitchOption(parent);
+        if (ret->init(type, caption) == false) {
             delete ret;
             ret = 0;
         }
@@ -243,6 +259,8 @@ PostOption::Type CommonOptionPrivate::getType (QString tagName) {
         retType = PostOption::OPTION_TYPE_IMAGE_RESIZE;
     } else if (tagName == "video_resize") {
         retType = PostOption::OPTION_TYPE_VIDEO_RESIZE;
+    } else if (tagName == "face_tags") {
+        retType = PostOption::OPTION_TYPE_FACE_TAGS;
     }
 
     return retType;
@@ -300,6 +318,11 @@ QString CommonOptionPrivate::defaultCaption (PostOption::Type type) {
         case PostOption::OPTION_TYPE_VIDEO_RESIZE:
             //% "Video size"
             caption = qtTrId ("qtn_tui_share_resize_video");
+            break;
+
+        case PostOption::OPTION_TYPE_FACE_TAGS:
+            //% "Share face tags"
+            caption = qtTrId ("qtn_tui_share_face_tags");
             break;
 
         default:

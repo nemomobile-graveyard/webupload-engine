@@ -69,6 +69,7 @@ namespace WebUpload {
             OPTION_TYPE_METADATA,       //!< common option: Metadata filtering
             OPTION_TYPE_IMAGE_RESIZE,   //!< common option: Image resize
             OPTION_TYPE_VIDEO_RESIZE,   //!< common option: Video resize
+            OPTION_TYPE_FACE_TAGS,      //!< common option: Face tags
 
             OPTION_TYPE_COMMON_TYPES_N, //!< No more common options
             OPTION_TYPE_SERVICE = OPTION_TYPE_COMMON_TYPES_N, //!< Service option
