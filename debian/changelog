@@ -1,6 +1,6 @@
 webupload-engine (1.2.42.2) unstable; urgency=low
 
-  * After tagging
+  * Added support for maximum media size uploadable to service.
 
  -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Mon, 17 Oct 2011 19:43:00 +0300
 

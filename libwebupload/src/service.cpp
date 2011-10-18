@@ -191,6 +191,10 @@ unsigned int Service::maxMediaLimit() const {
     return d_ptr->m_maxMedia;
 }
 
+unsigned int Service::maxMediaSizeLimit() const {
+    return d_ptr->m_maxMediaSize;
+}
+
 QString Service::shareButtonText (const Entry * entry) const {
     
     // Currently we only use first media to find the button text
@@ -228,7 +232,7 @@ QString Service::shareButtonText (const Entry * entry) const {
 
 ServicePrivate::ServicePrivate (Service * parent) : m_service (parent), 
     m_serviceOptionsLoaded (false),
-    m_publishCustom (Service::PUBLISH_CUSTOM_XML), m_maxMedia (0) {
+    m_publishCustom (Service::PUBLISH_CUSTOM_XML), m_maxMedia (0), m_maxMediaSize (0) {
 
     // Store account if relation between service and account
     if (m_service != 0) {
@@ -349,6 +353,11 @@ void ServicePrivate::populateMediaData (const QDomElement & element) {
     QString value = element.attribute (QLatin1String("maxAmount"),
         QLatin1String("0"));
     m_maxMedia = value.toUInt (0, 10);
+
+    //media size limitations
+    QString sizeValue = element.attribute (QLatin1String("maxSize"),
+        QLatin1String("0"));
+    m_maxMediaSize = sizeValue.toUInt (0, 10);
 
     QDomNode node = element.firstChild();
     while (node.isNull() == false) {

@@ -178,6 +178,12 @@ namespace WebUpload {
         unsigned int maxMediaLimit() const;
         
         /*!
+          \brief Get maxium size of single media that is supported by the service.
+          \return Maximum size of media element allowed. Or 0 if no limit defined.
+         */
+        unsigned int maxMediaSizeLimit() const;
+
+        /*!
           \brief Give name for share button when entry defined is given. This
                  function is not currently implemented but is here to allow
                  functionality later.

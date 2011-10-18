@@ -116,6 +116,10 @@ namespace WebUpload {
         //! Max amount of media elements allowed for this service (or 0 if
         //  undefined)
         unsigned int m_maxMedia;
+
+        //! Max size of a single media element allowed for this service
+        //  (0 if undefined)
+        unsigned int m_maxMediaSize;
         
         //! Mime to share button map. Actually key is regexp so this isn't 
         //  usually used as map but instead iterated until proper value is
