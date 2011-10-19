@@ -23,6 +23,8 @@
 
 #include <WebUpload/export.h>
 #include <WebUpload/enums.h>
+#include <WebUpload/GeotagInfo>
+#include <quillmetadata/QuillMetadataRegionList>
 #include <QObject>
 #include <QString>
 #include <QVectorIterator>
@@ -31,7 +33,6 @@
 #include <QUrl>
 #include <QStringList>
 #include <QMetaType>
-#include <WebUpload/GeotagInfo>
 
 class MDataUri;
 class QSparqlResult;
@@ -255,6 +256,14 @@ namespace WebUpload {
           \return Url list of tags of media
          */
         QList<QUrl> tagUrls() const;
+
+        /*!
+          \brief Reads region metadata from the media
+          \param regionType Type of region metadata to return.
+            If empty, all types of region metadata is returned.
+          \return List of region metadata
+         */
+        QuillMetadataRegionList regionMetadata(const QString &regionType = "") const;
         
         /*!
           \brief Get Tracker types
@@ -445,6 +454,13 @@ namespace WebUpload {
           \return Was reading successful
         */
         bool readTrackerInfo (QSparqlResult *result);
+
+        /*!
+          \brief Converts contact URNs to names
+          \param contactUrns List of contact URNs in tracker
+          \return List of contact names
+         */
+        static QStringList contactsToNames(const QStringList &contactUrns);
 
         /*!
           \brief Option id for presentation string. If this string is defined

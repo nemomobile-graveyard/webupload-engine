@@ -40,8 +40,6 @@
 #include <quillmetadata/QuillMetadata>
 #include <quillmetadata/QuillMetadataRegion>
 #include <quillmetadata/QuillMetadataRegionList>
-
-// If using qtsparql
 #include <QtSparql>
 #include <QUuid>
 
@@ -330,6 +328,33 @@ QStringList Media::allTags() const {
     }
 
     return alltags;
+}
+
+QuillMetadataRegionList Media::regionMetadata(const QString &regionType) const {
+
+    QuillMetadata metadata(srcFilePath(), QuillMetadata::XmpFormat);
+    QVariant variant =  metadata.entry(QuillMetadata::Tag_Regions);
+    QuillMetadataRegionList regions;
+    if (!variant.isNull() && variant.canConvert<QuillMetadataRegionList>()) {
+        regions = variant.value<QuillMetadataRegionList>();
+    }
+
+    if (!regionType.isEmpty()) {
+        // Filter unwanted region types from the list.
+        int regionCount = regions.count();
+        int i = 0;
+        while (i < regionCount) {
+            if (regions[i].type() != regionType) {
+                regions.removeAt(i);
+                regionCount--;
+            }
+            else {
+                i++;
+            }
+        }
+    }
+
+    return regions;
 }
 
 void Media::clearTags() {
@@ -686,6 +711,100 @@ void Media::clearGeotag () {
 
 bool Media::readTrackerInfo(QSparqlResult *result) {
     return d_ptr->readTrackerInfo(result);
+}
+
+QStringList Media::contactsToNames(const QStringList &contactUrns) {
+
+    qDebug() << "Converting contact URNs to names";
+
+    QStringList names;
+
+    if (contactUrns.isEmpty())
+        return names;
+
+    static QSparqlConnection connection("QTRACKER");
+    if (!connection.isValid()) {
+        qWarning() << "Tracker driver for QtSparql not found";
+        return names;
+    }
+
+    QString urns;
+    Q_FOREACH(const QString &urn, contactUrns) {
+        urns.append(QString("'%1',").arg(urn));
+    }
+    urns.chop(1);
+
+    QString queryStr = QString(
+        "SELECT ?firstName ?lastName ?nickName ?fullName ?imNickName WHERE {"
+        "?urn a nco:Contact . "
+        "  OPTIONAL { ?urn nco:nameGiven  ?firstName } . "
+        "  OPTIONAL { ?urn nco:nameFamily ?lastName  } . "
+        "  OPTIONAL { ?urn nco:nickname   ?nickName  } . "
+        "  OPTIONAL { ?urn nco:fullname   ?fullName  } . "
+        "  OPTIONAL { ?urn nco:hasAffiliation ?affiliation . "
+        "             ?affiliation nco:hasIMAddress ?imaddr . "
+        "             ?imaddr nco:imNickname ?imNickName } ");
+
+    QSparqlQuery query;
+
+    if (contactUrns.size() == 1) {
+        queryStr += '}';
+        queryStr.replace("?urn", "?:urn");
+        query.setQuery(queryStr);
+        query.bindValue("urn", QUrl(contactUrns.first()));
+    }
+    else {
+        queryStr += QString("FILTER (STR(?urn) in (%1)) }").arg(urns);
+        query.setQuery(queryStr);
+    }
+
+    qDebug() << "Executing Sparql query";
+    QSparqlResult *result = connection.exec(query);
+    result->waitForFinished();
+    if (result->hasError()) {
+        qWarning() << "Sparql query failed:" << result->lastError().message();
+    }
+    else {
+        qDebug() << "Query ok, result row count:" << result->size();
+    }
+
+    int rowCount = result->size();
+    for (int row = 0; row < rowCount; ++row) {
+        result->next();
+
+        QString firstName = result->value(0).toString();
+        QString lastName  = result->value(1).toString();
+
+        const QString nickName(result->value(2).toString());
+        const QString fullName(result->value(3).toString());
+        const QString imNickName(result->value(4).toString());
+
+        if (!firstName.isEmpty() && !lastName.isEmpty()) {
+            // Do nothing, this is exactly what we want: <first, last>
+        } else if (!firstName.isEmpty()) {
+            // Do nothing, result will be <first, >
+        } else if (!nickName.isEmpty()) {
+            // Use nickname as replacement for first name: <nickname, >
+            firstName = nickName;
+        } else if (!lastName.isEmpty()) {
+            // No first, buf got last name, use it: <last, >
+            firstName = lastName;
+            lastName.clear();
+        } else if (!fullName.isEmpty()) {
+            // Use full name as replacement for first name: <fullname, >
+            firstName = fullName;
+        } else if (!imNickName.isEmpty()) {
+            // Use IM nick name (works i.e. for Facebook contacts)
+            firstName = imNickName;
+        }
+
+        QString name = QString("%1 %2").arg(firstName).arg(lastName).trimmed();
+        if (!name.isEmpty()) {
+            names.append(name);
+        }
+    }
+
+    return names;
 }
 
 /*******************************************************************************
