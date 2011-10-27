@@ -1,4 +1,4 @@
-webupload-engine (1.2.42.2) unstable; urgency=low
+webupload-engine (1.2.43.1) unstable; urgency=low
 
   * Added support for maximum media size uploadable to service.
   * Added support for plugin to be able to pass a custom error in situations when it is unable to create a network reply.
