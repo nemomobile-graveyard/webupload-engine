@@ -21,6 +21,7 @@
 #ifndef _WEBUPLOAD_SYSTEM_H_
 #define _WEBUPLOAD_SYSTEM_H_
 
+#include <WebUpload/export.h>
 #include <QObject>
 #include <QList>
 #include <QDir>

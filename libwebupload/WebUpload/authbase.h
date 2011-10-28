@@ -21,6 +21,7 @@
 #ifndef _WEBUPLOAD_AUTH_BASE_H_
 #define _WEBUPLOAD_AUTH_BASE_H_
 
+#include <WebUpload/export.h>
 #include <QObject>
 #include <QString>
 #include <WebUpload/Account>
@@ -58,7 +59,7 @@ namespace WebUpload {
               authentication process by itself
       \author Jukka Tiihonen <jukka.t.tiihonen@nokia.com>
      */
-    class AuthBase : public QObject {
+    class WEBUPLOAD_EXPORT AuthBase : public QObject {
         Q_OBJECT
 
     public:

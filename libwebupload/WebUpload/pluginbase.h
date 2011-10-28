@@ -21,6 +21,7 @@
 #ifndef _WEBUPLOAD_PLUGIN_BASE_H_ 
 #define _WEBUPLOAD_PLUGIN_BASE_H_ 
 
+#include <WebUpload/export.h>
 #include <WebUpload/PluginInterface>
 
 namespace WebUpload {
@@ -31,7 +32,7 @@ namespace WebUpload {
               can be replaced by actual plug-in classes.
        \author Jukka Tiihonen <jukka.t.tiihonen@nokia.com>
      */
-    class PluginBase : public QObject, public PluginInterface {
+    class WEBUPLOAD_EXPORT PluginBase : public QObject, public PluginInterface {
         Q_OBJECT
         Q_INTERFACES(WebUpload::PluginInterface)
         
