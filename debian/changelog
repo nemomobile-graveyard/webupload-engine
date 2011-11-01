@@ -1,3 +1,9 @@
+webupload-engine (1.2.44.2) unstable; urgency=low
+
+  * After tagging
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Tue, 01 Nov 2011 16:29:00 +0300
+
 webupload-engine (1.2.44.1) unstable; urgency=low
 
   * Enabled booster
