@@ -21,6 +21,7 @@
 #ifndef _PUBLISH_WIDGETS_FORM_WIDGET_INTERFACE_H_
 #define _PUBLISH_WIDGETS_FORM_WIDGET_INTERFACE_H_
 
+#include "export.h"
 #include <WebUpload/Entry>
 #include <ShareWidgets/ApplicationViewInterface>
 
@@ -30,7 +31,7 @@ namespace PublishWidgets {
       \class FormWidgetInterface
       \brief Class to define interface to FormWidgets
      */
-    class FormWidgetInterface {
+    class PUBLISH_WIDGETS_EXPORT FormWidgetInterface {
     public:
     
         virtual ~FormWidgetInterface() {}
