@@ -1137,8 +1137,6 @@ bool MediaPrivate::fastInitFromTrackerIriNoTags (const QString & tIri,
     const QString & fileUri, const QString &mimeType, qint64 size,
     const QString & fileTitle, const QString & fileDesc) {
 
-    qDebug() << "Fast init of Media" << tIri;
-
     m_origFileTrackerUri = tIri;
     m_origFileUri = fileUri;
     m_mimeType = mimeType;
