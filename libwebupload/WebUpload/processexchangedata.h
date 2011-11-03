@@ -21,6 +21,7 @@
 #ifndef _WEBUPLOAD_PROCESS_EXCHANGE_DATA_H_
 #define _WEBUPLOAD_PROCESS_EXCHANGE_DATA_H_
 
+#include <WebUpload/export.h>
 #include <WebUpload/Error>
 #include <QString>
 #include <QObject>
@@ -38,7 +39,7 @@ namespace WebUpload {
 
        \author Jukka Tiihonen <jukka.t.tiihonen@nokia.com>
      */
-    class ProcessExchangeData : public QObject 
+    class WEBUPLOAD_EXPORT ProcessExchangeData : public QObject
     {
         Q_OBJECT 
 

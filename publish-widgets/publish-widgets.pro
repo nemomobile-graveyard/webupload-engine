@@ -14,7 +14,8 @@ INCLUDEPATH += ./PublishWidgets \
 
 VPATH += $$DEPENDPATH $$INCLUDEPATH
 
-QMAKE_CXXFLAGS += -O2 -Werror -Wall
+QMAKE_CXXFLAGS += -O2 -Werror -Wall -fPIC -fvisibility=hidden -fvisibility-inlines-hidden
+QMAKE_LFLAGS += -pie -rdynamic
 
 # profiling
 CONFIG(profiling) {

@@ -10,7 +10,8 @@ MOBILITY += systeminfo
 #DEFINES += DONT_CHECK_EMPTY_SPACE
 
 DEFINES += WEBUPLOAD_EXPORTS
-QMAKE_CXXFLAGS += -O2 -Werror -Wall
+QMAKE_CXXFLAGS += -O2 -Werror -Wall -fPIC -fvisibility=hidden -fvisibility-inlines-hidden
+QMAKE_LFLAGS += -pie -rdynamic
 
 VER_MAJ=0
 VER_MIN=2

@@ -24,6 +24,7 @@
 #include <QObject>
 #include <QString>
 #include <QSettings>
+#include <QSharedPointer>
 #include <Accounts/Account>
 #include <Accounts/Manager>
 
@@ -72,7 +73,7 @@ namespace WebUpload {
         //! Temp storage until we can store values to Accounts
         QSettings * m_settings;
         
-        Accounts::Manager * m_aManager; //!< Account's manager
+        QSharedPointer<Accounts::Manager> m_aManager; //!< Account's manager
 
     public Q_SLOTS:
         

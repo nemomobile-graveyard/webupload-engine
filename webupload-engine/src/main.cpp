@@ -27,7 +27,7 @@
 #include "uploadengineadaptor.h"
 #include "uploadengine.h"
 
-int main(int argc, char **argv) {
+Q_DECL_EXPORT int main(int argc, char **argv) {
 
     QCoreApplication::setApplicationName (QLatin1String ("WebUpload Engine"));
     QCoreApplication::setOrganizationName (QLatin1String ("MeeGo"));

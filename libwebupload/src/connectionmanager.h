@@ -21,6 +21,7 @@
 #ifndef _WEBUPLOAD_CONNECTION_MANAGER_H_
 #define _WEBUPLOAD_CONNECTION_MANAGER_H_
 
+#include <WebUpload/export.h>
 #include <QObject>
 
 namespace WebUpload {
@@ -33,7 +34,7 @@ namespace WebUpload {
      * \author Jukka Tiihonen <jukka.t.tiihonen@nokia.com>
      */
 
-    class ConnectionManager : public QObject 
+    class WEBUPLOAD_EXPORT ConnectionManager : public QObject
     {
         Q_OBJECT
     public:

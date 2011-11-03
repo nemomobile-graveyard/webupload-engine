@@ -21,6 +21,7 @@
 #ifndef _WEBUPLOAD_XML_HELPER_H_
 #define _WEBUPLOAD_XML_HELPER_H_
 
+#include <WebUpload/export.h>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -33,7 +34,7 @@ namespace WebUpload {
        \brief Shared XML functionality for other classes
        \author Jukka Tiihonen <jukka.t.tiihonen@nokia.com>
      */
-    class XmlHelper : public QObject {
+    class WEBUPLOAD_EXPORT XmlHelper : public QObject {
     
         Q_OBJECT
         

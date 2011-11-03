@@ -1,4 +1,43 @@
-webupload-engine (1.2.35.1) unstable; urgency=low
+webupload-engine (1.2.44.3) unstable; urgency=low
+
+  * After tagging
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 02 Nov 2011 16:15:00 +0300
+
+webupload-engine (1.2.44.2) unstable; urgency=low
+
+  * Added missing exports to publish widgets
+  * Fixed encoding issues in setting thumbnail for upload item
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Tue, 01 Nov 2011 16:29:00 +0300
+
+webupload-engine (1.2.44.1) unstable; urgency=low
+
+  * Enabled booster
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Thu, 27 Oct 2011 12:13:00 +0300
+
+webupload-engine (1.2.43.1) unstable; urgency=low
+
+  * Added support for maximum media size uploadable to service.
+  * Added support for plugin to be able to pass a custom error in situations when it is unable to create a network reply.
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Mon, 17 Oct 2011 19:43:00 +0300
+
+webupload-engine (1.2.42.1) unstable; urgency=low
+
+  * Fixes: NB#286447 - Disabled accounts are still displayed in ShareUI main view
+  * Improved transfer time estimate calculation by increasing history size.
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 05 Oct 2011 14:04:00 +0300
+
+webupload-engine (1.2.40.1) unstable; urgency=low
+
+  * Fixes: NB#285248 - webupload-engine "accounts.db" file descriptor leakage in LPT testing
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Mon, 19 Sep 2011 15:33:00 +0300
+
+webupload-engine (1.2.38.1) unstable; urgency=low
 
   * Fixes: NB#271759 - Transfer details dialog shows progress bar when signon dialog is displayed
   * Fixes: NB#257651 - [TASK] Destination specific image re-size option

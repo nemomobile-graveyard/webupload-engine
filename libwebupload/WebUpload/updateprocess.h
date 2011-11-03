@@ -21,6 +21,7 @@
 #ifndef _WEBUPLOAD_UPDATE_PROCESS_H_
 #define _WEBUPLOAD_UPDATE_PROCESS_H_
 
+#include <WebUpload/export.h>
 #include <WebUpload/pluginprocess.h>
 #include <WebUpload/Account>
 #include <WebUpload/ServiceOption>
@@ -40,7 +41,7 @@ class UpdateProcessPrivate;
 
    \author Jukka Tiihonen <jukka.t.tiihonen@nokia.com>
  */
-class UpdateProcess : public WebUpload::PluginProcess {
+class WEBUPLOAD_EXPORT UpdateProcess : public WebUpload::PluginProcess {
     Q_OBJECT
 
 public:

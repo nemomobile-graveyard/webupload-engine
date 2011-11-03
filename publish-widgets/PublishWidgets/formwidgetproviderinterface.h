@@ -21,6 +21,8 @@
 #ifndef _PUBLISH_WIDGETS_FORM_WIDGET_PROVIDER_INTERFACE_H_
 #define _PUBLISH_WIDGETS_FORM_WIDGET_PROVIDER_INTERFACE_H_
 
+#include "export.h"
+
 namespace PublishWidgets {
 
     // Forward declaration
@@ -31,7 +33,7 @@ namespace PublishWidgets {
       \brief Plugins providing custom widget will use this class as the plugin
              interface.
      */
-    class FormWidgetProviderInterface {
+    class PUBLISH_WIDGETS_EXPORT FormWidgetProviderInterface {
     public:
     
         virtual ~FormWidgetProviderInterface() {}

@@ -137,6 +137,11 @@ void PluginApplicationPrivate::shutdown () {
         delete m_interface;
         m_interface = 0;
     }
+
+    if (m_entry != 0) {
+        delete m_entry;
+        m_entry = 0;
+    }
     
     Q_EMIT (readyToShutdown());
 }

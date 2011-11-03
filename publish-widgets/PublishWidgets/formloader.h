@@ -21,6 +21,7 @@
 #ifndef _PUBLISH_WIDGETS_FORM_LOADER_H_
 #define _PUBLISH_WIDGETS_FORM_LOADER_H_
 
+#include "export.h"
 #include <WebUpload/Entry>
 #include <PublishWidgets/FormWidgetInterface>
 
@@ -32,7 +33,7 @@ namespace PublishWidgets {
       \class FormLoader
       \brief Plugin loader for publish implementations
      */
-    class FormLoader : public QObject {
+    class PUBLISH_WIDGETS_EXPORT FormLoader : public QObject {
     Q_OBJECT
     public:
     

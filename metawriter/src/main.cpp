@@ -383,7 +383,7 @@ int processActions(MetaApplication* metaApp,
 
 
 
-int main(int argc, char *argv[])
+int Q_DECL_EXPORT main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
 

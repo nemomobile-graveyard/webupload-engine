@@ -21,6 +21,7 @@
 #ifndef _WEBUPLOAD_PLUGIN_PROCESS_H_
 #define _WEBUPLOAD_PLUGIN_PROCESS_H_
 
+#include <WebUpload/export.h>
 #include <QProcess>
 #include <QList>
 #include <WebUpload/processexchangedata.h>
@@ -33,7 +34,7 @@ namespace WebUpload {
        \brief Base class for starting plugins and communicating with those
        \author Jukka Tiihonen <jukka.t.tiihonen@nokia.com>
      */
-    class PluginProcess : public QObject { 
+    class WEBUPLOAD_EXPORT PluginProcess : public QObject {
     Q_OBJECT
     
     public:
