@@ -75,10 +75,6 @@ namespace WebUpload {
          */
         virtual void stopMediaUpload();
 
-        //! Error to be emitted when plugin is unable to create a network reply.
-        WebUpload::Error zeroNetworkReplyError;
-
-
 #ifdef UNIT_TESTING
     public Q_SLOTS:
         // This slot is a public slot for unit testing purposes.
