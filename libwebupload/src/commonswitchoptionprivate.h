@@ -21,6 +21,8 @@
 #ifndef _WEBUPLOAD_COMMON_SWITCH_OPTION_PRIVATE_H_
 #define _WEBUPLOAD_COMMON_SWITCH_OPTION_PRIVATE_H_
 
+#include <QString>
+
 namespace WebUpload {
 
     class CommonSwitchOption;
@@ -32,11 +34,13 @@ namespace WebUpload {
         CommonSwitchOptionPrivate (CommonSwitchOption * parent);
         virtual ~CommonSwitchOptionPrivate ();
 
-        bool initFaceTags(bool defaultChecked = false);
+        bool initFaceTags(bool defaultChecked = false, const QString &note = "");
 
         CommonSwitchOption * m_parent; //!< Parent pointer
 
         bool m_checked; //!< Checked state of the option
+
+        QString m_note;
     };
 }
 

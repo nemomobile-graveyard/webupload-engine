@@ -227,27 +227,6 @@ bool CommonListOptionPrivate::initMetadata () {
         m_currentValueIndex = 1;
     }
 
-    /*
-    opt = new OptionValue ();
-    //% "Remove contact"
-    opt->valueId = qtTrId ("qtn_tui_share_remove_contact_tag");
-    opt->value = (int)WebUpload::METADATA_FILTER_REGIONS;
-    m_valueList << opt;
-    if (defVal == opt->value) {
-        m_currentValueIndex = 2;
-    }
-
-    opt = new OptionValue ();
-    //% "Remove GPS, creator and contact information"
-    opt->valueId = qtTrId ("qtn_tui_share_remove_gps_contact");
-    opt->value = (int)WebUpload::METADATA_FILTER_AUTHOR_LOCATION |
-        (int)WebUpload::METADATA_FILTER_REGIONS;
-    m_valueList << opt;
-    if (defVal == opt->value) {
-        m_currentValueIndex = 3;
-    }
-    */
-
     return true;
 }
 

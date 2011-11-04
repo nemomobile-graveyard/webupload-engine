@@ -57,6 +57,12 @@ public:
      */
     bool isChecked () const;
 
+    /*!
+      \brief Gets the possible note text related to this option
+      \return Note text. Empty if not set.
+     */
+    QString note() const;
+
 public Q_SLOTS:
 
     /*!

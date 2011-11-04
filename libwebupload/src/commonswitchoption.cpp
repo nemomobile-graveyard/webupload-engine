@@ -47,7 +47,9 @@ bool CommonSwitchOption::init (QDomElement & element) {
     switch (type()) {
         case PostOption::OPTION_TYPE_FACE_TAGS:
         {
-            initDone = d_ptr->initFaceTags ();
+            initDone = d_ptr->initFaceTags (
+                XmlHelper::attributeValueToBool(element, "default", false),
+                XmlHelper::getLocalizatedContent(element.firstChildElement("note")));
 
             QStringList mimeList;
             mimeList << "image/*";
@@ -108,6 +110,10 @@ void CommonSwitchOption::setChecked (bool checked) {
     }
 }
 
+QString CommonSwitchOption::note() const {
+    return d_ptr->m_note;
+}
+
 
 /* --- Private functions ---------------------------------------------------- */
 
@@ -121,7 +127,11 @@ CommonSwitchOptionPrivate::~CommonSwitchOptionPrivate () {
 }
 
 
-bool CommonSwitchOptionPrivate::initFaceTags (bool defaultChecked) {
+bool CommonSwitchOptionPrivate::initFaceTags (bool defaultChecked,
+    const QString& note) {
+
+    m_checked = defaultChecked;
+    m_note = note;
 
     if (m_parent->account () == 0) {
         qDebug() << "Account not defined";
@@ -131,9 +141,6 @@ bool CommonSwitchOptionPrivate::initFaceTags (bool defaultChecked) {
     QVariant checked = m_parent->account()->value("face-tags");
     if (checked.isValid() && checked.canConvert(QVariant::Bool)) {
         m_checked = checked.toBool();
-    }
-    else {
-        m_checked = defaultChecked;
     }
 
     return true;
