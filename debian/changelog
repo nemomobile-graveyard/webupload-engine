@@ -1,3 +1,9 @@
+webupload-engine (1.2.45.1) unstable; urgency=low
+
+  * After tagging
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Fri, 04 Nov 2011 18:12:00 +0300
+
 webupload-engine (1.2.44.3) unstable; urgency=low
 
   * Fixes: NB#289463 - Facebook crash (WebUpload::PluginApplicationPrivate::shutdown) occurs after the albums are updated
