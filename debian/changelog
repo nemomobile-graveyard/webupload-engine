@@ -1,12 +1,12 @@
 webupload-engine (1.2.45.1) unstable; urgency=low
 
-  * After tagging
+  * Bump version
 
  -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Fri, 04 Nov 2011 18:12:00 +0300
 
 webupload-engine (1.2.44.3) unstable; urgency=low
 
-  * Fixes: NB#289463 - Facebook crash (WebUpload::PluginApplicationPrivate::shutdown) occurs after the albums are updated
+  * Fixed: NB#289463 - Facebook crash (WebUpload::PluginApplicationPrivate::shutdown)
   * Removed support for plugin to be able to pass a custom error in situations when it is unable to create a network reply because it introduced an ABI break.
 
  -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 02 Nov 2011 16:15:00 +0300
