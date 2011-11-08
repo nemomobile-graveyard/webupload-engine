@@ -47,7 +47,7 @@ PluginApplication::~PluginApplication () {
 
 PluginApplicationPrivate::PluginApplicationPrivate (PluginInterface * interface,
     PluginApplication * parent) : QObject (parent), m_interface (interface),
-    m_post (0), m_update (0), m_account(0), m_option(0), m_inputNotifier (0),
+    m_post (0), m_entry(0), m_update (0), m_account(0), m_option(0), m_inputNotifier (0),
     m_initFailed (false) {
     
     // This will register needed meta types (have to be done in private)

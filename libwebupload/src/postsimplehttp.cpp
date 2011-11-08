@@ -36,7 +36,6 @@
 using namespace WebUpload;
 
 PostSimpleHttp::PostSimpleHttp (QObject * parent) : PostBase (parent),
-    zeroNetworkReplyError (WebUpload::Error::custom("System Failure", "Failed to create request")),
     netAM (new QNetworkAccessManager(this)), currentReply (0),
     uploadStopped (false) {
    
@@ -87,9 +86,10 @@ void PostSimpleHttp::uploadMedia (Media * media) {
 
     if (currentReply == 0) {
         WARN_STREAM << "Generate request returned null";
-        // Letting this stay as custom error if plugin has not re-defined it,
-        // since this should not normally happen.
-        Q_EMIT (mediaError(zeroNetworkReplyError));
+        // Letting this stay as custom error, since this should not normally
+        // happen
+        Q_EMIT (mediaError(WebUpload::Error::custom ("System Failure",
+            "Failed to create request")));
     } else {
         // Connect progress signal
         QObject::connect (currentReply, SIGNAL(uploadProgress(qint64,qint64)),
@@ -248,9 +248,10 @@ void PostSimpleHttp::nextNetworkRequest (WebUpload::Media * media,
 
     if (currentReply == 0) {
         WARN_STREAM << "Generate request returned null";
-        // Letting this stay as custom error if plugin has not re-defined it,
-        // since this should not normally happen.
-        Q_EMIT (mediaError(zeroNetworkReplyError));
+        // Letting this stay as custom error, since this should not normally
+        // happen
+        Q_EMIT (mediaError(WebUpload::Error::custom ("System Failure",
+            "Failed to create request")));
     } else {
         // Connect progress signal
         QObject::connect (currentReply, SIGNAL(uploadProgress(qint64,qint64)),
