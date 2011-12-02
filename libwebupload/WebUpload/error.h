@@ -231,6 +231,12 @@ namespace WebUpload {
         static Error unimplemented();
         
         /*!
+          \brief Secure connection handshake failed.
+          \return Error generated
+         */
+        static Error secureConnection();
+
+        /*!
           \brief Make custom error
           \param message Sort message of error
           \param description Longer description of error
@@ -297,6 +303,7 @@ namespace WebUpload {
             CODE_UNIMPLEMENTED, //!< Called functionality not implemented,
             CODE_SERVICE_TIME_OUT, //!< Service connection timed out
             CODE_OUT_OF_MEMORY, //!< Device does not have sufficient memory
+            CODE_SECURE_CONNECTION_ERROR, //!< SSL connection error
             
             CODE_CUSTOM = -1 //!< Custom service specific error
         };

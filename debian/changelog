@@ -1,6 +1,6 @@
 webupload-engine (1.2.45.2) unstable; urgency=low
 
-  * After tagging
+  * Added new error type CODE_SECURE_CONNECTION_ERROR.
 
  -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 09 Nov 2011 18:49:00 +0200
 

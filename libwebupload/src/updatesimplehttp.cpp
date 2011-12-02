@@ -176,7 +176,7 @@ void UpdateSimpleHttp::namSslErrors (QNetworkReply * reply,
     if (errorEnum == QSslError::CertificateNotYetValid) {
         Q_EMIT (optionFailed(WebUpload::Error::CODE_INV_DATE_TIME)); 
     } else {
-        Q_EMIT (optionFailed(WebUpload::Error::CODE_CONNECT_FAILURE)); 
+        Q_EMIT (optionFailed(WebUpload::Error::CODE_SECURE_CONNECTION_ERROR));
     }
 }
 

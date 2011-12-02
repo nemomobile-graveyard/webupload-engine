@@ -242,6 +242,12 @@ Error Error::unimplemented() {
     return error;
 }
 
+Error Error::secureConnection() {
+    /* code, can continue?, repairable? */
+    Error error (CODE_SECURE_CONNECTION_ERROR, false, true);
+    return error;
+}
+
 Error Error::custom (const QString & title, const QString & description,
     const QString & retryMsg, bool canContinue) {
     
@@ -302,6 +308,7 @@ QString Error::title () const {
         case CODE_SERVICE_ERROR:
         case CODE_MISSING_FILES:
         case CODE_OUT_OF_MEMORY:
+        case CODE_SECURE_CONNECTION_ERROR:
         {
             // Sections 5.3.3, 5.3.4 and 5.3.5 of UI specs
             qDebug() << "Failed count = " << d_ptr->m_count;
@@ -442,6 +449,11 @@ QString Error::description () const {
         case CODE_OUT_OF_MEMORY:
             //% "There is not enough free memory to share content.  Please delete some files to free up more memory"
             str = qtTrId ("qtn_tui_low_system_memory_error");
+            break;
+
+        case CODE_SECURE_CONNECTION_ERROR:
+            //% "Secure connection failed."
+            str = qtTrId ("qtn_tui_ssl_connection_failed");
             break;
 
         default:
