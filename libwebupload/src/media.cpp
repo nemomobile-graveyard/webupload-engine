@@ -2132,43 +2132,6 @@ Media::CopyResult MediaPrivate::filterAndSyncImageMetadata(
             qDebug() << "Removing regions from metadata";
             originalMetadata.removeEntry (QuillMetadata::Tag_Regions);
         }
-#if 0
-        else {
-            QuillMetadataRegionList regions;
-            regions.setFullImageSize(QSize(960, 1078));
-            const QString CONTACT_URN_EXTENSION("nco:PersonContact");
-
-            QuillMetadataRegion region;
-            region.setArea(QRect(0, 0, 100, 100));
-            region.setName("Some Name");
-            region.setExtension(CONTACT_URN_EXTENSION, "urn:uuid:3ad4a0f3-20d7-65ed-2382-fa133d4f87cf");
-            regions.append(region);
-
-            QVariant variant;
-            variant.setValue(regions);
-            originalMetadata.setEntry(QuillMetadata::Tag_Regions, variant);
-
-        }
-#endif
-
-#if 0
-        else {
-            // Remove contact URN from regions.
-            QVariant variant = originalMetadata.entry(QuillMetadata::Tag_Regions);
-            if (!variant.isNull() && variant.canConvert<QuillMetadataRegionList>()) {
-                QuillMetadataRegionList regions = variant.value<QuillMetadataRegionList>();
-                QuillMetadataRegionList newRegions;
-                newRegions.setFullImageSize(regions.fullImageSize());
-                Q_FOREACH(const QuillMetadataRegion& region, regions) {
-                    QuillMetadataRegion newRegion(region);
-                    newRegion.setExtension("nco:PersonContact", "");
-                    newRegions.append(newRegion);
-                }
-                variant.setValue(newRegions);
-                originalMetadata.setEntry(QuillMetadata::Tag_Regions, variant);
-            }
-        }
-#endif
 
         metadataWritten = originalMetadata.write(targetPath);
     }

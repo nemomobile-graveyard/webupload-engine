@@ -220,9 +220,7 @@ void ServiceOption::updateValues (
     
     d_ptr->m_values.clear ();
     
-    if (optionValues.size() == 0) {
-        setActiveValueId (d_ptr->m_defaultValueId);
-    } else {
+    if (optionValues.size() != 0) {
         for (int i = 0; i < optionValues.count(); ++i) {
             d_ptr->m_values.append (optionValues.at(i));
         }
@@ -230,14 +228,15 @@ void ServiceOption::updateValues (
         if (activeValueIndex() == -1) {
             setActiveValueId (d_ptr->m_values[0].id());
         }
-
     }
 
     if (storeToAccount == true) {
         d_ptr->storeValueList ();
     }
 
-    return;
+    if (optionValues.size() == 0) {
+        setActiveValueId (d_ptr->m_defaultValueId);
+    }
 }
 
 bool ServiceOption::isUpdatable() const {
