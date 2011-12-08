@@ -176,7 +176,11 @@ void UpdateSimpleHttp::namSslErrors (QNetworkReply * reply,
     if (errorEnum == QSslError::CertificateNotYetValid) {
         Q_EMIT (optionFailed(WebUpload::Error::CODE_INV_DATE_TIME)); 
     } else {
-        Q_EMIT (optionFailed(WebUpload::Error::CODE_CONNECT_FAILURE)); 
+        //% "Secure connection failed"
+        WebUpload::Error error =
+            WebUpload::Error::custom("", qtTrId ("qtn_tui_ssl_connection_failed"));
+
+        Q_EMIT (optionFailed(error));
     }
 }
 
