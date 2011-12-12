@@ -87,6 +87,7 @@ namespace WebUpload {
         ServiceOption * m_parent; //!< Instance using private class
 
         QString m_id; //!< ID of the service option
+        QString m_valueSourceId; //!< ID of the option that provides value list
 
         QString m_defaultValueId; //!< Id of default active value
         QString m_activeValueId; //!< Id of current active value

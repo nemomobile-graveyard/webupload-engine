@@ -52,6 +52,7 @@ bool ServiceOption::init (QDomElement & element) {
     }
 
     d_ptr->m_id = id;
+    d_ptr->m_valueSourceId = element.attribute("valuesource");
     
     QString type = element.attribute ("type", "static");
     d_ptr->m_updatable = (type == "updatable" || type == "changeable");
@@ -488,11 +489,17 @@ void ServiceOptionPrivate::valueList () {
         return;
     }    
     
-    QString key = m_id;
+    QString sourceId = m_id;
+    if (!m_valueSourceId.isEmpty()) {
+        // Another service option provides the value list
+        sourceId = m_valueSourceId;
+    }
+
+    QString key = sourceId;
     key.append ("/ids");
     QStringList ids = account->value (key).toStringList();
         
-    key = m_id;
+    key = sourceId;
     key.append ("/names");
     QStringList names = account->value (key).toStringList();
     
@@ -511,7 +518,7 @@ void ServiceOptionPrivate::valueList () {
 
 void ServiceOptionPrivate::storeValueList () {
     Account * account = m_parent->account ();
-    if (account == 0) {
+    if (account == 0 || !m_valueSourceId.isEmpty()) {
         return;
     }
 
