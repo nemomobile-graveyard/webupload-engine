@@ -42,6 +42,21 @@ namespace WebUpload {
         */
         bool isConnected();
 
+        /*!
+            \brief Release connection. Closes the network session.
+        */
+        void releaseConnection();
+
+        /*!
+            \brief Prints information about the config to log
+        */
+        void printNetworkConfigStatus(const QNetworkConfiguration &config);
+
+        /*!
+            \brief Creates network session object. Deletes old one first.
+        */
+        void createSession();
+
     Q_SIGNALS:
         /*!
             session created
@@ -52,12 +67,6 @@ namespace WebUpload {
             session disconnected
         */
         void disconnected();
-
-        /*!
-          Ask for network session
-         */
-        void askNetworkSession ();
-
 
     private Q_SLOTS:
         /*!
@@ -72,25 +81,47 @@ namespace WebUpload {
         void onlineStateChanged(bool online);
 
         /*!
-          \brief Slot to connect to the askNetworkSession signal
-         */
-        void createNetworkSession ();
-
-        /*!
             \brief slot to listen configuration changed signal.
         */
         void configurationChanged ( const QNetworkConfiguration & config );
+
+        /*!
+            \brief Slot called when network session state changes
+        */
+        void sessionStateChanged(QNetworkSession::State state);
+
+        /*!
+            \brief Slot called when network session opens
+        */
+        void sessionOpened();
+
+        /*!
+            \brief Slot called when network session closes
+        */
+        void sessionClosed();
 
     private:
         //! is connection ready to start upload
         bool m_isConnectionReady;
         
         //! Ask connection if it is not there. This is used only the first time
-        // the isConnected function is called.
+        //! the isConnected function is called.
         bool m_askConnection;
+
+        //! True while an open network session is required
+        bool m_connectionRequired;
+
+        //! True while a network session is opening
+        bool m_sessionOpening;
         
         //! Network configuration manager
         QNetworkConfigurationManager m_manager;
+
+        //! Network session used by this connection manager
+        QNetworkSession *m_session;
+
+        //! Default configuration
+        QNetworkConfiguration m_defaultConfig;
 
     };
 }

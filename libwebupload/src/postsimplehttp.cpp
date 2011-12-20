@@ -215,7 +215,6 @@ void PostSimpleHttp::nrUpProgress (qint64 bytesSent, qint64 bytesTotal) {
     
     if (bytesTotal > 0) {
         float progressAmt = ((float)bytesSent)/((float)bytesTotal);
-        DBG_STREAM << "progress:" << progressAmt;
         Q_EMIT (mediaProgress(progressAmt));
     } else {
         DBG_STREAM << "undefined progress";

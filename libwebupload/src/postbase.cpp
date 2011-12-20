@@ -169,6 +169,8 @@ bool PostBase::canRetry (WebUpload::Error error) {
 
 
 void PostBase::mediaProgressSlot (float uploaded) {
+
+
     if (uploaded > 1.0) {
         uploaded = 1.0;
     } else if (uploaded < 0.0) {
@@ -184,7 +186,15 @@ void PostBase::mediaProgressSlot (float uploaded) {
             totalDone = 1.0;
         }
 
-        Q_EMIT (progress (totalDone));        
+        if (totalDone == 0.0 || totalDone == 1.0 ||
+            totalDone < d_ptr->prevTotalDone ||
+            (totalDone - d_ptr->prevTotalDone) >= 0.01) {
+
+            DBG_STREAM << "progress: media =" << uploaded <<
+                "total =" << totalDone;
+            Q_EMIT (progress (totalDone));
+            d_ptr->prevTotalDone = totalDone;
+        }
     }
 }
 
@@ -195,7 +205,8 @@ void PostBase::errorFixedSlot () {
 // --- Private class functions ----
 
 PostBasePrivate::PostBasePrivate(PostBase * parent) : QObject (parent), 
-    state (STATE_IDLE), publicObject (parent), authPtr (0) {
+    state (STATE_IDLE), totalSize(0), sentSize(0), ofItemDone(0.0),
+    prevTotalDone(0.0), publicObject (parent), authPtr (0) {
 
     reset ();
 }
@@ -221,6 +232,7 @@ void PostBasePrivate::reset () {
     totalSize = 0;
     sentSize = 0;
     ofItemDone = 0.0;
+    prevTotalDone = 0.0;
     transferError.clearError ();
 }
 

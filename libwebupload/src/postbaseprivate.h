@@ -169,6 +169,7 @@ namespace WebUpload {
         quint64 totalSize;
         quint64 sentSize;
         float ofItemDone;
+        float prevTotalDone;
 
     private Q_SLOTS:
 

@@ -181,6 +181,7 @@ void UploadEngine::queueDone () {
     DBGSTREAM << "Queue done";
 
     setState (IDLE);
+    connection.releaseConnection();
 
     if (shutdownWhenEmptyQueue) {
         DBGSTREAM << "Queue done. Shutdown upload engine...";    

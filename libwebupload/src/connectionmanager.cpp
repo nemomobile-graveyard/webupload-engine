@@ -45,10 +45,16 @@ bool ConnectionManager::isConnected() {
 #endif
 }
 
+void ConnectionManager::releaseConnection() {
+    d_ptr->releaseConnection();
+}
+
 // -- private class ------------------------------------------------------------
 
 ConnectionManagerPrivate::ConnectionManagerPrivate(QObject *parent, 
-    bool askConnection) : QObject(parent), m_askConnection(askConnection) {
+    bool askConnection) : QObject(parent), m_askConnection(askConnection),
+    m_connectionRequired(false), m_sessionOpening(false), m_session(0)
+{
 
     connect(&m_manager, SIGNAL(onlineStateChanged(bool)), this ,
         SLOT(onlineStateChanged(bool)));
@@ -57,103 +63,148 @@ ConnectionManagerPrivate::ConnectionManagerPrivate(QObject *parent,
         SLOT(configurationChanged(const QNetworkConfiguration&)));
 
     m_isConnectionReady = m_manager.isOnline ();
-    connect (this, SIGNAL (askNetworkSession()), this, 
-        SLOT (createNetworkSession()), Qt::QueuedConnection);
+
+    qDebug() << "Connection manager created, default configuration:";
+    m_defaultConfig = m_manager.defaultConfiguration();
+    printNetworkConfigStatus(m_defaultConfig);
+
+    createSession();
 }
+
+
 
 ConnectionManagerPrivate::~ConnectionManagerPrivate() {
     m_manager.disconnect (this);
     this->disconnect (this);
 }
 
-bool ConnectionManagerPrivate::isConnected() {
-    if (m_askConnection && (m_isConnectionReady == false)) {
-        Q_EMIT (askNetworkSession());
-    } 
+void ConnectionManagerPrivate::createSession() {
 
-    // m_askConnection = false;
-    return m_isConnectionReady;
+    if (m_session != 0) {
+        qDebug() << "Deleting old network session";
+        delete m_session;
+        m_session = 0;
+    }
+
+    qDebug() << "Creating network session";
+    m_session = new QNetworkSession(m_defaultConfig, this);
+    m_session->setSessionProperty ("ConnectInBackGround", QVariant (false));
+    connect(m_session, SIGNAL(stateChanged(QNetworkSession::State)),
+        this, SLOT(sessionStateChanged(QNetworkSession::State)));
+    connect(m_session, SIGNAL(opened()), this, SLOT(sessionOpened()));
+    connect(m_session, SIGNAL(closed()), this, SLOT(sessionClosed()));
+    connect(m_session, SIGNAL (error(QNetworkSession::SessionError)),
+        this, SLOT (error(QNetworkSession::SessionError)));
 }
 
-void ConnectionManagerPrivate::createNetworkSession() {
+bool ConnectionManagerPrivate::isConnected() {
 
-    qDebug() << "ConnectionManagerPrivate::createNetworkSession start";
-    const bool canStartIAP = (m_manager.capabilities() &
-        QNetworkConfigurationManager::CanStartAndStopInterfaces);
-    qDebug() << "\tcanStartIAP" << canStartIAP;
+    qDebug() << __FUNCTION__;
 
-    QNetworkConfiguration cfg = m_manager.defaultConfiguration();
-    qDebug() << "\tcfg.isValid" << cfg.isValid ();
-    qDebug() << "\tcfg.state" << cfg.state ();
-    if((cfg.isValid() == true) && (canStartIAP || cfg.state() ==
-        QNetworkConfiguration::Active)) {
-
-        qDebug() << "\t\tCalling QNetworkSession::open";
-        QNetworkSession  *session = new QNetworkSession(cfg, this);
-        connect (session, SIGNAL (opened()), session, SLOT (deleteLater()));
-        connect (session, SIGNAL (error(QNetworkSession::SessionError)),
-            this, SLOT (error(QNetworkSession::SessionError)),
-            Qt::QueuedConnection);
-        session->setSessionProperty ("ConnectInBackGround", QVariant (false));
-        session->open();
+    if (!m_askConnection) {
+        return m_isConnectionReady;
     }
-    qDebug() << "ConnectionManagerPrivate::createNetworkSession end";
+
+    m_connectionRequired = true;
+
+    if (m_session->configuration() != m_defaultConfig) {
+        qDebug() << "Default config has changed";
+        createSession();
+    }
+
+    if (!m_session->isOpen()) {
+        qDebug() << "Opening network session";
+        m_sessionOpening = true;
+        m_session->open();
+    }
+
+    bool sessionOpen = m_session->isOpen();
+    qDebug() << "Network session now open:" << sessionOpen;
+
+    return sessionOpen;
+}
+
+void ConnectionManagerPrivate::releaseConnection() {
+
+    qDebug() << __FUNCTION__;
+
+    m_connectionRequired = false;
+
+    if (m_session != 0) {
+        if (m_session->isOpen()) {
+            qDebug() << "Closing network session";
+            m_session->close();
+        }
+        else {
+            qDebug() << "Network session already closed";
+        }
+    }
+}
+
+void ConnectionManagerPrivate::sessionStateChanged(QNetworkSession::State state) {
+    qDebug() << "Network session state changed:" << state;
+
+    if (state == QNetworkSession::Connected && m_connectionRequired &&
+        m_session != 0 && !m_session->isOpen() && !m_sessionOpening) {
+
+        m_sessionOpening = true;
+        m_session->open();
+    }
+}
+
+void ConnectionManagerPrivate::sessionOpened() {
+    qDebug() << "Network session opened";
+    m_sessionOpening = false;
+    Q_EMIT(connected());
+}
+
+void ConnectionManagerPrivate::sessionClosed() {
+    qDebug() << "Network session closed";
+    m_sessionOpening = false;
+    Q_EMIT(disconnected());
 }
 
 void ConnectionManagerPrivate::error (QNetworkSession::SessionError error) {
     Q_UNUSED (error)
-    QNetworkSession *sentBy = qobject_cast<QNetworkSession *>(sender ());
-    if (sentBy == 0) {
-        qCritical () << "ConnectionManagerPrivate::error -> invalid usage";
-        return;
-    }
-
-    qDebug() << "QNetworkSession error -> " << sentBy->errorString ();
-    sentBy->deleteLater ();
+    qDebug() << "Network session error:" << m_session->errorString();
+    m_sessionOpening = false;
 }
 
 void ConnectionManagerPrivate::onlineStateChanged(bool online) {
-    qDebug() << __FUNCTION__ << online << m_isConnectionReady;
+    qDebug() << "Online state changed from" << m_isConnectionReady << "to" << online;
+
     if (m_isConnectionReady == online) 
         return;
 
     m_isConnectionReady = online;
-    if(online == true) {    
-        Q_EMIT(connected());
-    } else {
-        Q_EMIT(disconnected());
-    }
 }
 
 void ConnectionManagerPrivate::configurationChanged ( const QNetworkConfiguration & config ) {
-    qDebug() << __FUNCTION__ << "Some config changed .... " << 
-        "check the default config status";
-    QNetworkConfiguration cfg = m_manager.defaultConfiguration();
 
-    QNetworkConfiguration::StateFlags defaultConfigStateFlags = cfg.state();
-    QNetworkConfiguration::StateFlags newConfigStateFlags = config.state();
+    qDebug() << "Configuration changed, status:";
+    printNetworkConfigStatus(config);
 
-    //default configuration active state
-    bool defaultConfigActive  = 
-        defaultConfigStateFlags.testFlag(QNetworkConfiguration::Active);
+    QNetworkConfiguration defaultConfig = m_manager.defaultConfiguration();
+    if (defaultConfig != m_defaultConfig) {
+        qDebug() << "Default configuration changed, new default:";
+        m_defaultConfig = defaultConfig;
+        printNetworkConfigStatus(m_defaultConfig);
 
-    //new configuration active state
-    bool newConfigActive = 
-        newConfigStateFlags.testFlag(QNetworkConfiguration::Active);
-
-    //default configuration discovered state. If state set 
-    bool defaultConfigDiscovered = 
-        defaultConfigStateFlags.testFlag(QNetworkConfiguration::Discovered);
-
-    //Default configuration has changed its state to inactive, in this case,
-    //there will be no network available, so disconnect.
-    if((newConfigActive == true) && (defaultConfigActive == false)) {
-        onlineStateChanged(false);
-    } else {
-        //If default config is discovered, try to connect.
-        if (defaultConfigDiscovered == true) {
-            onlineStateChanged(true);
+        if (m_session != 0 && !m_session->isOpen()) {
+            createSession();
         }
     }
+
+}
+
+void ConnectionManagerPrivate::printNetworkConfigStatus(const QNetworkConfiguration &config) {
+
+    qDebug() << "Bearer:" << config.bearerTypeName();
+    qDebug() << "Roaming available:" << config.isRoamingAvailable();
+    qDebug() << "Valid:" << config.isValid();
+    qDebug() << "Name:" << config.name();
+    qDebug() << "Purpose:" << config.purpose();
+    qDebug() << "State:" << config.state();
+    qDebug() << "Type:" << config.type();
 }
 

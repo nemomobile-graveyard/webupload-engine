@@ -56,6 +56,8 @@ namespace WebUpload {
         */
         bool isConnected();
 
+        void releaseConnection();
+
     Q_SIGNALS:
 
         /*!
