@@ -1,5 +1,6 @@
 webupload-engine (1.3.50.1) unstable; urgency=low
 
+  * Fixes: NB#294040 - Uploads using guest WLAN fail when the connection was previously off
   * Support for service options that get value list from another option
   * Fixes: NB#293566 - Facebook Publish - The string §qtn_comm_share_defaultalbum§ has not be translated to Latin Spanish
   * Fixes: NB#288957 - Dropbox: Service currently unavailable error is shown while updating or creating folders when incorrect date & time is set
