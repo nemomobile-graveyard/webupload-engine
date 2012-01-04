@@ -74,6 +74,18 @@ QByteArray ProcessExchangeData::updateAll (const QString & accountStringId) {
 }
 
 
+QByteArray ProcessExchangeData::updateAllForceReAuth (const QString & accountStringId) {
+
+    QByteArray data;
+    QDataStream ds (&data, QIODevice::WriteOnly);
+
+    ds << (qint32) ProcessExchangeDataPrivate::CODE_REQUEST_UPDATE_ALL_REAUTH;
+    ds << accountStringId;
+
+    return ProcessExchangeDataPrivate::wrapSize (data);
+}
+
+
 QByteArray ProcessExchangeData::update (const QString & accountStringId,
     const QString & optionId) {
 
@@ -87,6 +99,18 @@ QByteArray ProcessExchangeData::update (const QString & accountStringId,
     return ProcessExchangeDataPrivate::wrapSize (data);
 }
 
+QByteArray ProcessExchangeData::updateForceReAuth (const QString & accountStringId,
+    const QString & optionId) {
+
+    QByteArray data;
+    QDataStream ds (&data, QIODevice::WriteOnly);
+
+    ds << (qint32) ProcessExchangeDataPrivate::CODE_REQUEST_UPDATE_REAUTH;
+    ds << accountStringId;
+    ds << optionId;
+
+    return ProcessExchangeDataPrivate::wrapSize (data);
+}
 
 QByteArray ProcessExchangeData::addValue (const QString & accountStringId,
     const QString & optionId, const QString & valueName) {
@@ -339,6 +363,15 @@ void ProcessExchangeDataPrivate::processByteArray (const QByteArray & recvdInfo)
                 break;
             }
 
+            case CODE_REQUEST_UPDATE_ALL_REAUTH:
+            {
+                QString accountId;
+                requestStream >> accountId;
+                qDebug() << "updateAllForceReAuthSignal";
+                Q_EMIT (q_ptr->updateAllForceReAuthSignal (accountId));
+                break;
+            }
+
             case CODE_REQUEST_UPDATE:
             {
                 QString accountId, optionId;
@@ -346,6 +379,16 @@ void ProcessExchangeDataPrivate::processByteArray (const QByteArray & recvdInfo)
                 requestStream >> optionId;
                 qDebug() << "updateSignal";
                 Q_EMIT (q_ptr->updateSignal (accountId, optionId));
+                break;
+            }
+
+            case CODE_REQUEST_UPDATE_REAUTH:
+            {
+                QString accountId, optionId;
+                requestStream >> accountId;
+                requestStream >> optionId;
+                qDebug() << "updateForceReAuthSignal";
+                Q_EMIT (q_ptr->updateForceReAuthSignal (accountId, optionId));
                 break;
             }
 

@@ -90,6 +90,8 @@ private:
     //! <code>true</code> if cancel has been called, else <code>false</code>
     bool m_cancelCalled; 
 
+    bool m_reAuthRequested;
+
     friend class UpdateProcess;
 
 };

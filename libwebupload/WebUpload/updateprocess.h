@@ -71,7 +71,12 @@ public Q_SLOTS:
       \param account Account used
      */
     void startUpdateAll (WebUpload::Account * account);
-    
+
+    /*!
+      \brief Starts update for all options with forced reauthorization.
+      \param account Account used
+     */
+    void startUpdateAllForceReAuth (WebUpload::Account * account);
     /*!
       \brief Start add value to option
       \param account Account used

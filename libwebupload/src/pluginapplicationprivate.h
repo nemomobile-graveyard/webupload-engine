@@ -150,11 +150,23 @@ namespace WebUpload {
         void updateAll (QString accountStringId);
         
         /*!
+          \brief Start update all with forced reauthorization
+          \param accountStringId See Account::init
+         */
+        void updateAllForceReAuth (QString accountStringId);
+
+        /*!
           \brief Start update
           \param accountStringId See Account::init
          */
         void updateValue (QString accountStringId, QString optionId);
         
+        /*!
+          \brief Start update with forced reauthorization
+          \param accountStringId See Account::init
+         */
+        void updateValueForceReAuth (QString accountStringId, QString optionId);
+
         /*!
           \brief Start add
           \param accountStringId See Account::init

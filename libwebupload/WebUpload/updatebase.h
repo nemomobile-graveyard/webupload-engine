@@ -93,6 +93,24 @@ namespace WebUpload {
          */
         virtual AuthBase * getAuthPtr () = 0;
 
+        /*!
+          \brief Function to start update of all updatable options with forced
+                 reauthorization. Calls update function for all updatable options
+                 found. Default functionality will call update function with each
+                 updatable option found. If one of the updates fails then update
+                 is stopped and given error emitted.
+          \param account Account which updatable option values are updated
+         */
+        void updateAllForceReAuth (WebUpload::Account * account);
+
+        /*!
+          \brief Function to start update for single option with forced reauthorization.
+          \param account Account which option is updated
+          \param option Option that need updating
+         */
+        void updateForceReAuth (WebUpload::Account * account,
+            WebUpload::ServiceOption * option);
+
     public Q_SLOTS:
 
         /*!
@@ -141,6 +159,12 @@ namespace WebUpload {
                  and this class, and should not be used outside this class
          */
         void reAuth ();
+
+        /*!
+          \brief Notification that reauthorization should be forced for next
+                 operation regardless of earlier authorization outcome.
+         */
+        void forceReAuthorization ();
         
     protected Q_SLOTS:
 
@@ -162,6 +186,13 @@ namespace WebUpload {
           \param valueName Name of value to be added
          */
         virtual void addOptionValue (const QString &valueName) = 0;
+
+        /*!
+          \brief Function to force reauthorization. The inheriting class should
+                 implement this if the auth plugin has some special way of forcing
+                 reauthorization, and reconnect the forceReAuthorization signal.
+         */
+        void forceReAuth ();
 
     protected:
 

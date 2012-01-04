@@ -24,6 +24,8 @@
 #include "WebUpload/UpdateInterface"
 #include "WebUpload/Entry"
 #include "WebUpload/Error"
+#include "WebUpload/PostBase"
+#include "WebUpload/UpdateBase"
 #include "pluginapplicationprivate.h"
 #include <fcntl.h>
 #include <QDebug>
@@ -78,8 +80,12 @@ PluginApplicationPrivate::PluginApplicationPrivate (PluginInterface * interface,
         this, SLOT (postStart(QString,WebUpload::Error)), Qt::QueuedConnection);
     connect (&m_coder, SIGNAL (updateAllSignal(QString)), this,
         SLOT (updateAll(QString)), Qt::QueuedConnection);
+    connect (&m_coder, SIGNAL (updateAllForceReAuthSignal(QString)), this,
+        SLOT (updateAllForceReAuth(QString)), Qt::QueuedConnection);
     connect (&m_coder, SIGNAL (updateSignal(QString,QString)), this,
         SLOT (updateValue(QString,QString)), Qt::QueuedConnection);
+    connect (&m_coder, SIGNAL (updateForceReAuthSignal(QString,QString)), this,
+        SLOT (updateValueForceReAuth(QString,QString)), Qt::QueuedConnection);
     connect (&m_coder, SIGNAL (addValueSignal(QString,QString,QString)), this,
         SLOT (updateAddValue(QString,QString,QString)), Qt::QueuedConnection);
     
@@ -370,6 +376,33 @@ void PluginApplicationPrivate::updateValue (QString accountStringId,
     m_update->update (m_account, m_option);
 }
 
+void PluginApplicationPrivate::updateValueForceReAuth (QString accountStringId,
+    QString optionId) {
+
+    QStringList optionIds;
+    optionIds << optionId;
+    if (initUpdate (accountStringId, optionIds) == false) {
+        shutdown();
+        return;
+    }
+
+    m_option = m_account->service()->serviceOption (optionId);
+    if (m_option == 0) {
+        send (m_coder.updateFailed (WebUpload::Error::CODE_CUSTOM,
+           QStringList()));
+        shutdown();
+        return;
+    }
+
+    // Force reauthorization is supported by base class only
+    if (m_update != 0) {
+        UpdateBase* updatePtr = qobject_cast<UpdateBase*>(m_update);
+        if (updatePtr != 0) {
+            updatePtr->updateForceReAuth (m_account, m_option);
+        }
+    }
+}
+
 void PluginApplicationPrivate::updateAll (QString accountStringId) {
 
     if (initUpdate (accountStringId, QStringList()) == false) {
@@ -378,6 +411,22 @@ void PluginApplicationPrivate::updateAll (QString accountStringId) {
     }
         
     m_update->updateAll (m_account);
+}
+
+void PluginApplicationPrivate::updateAllForceReAuth (QString accountStringId) {
+
+    if (initUpdate (accountStringId, QStringList()) == false) {
+        shutdown();
+        return;
+    }
+
+    // Force reauthorization is supported by base class only
+    if (m_update != 0) {
+        UpdateBase* updatePtr = qobject_cast<UpdateBase*>(m_update);
+        if (updatePtr != 0) {
+            updatePtr->updateAllForceReAuth (m_account);
+        }
+    }
 }
 
 void PluginApplicationPrivate::updateError(WebUpload::Error::Code error,

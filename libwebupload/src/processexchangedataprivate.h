@@ -115,8 +115,10 @@ namespace WebUpload {
             CODE_REQUEST_UPLOAD_WARNING,
             #endif
             CODE_REQUEST_CUSTOM,
+            CODE_REQUEST_UPDATE_ALL_REAUTH,
+            CODE_REQUEST_UPDATE_REAUTH,
 
-            CODE_REQUEST_MAX_REQUEST = CODE_REQUEST_CUSTOM
+            CODE_REQUEST_MAX_REQUEST = CODE_REQUEST_UPDATE_REAUTH
         };
 
         ProcessExchangeData *q_ptr;

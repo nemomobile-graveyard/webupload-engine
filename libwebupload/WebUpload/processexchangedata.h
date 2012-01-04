@@ -81,12 +81,30 @@ namespace WebUpload {
         static QByteArray updateAll (const QString & accountStringId);
 
         /*!
+          \brief Function called to update all updateable options with forced
+                 reauthorization
+          \param accountStringId String representation of the account
+          \return QByteArray corresponding to the update all request
+         */
+        static QByteArray updateAllForceReAuth (const QString & accountStringId);
+
+        /*!
           \brief Function called to update a given option
           \param accountStringId String representation of the account
           \param optionId Id of the option to be updated
           \return QByteArray corresponding to the update request
          */
         static QByteArray update (const QString & accountStringId, 
+            const QString & optionId);
+
+        /*!
+          \brief Function called to update a given option with forced
+                 reauthorization
+          \param accountStringId String representation of the account
+          \param optionId Id of the option to be updated
+          \return QByteArray corresponding to the update request
+         */
+        static QByteArray updateForceReAuth (const QString & accountStringId,
             const QString & optionId);
 
         /*!
@@ -260,11 +278,26 @@ namespace WebUpload {
 
         /*!
           \brief Signal emitted when the byte array recieved corresponds to the
+                 updateAllForceReAuth request
+          \param accountStringId String representation of the account
+         */
+        void updateAllForceReAuthSignal (QString accountStringId);
+
+        /*!
+          \brief Signal emitted when the byte array recieved corresponds to the
                  update request
           \param accountStringId String representation of the account
           \param optionId Id of the option to be updated
          */
         void updateSignal (QString accountStringId, QString optionId);
+
+        /*!
+          \brief Signal emitted when the byte array recieved corresponds to the
+                 updateForceReAuth request
+          \param accountStringId String representation of the account
+          \param optionId Id of the option to be updated
+         */
+        void updateForceReAuthSignal (QString accountStringId, QString optionId);
 
         /*!
           \brief Signal emitted when the byte array recieved corresponds to the

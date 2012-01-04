@@ -94,6 +94,12 @@ void UpdateProcess::startUpdateAll (WebUpload::Account * account) {
     d_ptr->m_value.clear();
 }
 
+void UpdateProcess::startUpdateAllForceReAuth (WebUpload::Account * account) {
+
+    d_ptr->m_reAuthRequested = true;
+    startUpdateAll (account);
+}
+
 void UpdateProcess::startAddValue (WebUpload::Account * account,
     WebUpload::ServiceOption * option, const QString & value) {
 
@@ -120,11 +126,23 @@ void UpdateProcess::processStarted () {
     QString accountId = d_ptr->m_account->stringId();
 
     if (d_ptr->m_option == 0) {
-        qDebug() << "Calling updateAll";
-        send (m_pdata.updateAll (accountId));
+        if (d_ptr->m_reAuthRequested == true) {
+            qDebug() << "Calling updateAllForceReAuth";
+            send (m_pdata.updateAllForceReAuth (accountId));
+            d_ptr->m_reAuthRequested = false;
+        } else {
+            qDebug() << "Calling updateAll";
+            send (m_pdata.updateAll (accountId));
+        }
     } else if (d_ptr->m_value.isEmpty() == true) {
-        qDebug() << "Calling update";
-        send (m_pdata.update (accountId, d_ptr->m_option->id()));
+        if (d_ptr->m_reAuthRequested == true) {
+            qDebug() << "Calling updateForceReAuth";
+            send (m_pdata.updateForceReAuth (accountId, d_ptr->m_option->id()));
+            d_ptr->m_reAuthRequested = false;
+        } else {
+            qDebug() << "Calling update";
+            send (m_pdata.update (accountId, d_ptr->m_option->id()));
+        }
     } else {
         qDebug() << "Calling addValue";
         send (m_pdata.addValue (accountId, d_ptr->m_option->id(), d_ptr->m_value));
@@ -135,7 +153,7 @@ void UpdateProcess::processStarted () {
 
 UpdateProcessPrivate::UpdateProcessPrivate(UpdateProcess *publicObject) :
     QObject(publicObject), q_ptr(publicObject), m_account(0), m_option(0),
-    m_cancelCalled (false) {
+    m_cancelCalled (false), m_reAuthRequested (false) {
 
 }
 

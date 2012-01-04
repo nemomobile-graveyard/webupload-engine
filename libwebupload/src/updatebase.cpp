@@ -53,6 +53,7 @@ UpdateBase::UpdateBase (QObject *parent) : UpdateInterface(parent),
         SLOT (optionFailedSlot(WebUpload::Error)));
     connect (this, SIGNAL (reAuth()), d_ptr, SLOT (reAuthSlot()), 
         Qt::QueuedConnection);
+    connect (this, SIGNAL (forceReAuthorization()), this, SLOT (forceReAuth()));
 }
 
 UpdateBase::~UpdateBase() {
@@ -69,6 +70,12 @@ void UpdateBase::updateAll (WebUpload::Account * account) {
 
     d_ptr->updateAll (account);
 }
+
+void UpdateBase::updateAllForceReAuth (WebUpload::Account * account) {
+
+    Q_EMIT (forceReAuthorization());
+    updateAll (account);
+}
     
 void UpdateBase::update (WebUpload::Account * account,
     WebUpload::ServiceOption * option) {
@@ -82,6 +89,13 @@ void UpdateBase::update (WebUpload::Account * account,
     d_ptr->update (account, option, true);
 }
 
+void UpdateBase::updateForceReAuth (WebUpload::Account * account,
+    WebUpload::ServiceOption * option) {
+
+    Q_EMIT (forceReAuthorization());
+    update (account, option);
+}
+
 void UpdateBase::addValue (WebUpload::Account * account,
     WebUpload::ServiceOption * option, const QString & valueName) {
 
@@ -92,6 +106,10 @@ void UpdateBase::addValue (WebUpload::Account * account,
     }    
     
     d_ptr->addValue (account, option, valueName);
+}
+
+void UpdateBase::forceReAuth() {
+    // Nothing to be done by default
 }
 
 void UpdateBase::cancel() {
