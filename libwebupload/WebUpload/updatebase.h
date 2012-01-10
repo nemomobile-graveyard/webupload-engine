@@ -111,6 +111,16 @@ namespace WebUpload {
         void updateForceReAuth (WebUpload::Account * account,
             WebUpload::ServiceOption * option);
 
+        /*!
+          \brief Function to add a new value to a given option with forced
+                 reauthorization
+          \param account Account which option is changed
+          \param option Option that needs new value
+          \param valueName New value name to be added to option
+         */
+        void addValueForceReAuth (WebUpload::Account * account,
+            WebUpload::ServiceOption * option, const QString & valueName);
+
     public Q_SLOTS:
 
         /*!

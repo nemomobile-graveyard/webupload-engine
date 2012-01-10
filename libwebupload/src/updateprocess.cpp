@@ -113,6 +113,12 @@ void UpdateProcess::startAddValue (WebUpload::Account * account,
     d_ptr->m_value = value;
 }
 
+void UpdateProcess::startAddValueForceReAuth (WebUpload::Account * account,
+    WebUpload::ServiceOption * option, const QString & value) {
+    d_ptr->m_reAuthRequested = true;
+    startAddValue (account, option, value);
+}
+
 void UpdateProcess::cancel () {
     if (isActive()) {
         d_ptr->m_cancelCalled = true;
@@ -144,8 +150,14 @@ void UpdateProcess::processStarted () {
             send (m_pdata.update (accountId, d_ptr->m_option->id()));
         }
     } else {
-        qDebug() << "Calling addValue";
-        send (m_pdata.addValue (accountId, d_ptr->m_option->id(), d_ptr->m_value));
+        if (d_ptr->m_reAuthRequested == true) {
+            qDebug() << "Calling addValueForceReAuth";
+            send (m_pdata.addValueForceReAuth (accountId, d_ptr->m_option->id(), d_ptr->m_value));
+            d_ptr->m_reAuthRequested = false;
+        } else {
+            qDebug() << "Calling addValue";
+            send (m_pdata.addValue (accountId, d_ptr->m_option->id(), d_ptr->m_value));
+        }
     }
 }
 

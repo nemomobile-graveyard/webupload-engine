@@ -108,8 +108,16 @@ void UpdateBase::addValue (WebUpload::Account * account,
     d_ptr->addValue (account, option, valueName);
 }
 
+void UpdateBase::addValueForceReAuth (WebUpload::Account * account,
+    WebUpload::ServiceOption * option, const QString & valueName) {
+
+    Q_EMIT (forceReAuthorization());
+    addValue (account, option, valueName);
+}
+
 void UpdateBase::forceReAuth() {
     // Nothing to be done by default
+    qDebug() << "Default forceReAuth implementation";
 }
 
 void UpdateBase::cancel() {

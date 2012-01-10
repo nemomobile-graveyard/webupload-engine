@@ -87,6 +87,15 @@ public Q_SLOTS:
         WebUpload::ServiceOption * option, const QString & value);  
 
     /*!
+      \brief Start add value to option with forced reauthorization
+      \param account Account used
+      \param option Option updated
+      \param value Value added
+     */
+    void startAddValueForceReAuth (WebUpload::Account * account,
+        WebUpload::ServiceOption * option, const QString & value);
+
+    /*!
       \brief Cancel current update/add process
      */
     void cancel ();

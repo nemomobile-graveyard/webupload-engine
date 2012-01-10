@@ -88,6 +88,8 @@ PluginApplicationPrivate::PluginApplicationPrivate (PluginInterface * interface,
         SLOT (updateValueForceReAuth(QString,QString)), Qt::QueuedConnection);
     connect (&m_coder, SIGNAL (addValueSignal(QString,QString,QString)), this,
         SLOT (updateAddValue(QString,QString,QString)), Qt::QueuedConnection);
+    connect (&m_coder, SIGNAL (addValueForceReAuthSignal(QString,QString,QString)), this,
+        SLOT (updateAddValueForceReAuth(QString,QString,QString)), Qt::QueuedConnection);
     
     // Setup notifier
     m_inputNotifier = new QSocketNotifier (STDIN_FILENO, QSocketNotifier::Read);
@@ -353,6 +355,33 @@ void PluginApplicationPrivate::updateAddValue (QString accountStringId,
     }
     
     m_update->addValue (m_account, m_option, valueName);    
+}
+
+void PluginApplicationPrivate::updateAddValueForceReAuth (QString accountStringId,
+    QString optionId, QString valueName) {
+
+    QStringList optionIds;
+    optionIds << optionId;
+    if (initUpdate (accountStringId, optionIds) == false) {
+        shutdown();
+        return;
+    }
+
+    m_option = m_account->service()->serviceOption (optionId);
+    if (m_option == 0) {
+        send (m_coder.updateFailed (WebUpload::Error::CODE_CUSTOM,
+           QStringList()));
+        shutdown();
+        return;
+    }
+
+    // Force reauthorization is supported by base class only
+    if (m_update != 0) {
+        UpdateBase* updatePtr = qobject_cast<UpdateBase*>(m_update);
+        if (updatePtr != 0) {
+            updatePtr->addValueForceReAuth (m_account, m_option, valueName);
+        }
+    }
 }
 
 void PluginApplicationPrivate::updateValue (QString accountStringId, 

@@ -99,6 +99,7 @@ QByteArray ProcessExchangeData::update (const QString & accountStringId,
     return ProcessExchangeDataPrivate::wrapSize (data);
 }
 
+
 QByteArray ProcessExchangeData::updateForceReAuth (const QString & accountStringId,
     const QString & optionId) {
 
@@ -111,6 +112,7 @@ QByteArray ProcessExchangeData::updateForceReAuth (const QString & accountString
 
     return ProcessExchangeDataPrivate::wrapSize (data);
 }
+
 
 QByteArray ProcessExchangeData::addValue (const QString & accountStringId,
     const QString & optionId, const QString & valueName) {
@@ -125,7 +127,22 @@ QByteArray ProcessExchangeData::addValue (const QString & accountStringId,
 
     return ProcessExchangeDataPrivate::wrapSize (data);
 }
-    
+
+
+QByteArray ProcessExchangeData::addValueForceReAuth (const QString & accountStringId,
+    const QString & optionId, const QString & valueName) {
+
+    QByteArray data;
+    QDataStream ds (&data, QIODevice::WriteOnly);
+
+    ds << (qint32) ProcessExchangeDataPrivate::CODE_REQUEST_ADD_VALUE_REAUTH;
+    ds << accountStringId;
+    ds << optionId;
+    ds << valueName;
+
+    return ProcessExchangeDataPrivate::wrapSize (data);
+}
+
 
 QByteArray ProcessExchangeData::stop () {
 
@@ -400,6 +417,17 @@ void ProcessExchangeDataPrivate::processByteArray (const QByteArray & recvdInfo)
                 requestStream >> valueName;
                 qDebug() << "addValueSignal";
                 Q_EMIT (q_ptr->addValueSignal (accountId, optionId, valueName));
+                break;
+            }
+
+            case CODE_REQUEST_ADD_VALUE_REAUTH:
+            {
+                QString accountId, optionId, valueName;
+                requestStream >> accountId;
+                requestStream >> optionId;
+                requestStream >> valueName;
+                qDebug() << "addValueForceReAuthSignal";
+                Q_EMIT (q_ptr->addValueForceReAuthSignal (accountId, optionId, valueName));
                 break;
             }
 

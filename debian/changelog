@@ -4,6 +4,7 @@ webupload-engine (1.3.50.1) unstable; urgency=low
   * Support for service options that get value list from another option
   * Fixes: NB#293566 - Facebook Publish - The string §qtn_comm_share_defaultalbum§ has not be translated to Latin Spanish
   * Fixes: NB#288957 - Dropbox: Service currently unavailable error is shown while updating or creating folders when incorrect date & time is set
+  * Added support for forcing account reauthorization when updating/adding options
 
  -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Wed, 09 Nov 2011 18:49:00 +0200
 

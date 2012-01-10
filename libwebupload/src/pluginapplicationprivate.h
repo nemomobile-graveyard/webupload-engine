@@ -175,6 +175,13 @@ namespace WebUpload {
             QString valueName);
 
         /*!
+          \brief Start add with forced reauthorization
+          \param accountStringId See Account::init
+         */
+        void updateAddValueForceReAuth (QString accountStringId, QString optionId,
+            QString valueName);
+
+        /*!
           \brief Slot for UpdateInterface::updateError
          */
         void updateError(WebUpload::Error::Code error, QStringList failedIds);

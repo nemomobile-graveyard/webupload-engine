@@ -116,6 +116,17 @@ namespace WebUpload {
          */
         static QByteArray addValue (const QString & accountStringId,
             const QString & optionId, const QString & valueName);
+
+        /*!
+          \brief Function called to add a new value to a given option
+                 with forced reauthorization
+          \param accountStringId String representation of the account
+          \param optionId Id of the option to be updated
+          \param valueName New value to be added
+          \return QByteArray corresponding to the addValue request
+         */
+        static QByteArray addValueForceReAuth (const QString & accountStringId,
+            const QString & optionId, const QString & valueName);
         
         //--------FUNCTIONS CALLED FROM SHARE-UI/WEBUPLOAD-ENGINE -----------
         /*!
@@ -307,6 +318,16 @@ namespace WebUpload {
           \param valueName New value to be added
          */
         void addValueSignal (QString accountStringId, QString optionId, 
+            QString valueName);
+
+        /*!
+          \brief Signal emitted when the byte array received corresponds to the
+                 addValueForceReAuth request
+          \param accountStringId String representation of the account
+          \param optionId Id of the option to be updated
+          \param valueName New value to be added
+         */
+        void addValueForceReAuthSignal (QString accountStringId, QString optionId,
             QString valueName);
 
         /*! 
