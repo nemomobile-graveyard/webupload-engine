@@ -1,4 +1,4 @@
-webupload-engine (1.3.50.1) unstable; urgency=low
+webupload-engine (1.3.3.1) unstable; urgency=low
 
   * Fixes: NB#294040 - Uploads using guest WLAN fail when the connection was previously off
   * Support for service options that get value list from another option
