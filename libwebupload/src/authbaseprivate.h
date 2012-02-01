@@ -89,9 +89,12 @@ namespace WebUpload {
         SignOn::Identity *identity; //!< Identity associated with the account
         SignOn::AuthSessionP session; //!< Session for the account
         WebUpload::Account * account; //!< Account owned
+        bool retryOnUnknownError;
+        bool requestInProgress;
 
     private:
         AuthBase * const authBaseObject; //!< Public parent object
+
     };
 }
 

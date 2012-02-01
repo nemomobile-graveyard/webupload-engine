@@ -39,8 +39,8 @@ void AuthBase::startAuth (WebUpload::Account * account) {
     
     // Check if there is an authentication request in progress. If so, there is
     // no need to do anything - that request's signals should suffice
-    if (d_ptr->identity != 0) {
-        qDebug() << "identity != 0, another request in progress";
+    if (d_ptr->requestInProgress == true) {
+        qDebug() << "Another auth request in progress";
         return;
     }
 
@@ -67,15 +67,21 @@ void AuthBase::startAuth (WebUpload::Account * account) {
         return;
     }
 
-    d_ptr->identity = SignOn::Identity::existingIdentity (
-        account->accountsObject()->credentialsId(), this);
+    if (d_ptr->identity == 0) {
+        d_ptr->identity = SignOn::Identity::existingIdentity (
+            account->accountsObject()->credentialsId(), this);
+    }
+
     if (d_ptr->identity == 0) {
         qWarning() << "Auth request cannot be done without identity";
         Q_EMIT (authResult(RESULT_UNAUTHORIZED));
         return;
     }
 
-    d_ptr->session = d_ptr->identity->createSession (authData.methodName);
+    if (d_ptr->session == 0) {
+        d_ptr->session = d_ptr->identity->createSession (authData.methodName);
+    }
+
     if (d_ptr->session == 0) {
         d_ptr->clearAuthInformation();
         QString errMsg = 
@@ -91,6 +97,7 @@ void AuthBase::startAuth (WebUpload::Account * account) {
     connect (d_ptr->session, SIGNAL (error(SignOn::Error)), d_ptr, 
         SLOT (sessionError(SignOn::Error)));
 
+    d_ptr->requestInProgress = true;
     d_ptr->session->process (authData.sessionData, authData.mechanism);
 }
 
@@ -99,13 +106,12 @@ void AuthBase::cancel () {
     if (isAuthOngoing ()) {
         qDebug() << "Cancel auth request";
         d_ptr->session->cancel ();
+        d_ptr->requestInProgress = false;
     }
 }
 
 bool AuthBase::isAuthOngoing () {
-    // If identity has been allocated, then authentication request is in
-    // process
-    return (d_ptr->identity != 0);
+    return d_ptr->requestInProgress;
 }
 
 
@@ -140,7 +146,11 @@ void AuthBase::handleResponse (const SignOn::SessionData & sessionData) {
  ******************************************************************************/
 
 AuthBasePrivate::AuthBasePrivate (AuthBase * parent) : QObject (parent),
-    identity (0), account (0), authBaseObject (parent) {
+    identity (0), account (0),
+    retryOnUnknownError(true),
+    requestInProgress(false),
+    authBaseObject (parent)
+{
 
 }
 
@@ -161,7 +171,7 @@ void AuthBasePrivate::clearAuthInformation () {
 }
 
 void AuthBasePrivate::sessionResponse (const SignOn::SessionData &sessionData) {
-    clearAuthInformation ();
+    requestInProgress = false;
     authBaseObject->handleResponse (sessionData);
 }
 
@@ -169,10 +179,11 @@ void AuthBasePrivate::sessionError (const SignOn::Error & err) {
     int code = err.type ();
     QString message = err.message ();
 
+    requestInProgress = false;
+    clearAuthInformation();
+
     qWarning () << "Authorization failed with code " << code << 
         " and message " << message;
-
-    clearAuthInformation ();
 
     switch (code) {
         case SignOn::Error::NoConnection:
@@ -203,9 +214,15 @@ void AuthBasePrivate::sessionError (const SignOn::Error & err) {
 
         default:
             if (authBaseObject->handleError (err) == false) {
-                QString errMsg("SSO error !! code = %1, message = %2");
-                errMsg = errMsg.arg(QString::number(code)).arg(message);
-                Q_EMIT (authUnknownError (errMsg));
+                if (retryOnUnknownError) {
+                    retryOnUnknownError = false;
+                    authBaseObject->startAuth(account);
+                }
+                else {
+                    QString errMsg("SSO error !! code = %1, message = %2");
+                    errMsg = errMsg.arg(QString::number(code)).arg(message);
+                    Q_EMIT (authUnknownError (errMsg));
+                }
             }
             break;
     }
