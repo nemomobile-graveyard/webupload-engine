@@ -503,7 +503,7 @@ void ServiceOptionPrivate::valueList () {
     key.append ("/names");
     QStringList names = account->value (key).toStringList();
     
-    if (ids.isEmpty() || names.count() != ids.count()) {
+    if (names.count() != ids.count()) {
         qDebug() << "No updated option list found";
         return;
     }
