@@ -1,6 +1,7 @@
 webupload-engine (1.3.7.1) unstable; urgency=low
 
   * Fixed album list update problems when list has become empty
+  * Retry SSO request on unkown error once
 
  -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Tue, 14 Feb 2012 15:06:00 +0200
 
