@@ -371,6 +371,8 @@ void UploadProcess::startUploadProcess (UploadItem * item) {
         return;
     }
 
+    m_currItem->uploadProgress (0.0001);
+
     connect (&m_pdata, SIGNAL (progressSignal(float)), m_currItem,
         SLOT (uploadProgress(float)), Qt::QueuedConnection);
 

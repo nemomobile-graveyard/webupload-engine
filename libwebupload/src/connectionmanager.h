@@ -58,6 +58,8 @@ namespace WebUpload {
 
         void releaseConnection();
 
+        bool isOnline() const;
+
     Q_SIGNALS:
 
         /*!

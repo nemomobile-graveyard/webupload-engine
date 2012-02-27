@@ -487,6 +487,12 @@ void UploadEngine::uploadFailed (UploadItem * item, WebUpload::Error error) {
 
             setState (OFFLINE);
             item->markPending (UploadItem::PENDING_CONNECTIVITY);
+
+            // Reopen session if device is still online. This happens when
+            // connection changes to another network.
+            if (connection.isOnline()) {
+                connection.isConnected();
+            }
         } else {
         
             DBGSTREAM << "Fail: Code:" << error.code();

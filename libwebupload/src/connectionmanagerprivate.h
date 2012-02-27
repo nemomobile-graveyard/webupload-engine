@@ -100,7 +100,7 @@ namespace WebUpload {
         */
         void sessionClosed();
 
-    private:
+    public:
         //! is connection ready to start upload
         bool m_isConnectionReady;
         
@@ -113,7 +113,7 @@ namespace WebUpload {
 
         //! True while a network session is opening
         bool m_sessionOpening;
-        
+
         //! Network configuration manager
         QNetworkConfigurationManager m_manager;
 

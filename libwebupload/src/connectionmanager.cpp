@@ -49,6 +49,10 @@ void ConnectionManager::releaseConnection() {
     d_ptr->releaseConnection();
 }
 
+bool ConnectionManager::isOnline() const {
+    return d_ptr->m_manager.isOnline();
+}
+
 // -- private class ------------------------------------------------------------
 
 ConnectionManagerPrivate::ConnectionManagerPrivate(QObject *parent, 
@@ -194,7 +198,6 @@ void ConnectionManagerPrivate::configurationChanged ( const QNetworkConfiguratio
             createSession();
         }
     }
-
 }
 
 void ConnectionManagerPrivate::printNetworkConfigStatus(const QNetworkConfiguration &config) {
