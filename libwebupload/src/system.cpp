@@ -214,6 +214,7 @@ void System::loadLocales () {
     // non-meegotouch apps. We don't know if the translation path has been
     // added before calling this library, hence adding it again
     MLocale::addTranslationPath ("/usr/share/l10n/meegotouch");
+    locale.installTrCatalog ("common");
     // Install actuall application catalog
     locale.installTrCatalog ("transfer");
     // Install application catalog (engineering english)

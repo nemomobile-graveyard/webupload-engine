@@ -60,11 +60,8 @@ Q_DECL_EXPORT int main(int argc, char **argv) {
     // Seems like translation path needs to be added translation to work with
     // non-meegotouch apps
     MLocale::addTranslationPath ("/usr/share/l10n/meegotouch");
-    locale.installTrCatalog ("common"); 
     // Install engineering english application catalog 
     locale.installTrCatalog ("webupload-engine"); 
-    // Install actuall catalog
-    locale.installTrCatalog ("transfer");
     MLocale::setDefault (locale);
 
     WebUpload::System::loadLocales();

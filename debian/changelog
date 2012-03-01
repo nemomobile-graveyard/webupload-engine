@@ -1,3 +1,9 @@
+webupload-engine (1.3.9.2) unstable; urgency=low
+
+  * Load also common translation catalog in System class
+
+ -- Jukka Tiihonen <jukka.t.tiihonen@nokia.com>  Thu, 1 Mar 2012 12:26:00 +0200
+
 webupload-engine (1.3.9.1) unstable; urgency=low
 
   * Fixes: NB#298932 - Unable to upload video to youtube, when moving WLAN -> 3G -> back to WLAN during upload
