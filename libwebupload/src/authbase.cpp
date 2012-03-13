@@ -172,6 +172,7 @@ void AuthBasePrivate::clearAuthInformation () {
 
 void AuthBasePrivate::sessionResponse (const SignOn::SessionData &sessionData) {
     requestInProgress = false;
+    clearAuthInformation();
     authBaseObject->handleResponse (sessionData);
 }
 
