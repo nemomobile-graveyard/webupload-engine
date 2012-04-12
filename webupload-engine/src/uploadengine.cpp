@@ -670,7 +670,9 @@ void UploadEngine::usbModeChanged (MeeGo::QmUSBMode::Mode mode) {
     if (mode == MeeGo::QmUSBMode::MassStorage) {
         if (state == IDLE || state == MASS_STORAGE) {
             UploadItem * top = queue.getTop ();
-            if (top != 0) {
+            if (top != 0 &&
+                top->getError().code() == WebUpload::Error::CODE_NO_ERROR) {
+
                 top->markPending (UploadItem::PENDING_MSM);
             }
         }
@@ -715,7 +717,11 @@ void UploadEngine::usbModeChanged (MeeGo::QmUSBMode::Mode mode) {
         }
 
         // Now handle the queue top element as it should be handled
-        queueTop (queue.getTop ());
+        UploadItem * top = queue.getTop ();
+        if (top != 0 &&
+            top->getError().code() == WebUpload::Error::CODE_NO_ERROR) {
+            queueTop (top);
+        }
     }
 }
 
