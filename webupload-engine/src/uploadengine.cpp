@@ -458,6 +458,12 @@ void UploadEngine::uploadStopped (UploadItem * item) {
         item->markPending (UploadItem::PENDING_MSM);
     } else if (getState () == OFFLINE) {
         item->markPending (UploadItem::PENDING_CONNECTIVITY);
+
+        // Reopen session if device is still online. This happens when
+        // connection changes to another network.
+        if (connection.isOnline()) {
+            connection.isConnected();
+        }
     } else {
         WARNSTREAM << "Stop called after stop";
     }
