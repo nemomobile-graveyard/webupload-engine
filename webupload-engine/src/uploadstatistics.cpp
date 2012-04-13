@@ -56,10 +56,20 @@ void UploadStatistics::setSize (qint64 size) {
 
 bool UploadStatistics::nowDone (float done) {
 
-    if (done == 0) {
+    if (done == 0 || done == 0.0001) { // 0.0001 is also used to reset
         reset();
         Q_EMIT (timeLeftEstimate (secondsLeft));
         return true;
+    }
+
+    // Reset calculations if time difference to previous sample is negative
+    // or more than 10 minutes. This can happen if system time is changed
+    // during the transfer.
+    if (!timestamps[loopIndex].isNull()) {
+        int timeDiff = timestamps[loopIndex].secsTo(QDateTime::currentDateTime());
+        if (timeDiff < 0 || timeDiff > 600) {
+            reset();
+        }
     }
 
     // Return if done is same as last time or time is the same as the last time
@@ -120,12 +130,6 @@ void UploadStatistics::calculateEstimates () {
     
     float doneBetween = dones[endIndex] - dones[startIndex];
     
-    /*
-    qDebug() << "Done between" << endIndex << startIndex << ":"
-        << doneBetween;    
-    */
-    
-    //TODO: If we move back in done, what then? For now ignore those.
     if (doneBetween <= 0.0) {
         return;
     }

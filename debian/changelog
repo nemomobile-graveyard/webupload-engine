@@ -1,5 +1,6 @@
 webupload-engine (1.3.15.1) unstable; urgency=low
 
+  * Fixes: NB#300201 - Incorrect remaining time shown when transfer resumes after setting correct time
   * Fixes: NB#300191 - Failed Error state for upload transfer changes to Pending state when device is put to mass storage mode
   * Fixes: NB#300219 - Transfer consisting of multiple files in same upload does not resume when switched from WLAN to GPRS
 
