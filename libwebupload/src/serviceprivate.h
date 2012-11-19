@@ -33,12 +33,12 @@ namespace WebUpload {
     class Account;
 
     class ServicePrivate {
-    
+
     public:
-    
+
         ServicePrivate (Service * parent);
         ~ServicePrivate ();
-    
+
         void clear();
         bool validDataExists () const;
         void populatePresentationData (const QDomElement & element);
@@ -52,67 +52,67 @@ namespace WebUpload {
           \return true if input is valid and read successfull
          */
         bool initFromDefinition (const QDomElement & element);
-        
+
         /*!
           \brief Initialize service from Accounts' service XML document
           \param doc XML that contains sharing part
           \return true if success
          */
-        bool initFromAccountsServiceXml (const QDomDocument & doc); 
-        
+        bool initFromAccountsServiceXml (const QDomDocument & doc);
+
         /*!
           \brief Loads post options
           \return true if options are loaded after this function
          */
         bool loadServiceOptions ();
-        
+
         /*!
           \brief Init options from XML node
           \param element XML content used
          */
         void initOptions (const QDomElement & element);
-        
+
         /*!
           \brief Clear all options from memory
          */
         void clearOptions ();
-        
+
         /*!
           \brief Try to resolve Accounts' service related to this
           \return Accounts' service or null
          */
-        Accounts::Service * resolveAccountsService();
-        
+        //Accounts::Service * resolveAccountsService();
+
         /*!
           \brief Finds caption tag under parentElem and localizes it's
                  content
           \param parentElem Element which should have caption tag
           \return Localizated string or empty string if not defined
-         */                     
+         */
         static QString captionValue (QDomElement & parentElem);
-        
+
         /*!
           \brief Filter function for public accepts functions
          */
         bool hasMimePrefix (const QString & prefix) const;
-        
+
         QString m_name; //!< Name of service
         QString m_uploadPlugin; //!< Upload plugin used
         //! Contains map of option order against option
-        QList<PostOption *> m_postOptions; 
+        QList<PostOption *> m_postOptions;
         QStringList m_mimeTypes; //!< Mime types supported by service
         Service * m_service; //!< Owner of private class
         Account * m_account; //!< If account is parent then pointer is stored
         QString m_accServiceName; //!< Accounts' service name
-        QString m_iconName; //!< Icon name            
+        QString m_iconName; //!< Icon name
 
         bool m_serviceOptionsLoaded; //!< Are service options loaded or not
-        
+
         //! Publish custom level of service
         Service::PublishCustomLevel m_publishCustom;
         //! Name of publish plugin
         QString m_publishPlugin;
-        
+
         //! Max amount of media elements allowed for this service (or 0 if
         //  undefined)
         unsigned int m_maxMedia;
@@ -120,8 +120,8 @@ namespace WebUpload {
         //! Max size of a single media element allowed for this service
         //  (0 if undefined)
         unsigned int m_maxMediaSize;
-        
-        //! Mime to share button map. Actually key is regexp so this isn't 
+
+        //! Mime to share button map. Actually key is regexp so this isn't
         //  usually used as map but instead iterated until proper value is
         //  found.
         QMap <QString, QString> m_shareButtonTexts;

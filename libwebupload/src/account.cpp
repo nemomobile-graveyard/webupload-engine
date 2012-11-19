@@ -1,4 +1,4 @@
- 
+
 /*
  * Web Upload Engine -- MeeGo social networking uploads
  * Copyright (c) 2010-2011 Nokia Corporation and/or its subsidiary(-ies).
@@ -32,24 +32,24 @@ Account::Account(QObject *parent): QObject(parent),
     connect (d_ptr, SIGNAL (enabled()), this, SIGNAL (enabled()));
     connect (d_ptr, SIGNAL (disabled()), this, SIGNAL (disabled()));
 }
- 
+
 Account::~Account() {
     delete d_ptr;
 }
 
 bool Account::init (Accounts::AccountId accountId,
     const QString & serviceName) {
-    
+
     // Validate state
     if (d_ptr->m_service != 0) {
         qWarning() << "Account already initialized";
         return false;
     }
-    
+
     d_ptr->m_accountId = accountId;
     d_ptr->m_serviceName = serviceName;
-    
-    // Try to load account   
+
+    // Try to load account
     return d_ptr->load();
 }
 
@@ -65,25 +65,25 @@ bool Account::initFromStringId (const QString & id) {
     if (!(d_ptr->fromStringPresentation (id))) {
         return false;
     }
-    
+
     // Try to load account
     return d_ptr->load();
 }
 
-QString Account::stringId() const {  
+QString Account::stringId() const {
     return d_ptr->stringPresentation();
 }
 
 QVariant Account::value (const QString & id) {
-    
+
     qDebug() << "Try to get option" << id << "from"
         << d_ptr->m_settings->fileName();
-    
+
     QString key = d_ptr->stringPresentation();
     key.append ("/");
     key.append (id);
-        
-    return d_ptr->m_settings->value (key);        
+
+    return d_ptr->m_settings->value (key);
 }
 
 void Account::syncValues () {
@@ -107,7 +107,7 @@ void Account::setValue (const QString & id, const QVariant & value) {
 
     qDebug() << "Writing to " << id << " value " << value;
     d_ptr->m_settings->setValue (key, value);
-    
+
     //TODO: Workaround for QSetting issues
     d_ptr->m_settings->sync ();
 }
@@ -146,28 +146,28 @@ bool Account::isValid() const {
 
 enum ImageResizeOption Account::imageResizeOption () {
     QVariant val = value ("image-resize");
-    
+
     bool ok = false;
     enum ImageResizeOption ret = (enum ImageResizeOption) val.toInt (&ok);
-    
+
     if (!ok || ret < IMAGE_RESIZE_NONE || ret >= IMAGE_RESIZE_N) {
         ret = IMAGE_RESIZE_NONE;
     }
-    
+
     return ret;
 }
 
 enum VideoResizeOption Account::videoResizeOption () {
     QVariant val = value ("video-resize");
-    
+
     bool ok = false;
     enum VideoResizeOption ret = (enum VideoResizeOption) val.toInt (&ok);
-    
+
     qDebug() << "Account::videoResizeOption:" << val.toInt () << ok;
     if (!ok || ret < VIDEO_RESIZE_NONE || ret >= VIDEO_RESIZE_N) {
         ret = VIDEO_RESIZE_NONE;
     }
-    
+
     return ret;
 }
 
@@ -175,14 +175,14 @@ int Account::metadataFilters () {
     QVariant val = value ("metadata-filters");
     bool ok = false;
     int ret = val.toInt (&ok);
-    
+
     if (!ok) {
         ret = METADATA_FILTER_NONE;
     }
-    
+
     return ret;
 }
-            
+
 void Account::setImageResizeOption (enum ImageResizeOption value) {
     if (value >= IMAGE_RESIZE_NONE && value < IMAGE_RESIZE_N) {
         int num = value;
@@ -218,11 +218,11 @@ AccountPrivate::~AccountPrivate() {
     if (m_service != 0) {
         delete m_service;
     }
-    
+
     if (m_aAccount != 0) {
         delete m_aAccount;
     }
-    
+
     if (m_settings != 0) {
         delete m_settings;
     }
@@ -232,18 +232,18 @@ QString AccountPrivate::stringPresentation() const {
 
     //<<account id>>:<<service name>>
     QString pres;
-    
+
     pres.setNum (m_accountId, 16);
     pres.append (":");
     pres.append (m_serviceName);
-    
+
     QString withPrefix = "Accounts:";
     withPrefix.append (pres);
-    
+
     return withPrefix;
 }
 
-bool AccountPrivate::fromStringPresentation (const QString & str) {    
+bool AccountPrivate::fromStringPresentation (const QString & str) {
     if (!(str.startsWith ("Accounts:"))) {
         qWarning() << "Invalid string prefix in account" << str;
         return false;
@@ -251,15 +251,15 @@ bool AccountPrivate::fromStringPresentation (const QString & str) {
 
     QString aIdStr = str.section(':', 1, 1);
     QString serviceStr = str.section(':', 2);
-    
+
     qDebug() << "Received account id" << aIdStr << serviceStr;
-    
+
     bool ok = false;
     Accounts::AccountId aId = aIdStr.toUInt (&ok, 16);
     if (ok) {
         ok = !(serviceStr.isEmpty());
     }
- 
+
     if (ok) {
         m_accountId = aId;
         m_serviceName = serviceStr;
@@ -267,8 +267,8 @@ bool AccountPrivate::fromStringPresentation (const QString & str) {
         qWarning() << "Invalid account string:" << str << "=>" << aId
             << serviceStr;
     }
-    
-    return ok;   
+
+    return ok;
 }
 
 bool AccountPrivate::load () {
@@ -284,53 +284,48 @@ bool AccountPrivate::load () {
         qCritical() << "Service name not set";
         return false;
     }
-    
+
     if (m_aManager.isNull()) {
         m_aManager = System::accountsManager();
     }
-    
+
     m_aAccount = m_aManager->account (m_accountId);
     if (m_aAccount == 0) {
         qCritical() << "Failed to load account from Accounts";
         return false;
     }
-    
+
     m_aAccount->selectService();
     m_accountEnabled = m_aAccount->enabled ();
 
     // Load Accounts' service
-    Accounts::Service * aService = m_aManager->service (m_serviceName);
-    if (aService == 0) {
-        qCritical() << "Failed to load service from Accounts";
-        m_aAccount = 0;
-        return false;
-    }
-    
+    Accounts::Service aService = m_aManager->service (m_serviceName);
+
     // Pair Accounts' service to Accounts' account
     m_aAccount->selectService (aService);
     m_serviceEnabled = m_aAccount->enabled ();
-    
+
     /* When we move to use account storage
     m_aAccount->beginGroup ("sharing");
     */
-    
+
     // Finally load Sharing's service
     m_service = new Service (m_sAccount);
-    if (!m_service->initFromAccountsService (aService)) {
+    if (!m_service->initFromAccountsService (&aService)) {
         qCritical () << "Failed to initialize service from Accounts' service";
         delete m_service;
         m_service = 0;
         delete m_aAccount;
-        m_aAccount = 0;       
+        m_aAccount = 0;
         return false;
     }
-    
+
     // Connect removed signal from Accounts' side
     connect (m_aAccount, SIGNAL (removed()), this,
         SLOT (accountsRemoved()));
     connect (m_aAccount, SIGNAL (enabledChanged(QString,bool)), this,
         SLOT (enabledChanged(QString,bool)));
-    
+
     return true;
 }
 
@@ -343,7 +338,7 @@ void AccountPrivate::accountsRemoved () {
 
     delete m_aAccount;
     m_aAccount = 0;
-    
+
     m_accountId = 0;
     m_serviceName = "";
     m_accountEnabled = false;
@@ -352,12 +347,12 @@ void AccountPrivate::accountsRemoved () {
     Q_EMIT (removed());
 }
 
-void AccountPrivate::enabledChanged (const QString &serviceName, 
+void AccountPrivate::enabledChanged (const QString &serviceName,
     bool isEnabled) {
 
     qDebug() << "enabled changed:" << isEnabled << serviceName << "("
         << m_serviceName << ")";
-        
+
     bool other;
     if ((serviceName == m_serviceName) && (m_serviceEnabled != isEnabled)) {
         m_serviceEnabled = isEnabled;

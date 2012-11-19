@@ -1,4 +1,4 @@
- 
+
 /*
  * Web Upload Engine -- MeeGo social networking uploads
  * Copyright (c) 2010-2011 Nokia Corporation and/or its subsidiary(-ies).
@@ -38,7 +38,7 @@ using namespace WebUpload;
 
 Service::Service(QObject * parent) : QObject(parent),
     d_ptr (new ServicePrivate(this)) {
-    
+
 }
 
 Service::~Service() {
@@ -50,14 +50,14 @@ bool Service::initFromAccountsService (Accounts::Service * accService) {
         qCritical() << "Can't init from null Accounts' service";
         return false;
     }
-    
+
     if (!d_ptr->initFromAccountsServiceXml (accService->domDocument())) {
         return false;
     }
-    
-    d_ptr->m_accServiceName = accService->name();    
+
+    d_ptr->m_accServiceName = accService->name();
     d_ptr->m_iconName = accService->iconName();
-    
+
     return true;
 }
 
@@ -120,7 +120,7 @@ ServiceOption * Service::serviceOption (const QString & id) {
             }
         }
     }
-    
+
     return ret;
 }
 
@@ -196,27 +196,27 @@ unsigned int Service::maxMediaSizeLimit() const {
 }
 
 QString Service::shareButtonText (const Entry * entry) const {
-    
+
     // Currently we only use first media to find the button text
     Media * media = entry->mediaAt (0);
     if (media == 0) {
         return QString();
     }
-    
+
     QString ret;
-    
+
     //Try if mime type is defined in the list
     ret = d_ptr->m_shareButtonTexts.value (media->mimeType(), QString());
-    
+
     //Also check reqexps if not found
-    if (ret.isEmpty()) {   
+    if (ret.isEmpty()) {
         QRegExp rx ("*");
         rx.setPatternSyntax (QRegExp::Wildcard);
-        
+
         QMapIterator<QString, QString> iter (d_ptr->m_shareButtonTexts);
         while (iter.hasNext()) {
             iter.next();
-            
+
             rx.setPattern (iter.key());
             if (rx.exactMatch(media->mimeType())) {
                 ret = iter.value();
@@ -230,7 +230,7 @@ QString Service::shareButtonText (const Entry * entry) const {
 
 /* --- Private functions ---------------------------------------------------- */
 
-ServicePrivate::ServicePrivate (Service * parent) : m_service (parent), 
+ServicePrivate::ServicePrivate (Service * parent) : m_service (parent),
     m_serviceOptionsLoaded (false),
     m_publishCustom (Service::PUBLISH_CUSTOM_XML), m_maxMedia (0), m_maxMediaSize (0) {
 
@@ -266,7 +266,7 @@ bool ServicePrivate::validDataExists () const {
         qWarning() << "Missing webupload plugin";
         valid = false;
     }
-        
+
     return valid;
 }
 
@@ -275,14 +275,14 @@ QString ServicePrivate::captionValue (QDomElement & parentElem) {
     if (nodes.count() > 0) {
         return XmlHelper::getLocalizatedContent (nodes.at(0).toElement());
     }
-    
+
     return "";
 }
 
 void ServicePrivate::populatePresentationData (const QDomElement & element) {
 
     bool loadPres = System::loadPresentationDataEnabled ();
-    
+
     bool commonOptionPresent [PostOption::OPTION_TYPE_COMMON_TYPES_N];
     for (int i = 0; i < PostOption::OPTION_TYPE_COMMON_TYPES_N; ++i) {
         commonOptionPresent[i] = false;
@@ -306,17 +306,17 @@ void ServicePrivate::populatePresentationData (const QDomElement & element) {
 
             // Read things useful for other service types
             } else if (childElem.tagName() == QLatin1String ("share_button")) {
-            
+
                 QString value = XmlHelper::getLocalizatedContent (childElem);
                 QString mime = childElem.attribute (QLatin1String ("mime"),
                     QLatin1String ("*"));
-                    
+
                 if (value.isEmpty() == false) {
                     m_shareButtonTexts.insert (mime, value);
                 }
-            
+
             } else {
-            
+
                 CommonOption * option = CommonOption::getCommonOption (childElem,
                     m_service);
                 if (option != 0) {
@@ -361,13 +361,13 @@ void ServicePrivate::populateMediaData (const QDomElement & element) {
 
     QDomNode node = element.firstChild();
     while (node.isNull() == false) {
-    
+
         if (node.isElement() == true) {
             QDomElement childElem = node.toElement();
 
             if (childElem.tagName() == QLatin1String("formats")) {
                 m_mimeTypes = XmlHelper::readMimeTypes (childElem);
-            
+
             } else {
                 qWarning() << "Service/Media: Unknown tag"
                     << childElem.tagName();
@@ -375,7 +375,7 @@ void ServicePrivate::populateMediaData (const QDomElement & element) {
         }
 
         node = node.nextSibling();
-    }  
+    }
 }
 
 void ServicePrivate::addOption (PostOption * option) {
@@ -399,38 +399,38 @@ bool ServicePrivate::initFromDefinition (const QDomElement & element) {
 
     QDomElement docElem = element;
     clear();
-    
+
     //TODO: Check version (when 1.0 is finalized)
     QString version = docElem.attribute ("version", "1.0");
-    qDebug() << "Used input definition version" << version; 
-    
+    qDebug() << "Used input definition version" << version;
+
     // Load catalogs
     if (System::loadPresentationDataEnabled() == true) {
         QString catalogAttr = element.attribute ("trcatalogs", "");
         if (catalogAttr.isEmpty() == false) {
             QStringList catalogs = catalogAttr.split (" ");
             QString catalog;
-            MLocale locale;           
+            MLocale locale;
             foreach (catalog, catalogs) {
                 qDebug() << "Loading catalog" << catalog << "for service";
                 locale.installTrCatalog (catalog);
             }
             MLocale::setDefault (locale);
-        }    
+        }
     }
-        
+
     // Load plugin
     m_uploadPlugin = docElem.attribute ("uploadPlugin", "");
-    
+
     // Check custom UI
     bool oldCustom = XmlHelper::attributeValueToBool (docElem, "customUI",
         false);
-        
+
     if (oldCustom == true) {
         m_publishCustom = Service::PUBLISH_CUSTOM_TOTAL;
     } else {
         m_publishCustom = Service::PUBLISH_CUSTOM_XML;
-            
+
         QString pluginName = docElem.attribute ("customPage", "");
         if (pluginName.isEmpty() == false) {
             m_publishPlugin = pluginName;
@@ -439,105 +439,99 @@ bool ServicePrivate::initFromDefinition (const QDomElement & element) {
             pluginName = docElem.attribute ("customWidget", "");
             if (pluginName.isEmpty() == false) {
                 m_publishPlugin = pluginName;
-                m_publishCustom = Service::PUBLISH_CUSTOM_WIDGET;            
+                m_publishCustom = Service::PUBLISH_CUSTOM_WIDGET;
             }
         }
     }
-    
+
     qDebug() << "Loading service" << m_uploadPlugin << m_publishCustom
         << m_publishPlugin;
-    
-    
+
+
     QDomNode node = docElem.firstChild();
     while (node.isNull() == false) {
-    
+
         if (node.isElement() == true) {
             QDomElement childElem = node.toElement();
 
             if (childElem.tagName() == "presentation") {
                 populatePresentationData (childElem);
-                
+
             } else if (m_publishCustom != Service::PUBLISH_CUSTOM_TOTAL &&
                 childElem.tagName() == "media") {
-            
+
                 populateMediaData (childElem);
 
             } else if (childElem.tagName().isEmpty() == false) {
                 qDebug() << "Init skip tag" << childElem.tagName();
             }
         }
-        
-        node = node.nextSibling();        
+
+        node = node.nextSibling();
     }
-    
+
     qDebug() << "Service loaded" << validDataExists();
-    
+
     return validDataExists ();
 }
 
 bool ServicePrivate::initFromAccountsServiceXml (const QDomDocument & doc) {
-    
+
     bool valid = false;
     QDomElement docElem = doc.documentElement();
-    
+
     QDomNode node = docElem.firstChild();
     while (!node.isNull()) {
         docElem = node.toElement();
-        
+
         if (docElem.tagName() == "webService") {
             valid = initFromDefinition (docElem);
             break;
         }
-        
+
         node = node.nextSibling();
     }
 
     return valid;
 }
 
+/*
+// FIXME: not sure how much sense this makes / if anyone uses it
 // This doesn't work with current Accounts
 Accounts::Service * ServicePrivate::resolveAccountsService() {
     if (m_account == 0) {
         qCritical() << "Missing account connection, can't load post options";
         return 0;
     }
-    
+
     Accounts::Account * aAcc = m_account->accountsObject();
     if (aAcc == 0) {
         qCritical() << "Failed to receive Accounts' account";
         return 0;
     }
-    
-    Accounts::Service * service = aAcc->selectedService();
-    if (service == 0) {
-        qCritical() << "Failed to receive Accounts' service";
-        return 0;
-    }
-    
+
+    Accounts::Service service = aAcc->selectedService();
+
     return service;
 }
+*/
 
 bool ServicePrivate::loadServiceOptions () {
     if (m_serviceOptionsLoaded) {
         return true;
     }
-    
+
     if (m_accServiceName.isEmpty()) {
         qWarning() << "No Accounts' service connection";
         return false;
     }
 
-    Accounts::Service * accountsService =
+    Accounts::Service accountsService =
         System::accountsManager()->service (m_accServiceName);
-    
-    if (accountsService == 0) {
-        qWarning() << "Failed to load service" << m_accServiceName;    
-        return false;
-    }
-    
-    QDomDocument serviceXML = accountsService->domDocument ();
+
+    QDomDocument serviceXML = accountsService.domDocument ();
     QDomNodeList optionsNodeList = serviceXML.elementsByTagName ("postOptions");
-    
+
     for (int i = 0; i < optionsNodeList.size(); ++i) {
         QDomNode node = optionsNodeList.at (i);
         if (!node.isElement()) {
@@ -547,7 +541,7 @@ bool ServicePrivate::loadServiceOptions () {
         initOptions (element);
         break;
     }
-    
+
     m_serviceOptionsLoaded = true;
 
     return true;
@@ -571,7 +565,7 @@ void ServicePrivate::initOptions (const QDomElement & element) {
 
 void ServicePrivate::clearOptions () {
     while (!m_postOptions.isEmpty ()) {
-        PostOption * option = m_postOptions.takeFirst (); 
+        PostOption * option = m_postOptions.takeFirst ();
         delete option;
     }
 }
@@ -582,19 +576,19 @@ bool ServicePrivate::hasMimePrefix (const QString & prefix) const {
     if (m_mimeTypes.isEmpty() == true) {
         return true;
     }
-    
+
     for (int i = 0; i < m_mimeTypes.count(); ++i) {
-    
+
         //Starts with star, accepts all
         if (m_mimeTypes.at(i).startsWith ("*") == true) {
             return true;
-            
+
         //TODO: Doesn't support format "imag*" (can be documented as invalid
         //mimetype definition option in service xml files)
         } else if (m_mimeTypes.at(i).startsWith (prefix) == true) {
             return true;
         }
     }
-    
+
     return false;
 }

@@ -1,4 +1,4 @@
- 
+
 /*
  * Web Upload Engine -- MeeGo social networking uploads
  * Copyright (c) 2010-2011 Nokia Corporation and/or its subsidiary(-ies).
@@ -43,7 +43,7 @@ QWeakPointer<Accounts::Manager> SystemPrivate::s_accountsManager;
 
 System::System (QObject * parent) : QObject (parent),
     d_ptr (new SystemPrivate (this)) {
-    
+
     QObject::connect (d_ptr,
         SIGNAL (newAccount (QSharedPointer<WebUpload::Account>)), this,
         SIGNAL (newAccount (QSharedPointer<WebUpload::Account>)));
@@ -55,18 +55,18 @@ System::~System() {
 
 QString System::pluginProcessPathForAccount (const Account * account) {
 
-    QString path; 
-    
+    QString path;
+
     if (account != 0 && account->service() != 0) {
         QString name = account->service()->pluginProcessName();
-        
+
         if (name.isEmpty() == false) {
             QDir pluginsDir = QDir(pluginProcessPath());
             path = pluginsDir.absoluteFilePath (name);
         }
     }
-    
-    return path;        
+
+    return path;
 }
 
 void System::setEntryOutboxPath (const QString & path) {
@@ -79,13 +79,13 @@ QString System::entryOutputPath () const {
 
 QList <QSharedPointer<Entry> > System::outboxEntries () {
     QList <QSharedPointer<Entry> > list;
-    
+
     QDir dir = d_ptr->entryOutboxPath;
     QStringList filters;
     filters << "entry_*.xml";
     dir.setNameFilters (filters);
     QStringList entryFiles = dir.entryList (filters, QDir::Files, QDir::Name);
-    
+
     for (int i = 0; i < entryFiles.count(); ++i) {
         QSharedPointer <Entry> entry = QSharedPointer <Entry> (new Entry);
         if (entry->init (dir.filePath(entryFiles.at (i)))) {
@@ -96,8 +96,8 @@ QList <QSharedPointer<Entry> > System::outboxEntries () {
             Entry::cleanUp (dir.filePath(entryFiles.at (i)));
         }
     }
-    
-    return list;    
+
+    return list;
 }
 
 QString System::serializeEntryToOutbox (Entry * entry) {
@@ -105,7 +105,7 @@ QString System::serializeEntryToOutbox (Entry * entry) {
         qWarning() << "Null entry not accepted";
         return "";
     }
-        
+
     // Create path if needed
     QDir dir;
     if(!(dir.exists(entryOutputPath ()))) {
@@ -128,7 +128,7 @@ QString System::serializeEntryToOutbox (Entry * entry) {
         qWarning() << "Can't create temp file" << tempFile.fileName();
         return "";
     }
-    
+
     // Try to serialize
     if (entry->serialize(entryPath)) {
         qDebug() << "Entry serialized to" << entryPath;
@@ -148,7 +148,7 @@ QList <QSharedPointer<Account> > System::allAccounts (bool filterOutCustomUI) {
 SharedAccount System::sharedAccount (const QString & stringId) {
     SharedAccount ret;
     Account * account = new Account ();
-    
+
     if (account->initFromStringId (stringId) == false) {
         qWarning() << "System failed to load account" << stringId;
         delete account;
@@ -189,16 +189,16 @@ void System::setLoadPresentationDataEnabled (bool load) {
 }
 
 void System::registerMetaTypes () {
-    
+
     if (SystemPrivate::m_metatypesRegistered == true) {
         return;
     }
-    
+
     qDebug() << "Register WebUpload meta types";
     qRegisterMetaType<WebUpload::Error>("WebUpload::Error");
     qRegisterMetaType<WebUpload::Error::Code>("WebUpload::Error::Code");
     qRegisterMetaType<WebUpload::VideoResizeOption>(
-        "WebUpload::VideoResizeOption");    
+        "WebUpload::VideoResizeOption");
     qRegisterMetaType<WebUpload::ImageResizeOption>(
         "WebUpload::ImageResizeOption");
     qRegisterMetaType<WebUpload::Media*>("WebUpload::Media*");
@@ -224,29 +224,29 @@ void System::loadLocales () {
 
 System::EngineResponse System::sendEntryToUploadEngine (
     WebUpload::Entry * entry) {
-    
+
     System::EngineResponse res = validateEntry (entry);
     if (res != System::ENGINE_RESPONSE_OK) {
         return res;
     }
-    
+
     QString path = entry->serializedTo();
     if (path.isEmpty()) {
-        // Write entry to filesystem    
+        // Write entry to filesystem
         qDebug() << __FUNCTION__ << ": serialize entry";
         WebUpload::System system;
         path = system.serializeEntryToOutbox (entry);
     } else {
-        qDebug() << __FUNCTION__ << ": entry already serialized";    
+        qDebug() << __FUNCTION__ << ": entry already serialized";
     }
 
     // Tell upload engine to add task to queue
     if (path.isEmpty() == false) {
-    
+
         UploadEngine interface("com.meego.sharing.webuploadengine");
         if (interface.isValid() == true) {
             bool retVal = interface.newUpload (path);
-            qDebug() << __FUNCTION__ << ": response" << retVal;            
+            qDebug() << __FUNCTION__ << ": response" << retVal;
         } else {
             qWarning() << __FUNCTION__ << ": dbus connection failure";
             res = System::ENGINE_RESPONSE_CONNECTION_FAILURE;
@@ -255,12 +255,12 @@ System::EngineResponse System::sendEntryToUploadEngine (
         res = System::ENGINE_REPONSE_FAILED_TO_SERIALIZED;
         qWarning() << __FUNCTION__ << ": failed to serialize entry";
     }
-    
+
     return res;
 }
 
 System::EngineResponse System::validateEntry (WebUpload::Entry * entry) {
-    
+
     System::EngineResponse res = System::ENGINE_RESPONSE_OK;
 
     qDebug() << __FUNCTION__ << ": called";
@@ -270,7 +270,7 @@ System::EngineResponse System::validateEntry (WebUpload::Entry * entry) {
     // We need to have enough space for preprocessing all media before trying
     // to upload anything. Further checks are done later anyway, so let's just
     // assume everything goes under ~/MyDocs/.share. Bying checking available
-    // space now we make sure the engine doesn't hang up and doesn't leave 
+    // space now we make sure the engine doesn't hang up and doesn't leave
     // garbage xml files.
     QDir targetDir = QDir::homePath() + "/MyDocs/.share/";
     bool enoughDiskSpace = checkDiskSpace(targetDir, entry);
@@ -306,11 +306,11 @@ SystemPrivate::SystemPrivate (System * parent) : QObject (parent),
     publicObject (parent), accountsListenerEnabled (false) {
 
     m_accountsManager = System::accountsManager();
-    
+
     m_pluginProcessPath = QLatin1String("/usr/lib/webupload/plugins/");
     serviceDefinitionsPath = QLatin1String("/usr/share/webupload/services");
     entryOutboxPath = QDir::homePath() + QLatin1String("/.share");
-    
+
 }
 
 SystemPrivate::~SystemPrivate() {
@@ -319,43 +319,43 @@ SystemPrivate::~SystemPrivate() {
 
 QList <QSharedPointer<Account> > SystemPrivate::loadAccounts (
     const QString & serviceType, bool includeCustomUI) {
-    
+
     qDebug() << "PERF: LoadAccounts START";
-    
+
     QList <QSharedPointer<Account> > retList;
     Accounts::AccountIdList idList =
         m_accountsManager->accountList (serviceType);
-    
+
     for (int i = 0; i < idList.size (); ++i) {
         Accounts::Account * aAccount = m_accountsManager->account (idList [i]);
-        
+
         if (aAccount == 0) {
             qWarning() << "Null account received" << i + 1;
             continue;
         }
-        
+
         Accounts::ServiceList sList = aAccount->services (serviceType);
-         
+
         for (int j = 0; j < sList.size (); ++j) {
-            Accounts::Service * aService = sList [j];
-            
+            Accounts::Service aService = sList [j];
+
             aAccount->selectService (aService);
-            qDebug() << "Service" << aService->displayName() << "found for"
+            qDebug() << "Service" << aService.displayName() << "found for"
                 << "account" << aAccount->displayName();
-            
+
             QSharedPointer <Account> sAccount = QSharedPointer <Account> (
                 new Account);
-                
-            if (sAccount->init (idList [i], aService->name())) {
+
+            if (sAccount->init (idList [i], aService.name())) {
                 bool append = true;
-            
+
                 if (includeCustomUI == false) {
                     if (sAccount->service()->publishCustom() ==
                         Service::PUBLISH_CUSTOM_TOTAL) {
                         append = false;
                     }
                 }
-                
+
                 if (append == true) {
                     retList.append (sAccount);
                 }
@@ -364,12 +364,12 @@ QList <QSharedPointer<Account> > SystemPrivate::loadAccounts (
 
         delete aAccount;
         aAccount = 0;
-         
+
     }
-    
+
     qDebug() << "PERF: LoadAccounts END";
-    
-    return retList;     
+
+    return retList;
 }
 
 void SystemPrivate::enableAccountListener (bool on) {
@@ -377,9 +377,9 @@ void SystemPrivate::enableAccountListener (bool on) {
     if (accountsListenerEnabled == on) {
         return;
     }
-    
+
     accountsListenerEnabled = on;
-    
+
     if (!on) {
         qDebug() << "Account listener disabled";
         m_accountsManager->disconnect (
@@ -388,7 +388,7 @@ void SystemPrivate::enableAccountListener (bool on) {
         qDebug() << "Account listener enabled";
         QObject::connect (m_accountsManager.data(),
             SIGNAL (accountCreated(Accounts::AccountId)), this,
-            SLOT (accountsAccountCreated(Accounts::AccountId)));    
+            SLOT (accountsAccountCreated(Accounts::AccountId)));
     }
 }
 
@@ -399,36 +399,36 @@ void SystemPrivate::accountsAccountCreated (Accounts::AccountId id) {
         qDebug() << "Account created and ignored";
         return;
     }
-    
+
     //Check for sharing services under created account
     Accounts::Account * aAcc = m_accountsManager->account (id);
     if (aAcc == 0) {
         qWarning() << "Invalid account ID from Accounts Manager";
         return;
     }
-    
+
     if (aAcc->supportsService ("sharing") == false) {
         qDebug() << "Account created but without sharing support, ignored.";
         delete aAcc;
         return;
     }
-    
+
     qDebug() << "Accounts' new account signal received" << id;
-    
+
     Accounts::ServiceList services = aAcc->services ("sharing");
-    
+
     for (int i = 0; i < services.count(); ++i) {
-        Accounts::Service * aService = services.at (i);
-        
+        Accounts::Service aService = services.at (i);
+
         WebUpload::SharedAccount sAccount (new WebUpload::Account (0));
-            
-        if (sAccount->init (aAcc->id(), aService->name()) == true) {
+
+        if (sAccount->init (aAcc->id(), aService.name()) == true) {
             qDebug() << "Emitting signal for new account" << sAccount->name();
             Q_EMIT (newAccount(sAccount));
         }
     }
-    
-    delete aAcc;    
+
+    delete aAcc;
 }
 
 
@@ -451,7 +451,7 @@ bool System::checkDiskSpace(QDir targetDir, WebUpload::Entry* entry)
     }
 
     if (spaceRequired > 0) {
-        qint64 safetyMargin = 2 * 1024 * 1024;        
+        qint64 safetyMargin = 2 * 1024 * 1024;
         spaceRequired += safetyMargin;
 
         QtMobility::QSystemStorageInfo storageInfo;

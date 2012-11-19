@@ -1,4 +1,4 @@
- 
+
 /*
  * This file is part of Web Upload Engine for MeeGo social networking uploads
  *
@@ -6,21 +6,21 @@
  * Contact: Jukka Tiihonen <jukka.t.tiihonen@nokia.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
+ * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense,     
+ * rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,   
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER  
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS  
- * IN THE SOFTWARE. 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
  */
 
 #include <QtTest/QtTest>
@@ -31,7 +31,7 @@
 
 #include <QImage>
 
-#include <manager.h>
+#include <Accounts/manager.h>
 #include <QDebug>
 #include <QUuid>
 #include <QSignalSpy>
@@ -80,18 +80,18 @@ void LibWebUploadTests::cleanupTestCase() {
             delete result;
         }
     }
-    
+
     int filesFound = 0;
-    
-    // Make sure tests did not leave files behind    
-    for (int i = 0; i < checkFilePaths.size(); ++i) {    
+
+    // Make sure tests did not leave files behind
+    for (int i = 0; i < checkFilePaths.size(); ++i) {
         if (QFile::exists (checkFilePaths.at (i))) {
             qCritical() << "File left behind" << checkFilePaths.at (i);
             QFile::remove (checkFilePaths.at (i));
             ++filesFound;
         }
     }
-        
+
     if (m_sparqlConnection != 0) {
         delete m_sparqlConnection;
         m_sparqlConnection = 0;
@@ -105,13 +105,13 @@ void LibWebUploadTests::cleanupTestCase() {
 void LibWebUploadTests::createOptions() {
 
     ServiceOption * option = new ServiceOption (this);
-    QVERIFY (option->id().isEmpty());    
+    QVERIFY (option->id().isEmpty());
     delete option;
-    
+
     ServiceOptionValue * value = new ServiceOptionValue();
     QVERIFY (value->id().isEmpty());
     QVERIFY (value->name().isEmpty());
-    QString id = "foobar";    
+    QString id = "foobar";
     value->setId (id);
     QCOMPARE (value->id(), id);
     value->setName (id);
@@ -123,17 +123,17 @@ void LibWebUploadTests::loadEntry() {
     createEntry (TEMP_ENTRY_PATH);
 
     Entry * entry = new Entry ();
-	QVERIFY(entry != 0);
-	
-	QVERIFY (entry->init(TEMP_ENTRY_PATH));
+        QVERIFY(entry != 0);
+
+        QVERIFY (entry->init(TEMP_ENTRY_PATH));
     QVERIFY(entry->totalSize() == entry->unsentSize());
     entry->setMetadataFilter(METADATA_FILTER_ALL);
 
     Media* media;
-	QVectorIterator<Media *> mediaIter = entry->media();
-	mediaIter = entry->media();
+        QVectorIterator<Media *> mediaIter = entry->media();
+        mediaIter = entry->media();
     mediaIter.toFront();
-	QVERIFY(mediaIter.hasNext()); 
+        QVERIFY(mediaIter.hasNext());
 
     while (mediaIter.hasNext ()) {
         media = mediaIter.next ();
@@ -157,9 +157,9 @@ void LibWebUploadTests::loadEntry() {
     QVERIFY (result->binding (0).value ().isValid () == false);
     delete result;
 
-	QVERIFY(mediaIter.hasNext());  
+        QVERIFY(mediaIter.hasNext());
     media = mediaIter.next();
-	QVERIFY(!mediaIter.hasNext());  
+        QVERIFY(!mediaIter.hasNext());
     QVERIFY(media->setActive()); // Because only active transfers can fail
     QVERIFY(media->setFailed());
     QVERIFY(media->hasError());
@@ -172,16 +172,16 @@ void LibWebUploadTests::loadEntry() {
     QVERIFY (QFile::exists (TEMP_ENTRY_PATH));
     QVERIFY (QFile::exists (afterErrorPath));
 
-	delete entry;
-	
+        delete entry;
+
     entry = new Entry();
-    QVERIFY (entry->init(TEMP_ENTRY_PATH)); 
+    QVERIFY (entry->init(TEMP_ENTRY_PATH));
     QVERIFY(entry->isPending());
     Media * cancelMedia = entry->mediaAt (0);
     QVERIFY (cancelMedia != 0);
     QVERIFY(cancelMedia->setCanceled());
     QVERIFY(entry->isCanceled());
-    delete entry; 
+    delete entry;
 
     // Media file shouldn't exists anymore
     QVERIFY (!QFile::exists (afterErrorPath));
@@ -189,10 +189,10 @@ void LibWebUploadTests::loadEntry() {
 
 void LibWebUploadTests::loadEntryInvalid() {
     Entry * entry = new Entry ();
-	QVERIFY(entry != 0);
-	
-	QVectorIterator<Media *> mediaIter = entry->media();
-	QVERIFY (!mediaIter.hasNext ());
+        QVERIFY(entry != 0);
+
+        QVectorIterator<Media *> mediaIter = entry->media();
+        QVERIFY (!mediaIter.hasNext ());
 
     QString testPath = "/tmp/invalid_xml.xml";
 
@@ -233,12 +233,12 @@ void LibWebUploadTests::testGeotagInfo () {
 
 void LibWebUploadTests::systemChecks() {
     WebUpload::System system;
-    
+
     QString entryPath = system.entryOutputPath ();
     QVERIFY (!entryPath.isEmpty());
     system.setEntryOutboxPath ("/tmp");
     QCOMPARE (system.entryOutputPath(), QString ("/tmp"));
-    
+
     // System serialize
     Entry * entry = new Entry();
     QString outPath = system.serializeEntryToOutbox (entry);
@@ -246,15 +246,15 @@ void LibWebUploadTests::systemChecks() {
     QVERIFY (outPath.isEmpty());
     QCOMPARE (outPath, entry->serializedTo());
     delete entry;
-    
+
     system.setEntryOutboxPath (entryPath);
-    
+
     // Try account loading
     createAccounts ();
     QList<QSharedPointer<WebUpload::Account> > accounts = system.allAccounts();
     for (int i = 0; i < accounts.size(); i++) {
         Accounts::AccountId curr_id = accounts.at(i)->id();
-        // Index will be 0 for first element and -1 if not found. 
+        // Index will be 0 for first element and -1 if not found.
         QVERIFY (accountList.indexOf (curr_id) <= 0);
     }
 }
@@ -263,13 +263,13 @@ void LibWebUploadTests::modifyMediaFields() {
     createEntry (TEMP_ENTRY_PATH);
 
     Entry * entry = new Entry ();
-	QVERIFY(entry != 0);
-	QVERIFY (entry->init(TEMP_ENTRY_PATH));
+        QVERIFY(entry != 0);
+        QVERIFY (entry->init(TEMP_ENTRY_PATH));
     entry->setMetadataFilter(METADATA_FILTER_ALL);
     QVERIFY (entry->metadataFilterOption () == WebUpload::METADATA_FILTER_ALL);
 
-	Media * media = entry->mediaAt (0);
-	QVERIFY (media != 0);
+        Media * media = entry->mediaAt (0);
+        QVERIFY (media != 0);
 
     QVERIFY (media->title().isEmpty());
     entry->setMetadataFilter (WebUpload::METADATA_FILTER_NONE);
@@ -291,7 +291,7 @@ void LibWebUploadTests::modifyMediaFields() {
     media->appendTag (tag0);
     QCOMPARE (media->tags().count(), numberOfTags);
     media->appendTag ("SomethingNew");
-    QVERIFY (numberOfTags < media->tags().count());	
+    QVERIFY (numberOfTags < media->tags().count());
     numberOfTags = media->tags().count();
     media->appendTag ("SomethingNew");
     QVERIFY (numberOfTags == media->tags().count());
@@ -307,8 +307,8 @@ void LibWebUploadTests::modifyMediaFields() {
     QCOMPARE (media->tags().count(), 2);
     media->clearTags ();
     QCOMPARE (media->tags().count(), 0);
-    
-    QString mediaPath = media->copyFilePath();    
+
+    QString mediaPath = media->copyFilePath();
     QVERIFY (mediaPath.isEmpty());
     QVERIFY (media->setCanceled());
     QVERIFY (entry->isCanceled());
@@ -319,58 +319,58 @@ void LibWebUploadTests::entryMetadataHandling() {
     Entry * entry = new Entry();
     entry->setMetadataFilter(WebUpload::METADATA_FILTER_ALL);
     qDebug() << "Set metadata filter for entry";
-    
+
     QList<QUrl> commonTags = entry->commonTags();
     QCOMPARE (commonTags.size(), 0);
     qDebug() << "Checked for common tags, and got none";
-    
-    entry->removeTagFromAllMedia ("something");   
-    entry->appendTagToAllMedia ("something");   
+
+    entry->removeTagFromAllMedia ("something");
+    entry->appendTagToAllMedia ("something");
     commonTags = entry->commonTags();
-    QCOMPARE (commonTags.size(), 0);        
+    QCOMPARE (commonTags.size(), 0);
     qDebug() << "Removed/added tag \"something\" to all media";
-    
+
     Media * media1 = new Media();
     media1->appendTag ("media1");
     media1->appendTag ("common");
     qDebug() << "Added tags \"media1\" and \"common\" to unintialized media";
-    
+
     entry->appendMedia (media1);
-    
+
     commonTags = entry->commonTags();
-    QCOMPARE (commonTags.size(), 0);        
+    QCOMPARE (commonTags.size(), 0);
 
     entry->setMetadataFilter(WebUpload::METADATA_FILTER_NONE);
     commonTags = entry->commonTags();
     QCOMPARE (commonTags.size(), 2);
-        
+
     entry->setMetadataFilter(WebUpload::METADATA_FILTER_ALL);
     commonTags = entry->commonTags();
     QCOMPARE (commonTags.size(), 0);
-        
+
     entry->setMetadataFilter(WebUpload::METADATA_FILTER_NONE);
     Media * media2 = new Media();
     media2->appendTag ("common");
     media2->appendTag ("media2");
 
-    entry->appendMedia (media2);        
-    
+    entry->appendMedia (media2);
+
     commonTags = entry->commonTags();
     QCOMPARE (commonTags.size(), 1);
 
     entry->appendTagToAllMedia ("extra");
     commonTags = entry->commonTags();
-    QCOMPARE (commonTags.size(), 2);  
+    QCOMPARE (commonTags.size(), 2);
 
     entry->removeTagFromAllMedia ("extra");
     commonTags = entry->commonTags();
-    QCOMPARE (commonTags.size(), 1);  
-    
+    QCOMPARE (commonTags.size(), 1);
+
     // There should not be any files written
     QVERIFY (entry->serializedTo().isEmpty());
     QVERIFY (media1->copyFilePath ().isEmpty());
-    QVERIFY (media2->copyFilePath ().isEmpty());    
-    
+    QVERIFY (media2->copyFilePath ().isEmpty());
+
     delete entry;
 }
 
@@ -379,19 +379,19 @@ void LibWebUploadTests::checkCompleted() {
     createEntry (TEMP_ENTRY_PATH);
 
     Entry * entry = new Entry ();
-	QVERIFY(entry != 0);
-	
-    QVERIFY(entry->init("/tmp/entry.xml"));    
+        QVERIFY(entry != 0);
+
+    QVERIFY(entry->init("/tmp/entry.xml"));
     QVERIFY(entry->totalSize() == entry->unsentSize());
     QVERIFY(entry->mediaCount() == 2);
     QVERIFY(entry->isPending());
     entry->checkShareFilter(METADATA_FILTER_ALL);
-    
+
     Media* media;
-	QVectorIterator<Media *> mediaIter = entry->media();
-	mediaIter = entry->media();
+        QVectorIterator<Media *> mediaIter = entry->media();
+        mediaIter = entry->media();
     mediaIter.toFront();
-	QVERIFY(mediaIter.hasNext());  
+        QVERIFY(mediaIter.hasNext());
 
     while (mediaIter.hasNext ()) {
         media = mediaIter.next ();
@@ -435,9 +435,9 @@ void LibWebUploadTests::checkCompleted() {
     QVERIFY (eTime.isValid () == false);
      ***/
     QVERIFY(entry->reSerialize());
-    
+
     delete entry;
-    
+
     entry = new Entry();
     QVERIFY (entry->init(TEMP_ENTRY_PATH));
     QVERIFY(entry->isPending());
@@ -473,7 +473,7 @@ void LibWebUploadTests::checkCompleted() {
     QVERIFY(entry->totalSize() > entry->unsentSize());
     QVERIFY(entry->reSerialize());
 
-	delete entry;
+        delete entry;
 
     entry = new Entry();
     QVERIFY(entry->init(TEMP_ENTRY_PATH));
@@ -485,21 +485,21 @@ void LibWebUploadTests::checkCompleted() {
     QVERIFY(media != NULL);
     QVERIFY(media->setActive());
     QVERIFY(entry->isActive());
-    
+
     QString mediaPath = media->copyFilePath();
     QVERIFY (!mediaPath.isEmpty());
-    QVERIFY (QFile::exists(mediaPath));  
-    QVERIFY(entry->unsentSize() > 0);      
-    
+    QVERIFY (QFile::exists(mediaPath));
+    QVERIFY(entry->unsentSize() > 0);
+
     QVERIFY(media->setCompleted(""));
-    
+
     QVERIFY(entry->isSent());
     QVERIFY(media->isSent());
-    
+
     QVERIFY(!QFile::exists(mediaPath));
     QVERIFY (entry->unsentSize() == 0);
     QVERIFY(entry->reSerialize());
-	delete entry;
+        delete entry;
 
     entry = new Entry();
     QVERIFY(!entry->init(TEMP_ENTRY_PATH));
@@ -510,28 +510,28 @@ void LibWebUploadTests::checkCompleted() {
 void LibWebUploadTests::checkCancelled1() {
 
     createEntry (TEMP_ENTRY_PATH);
-    
+
     Entry * entry = new Entry ();
-	QVERIFY(entry != 0);
-	
-    QVERIFY(entry->init(TEMP_ENTRY_PATH));    
+        QVERIFY(entry != 0);
+
+    QVERIFY(entry->init(TEMP_ENTRY_PATH));
     QVERIFY(entry->isPending());
     entry->setMetadataFilter(METADATA_FILTER_ALL);
-    
+
     Media* media;
-	QVectorIterator<Media *> mediaIter = entry->media();
+        QVectorIterator<Media *> mediaIter = entry->media();
     mediaIter.toFront();
-	QVERIFY(mediaIter.hasNext());  
-		
+        QVERIFY(mediaIter.hasNext());
+
     while (mediaIter.hasNext ()) {
         media = mediaIter.next ();
         QVERIFY(media->makeCopy () == WebUpload::Media::COPY_RESULT_SUCCESS);
         QVERIFY (QFile::exists(media->copyFilePath()));
         checkFilePaths << media->copyFilePath();
-        
+
         QTemporaryFile temp ("/tmp/libwebupload-test-XXXXXX");
         temp.setAutoRemove (false);
-        
+
         QVERIFY (temp.open ());
 
         QFileInfo fInfo (temp);
@@ -540,9 +540,9 @@ void LibWebUploadTests::checkCancelled1() {
         QVERIFY (temp.write ("foobar", 6) == 6);
         temp.close();
 
-        qDebug() << "Checking if" << tempPath << "exists"; 
+        qDebug() << "Checking if" << tempPath << "exists";
         QVERIFY (QFile::exists (tempPath));
-        
+
         media->addToCleanUpList (tempPath);
         checkFilePaths << tempPath;
     }
@@ -572,7 +572,7 @@ void LibWebUploadTests::checkCancelled1() {
     QVERIFY (result->binding (1).value ().isValid () == false);
     delete result;
      ***/
-    
+
     QVERIFY(media->setCanceled());
     QVERIFY(entry->isCanceled());
     QVERIFY(!QFile::exists(media->copyFilePath()));
@@ -592,31 +592,31 @@ void LibWebUploadTests::checkCancelled1() {
      ***/
 
     QVERIFY(media != NULL);
-	QVERIFY(mediaIter.hasNext());  
+        QVERIFY(mediaIter.hasNext());
     media = mediaIter.next();
     QVERIFY(entry->isCanceled());
     QVERIFY(!QFile::exists(media->copyFilePath()));
 
-	QVERIFY(!mediaIter.hasNext());
+        QVERIFY(!mediaIter.hasNext());
 
-	delete entry;
+        delete entry;
 }
 
 
 void LibWebUploadTests::checkCancelled2() {
     createEntry (TEMP_ENTRY_PATH);
-    
+
     Entry * entry = new Entry ();
-	QVERIFY(entry != 0);
-	
-    QVERIFY(entry->init(TEMP_ENTRY_PATH));    
+        QVERIFY(entry != 0);
+
+    QVERIFY(entry->init(TEMP_ENTRY_PATH));
     QVERIFY(entry->isPending());
 
     Media* media;
     QVectorIterator<Media *> mediaIter = entry->media();
     mediaIter.toFront();
-	QVERIFY(mediaIter.hasNext());  
-	
+        QVERIFY(mediaIter.hasNext());
+
     while (mediaIter.hasNext ()) {
         media = mediaIter.next ();
         QVERIFY(media->makeCopy () == WebUpload::Media::COPY_RESULT_SUCCESS);
@@ -649,19 +649,19 @@ void LibWebUploadTests::checkCancelled2() {
 
 void LibWebUploadTests::checkAccountPrivate () {
     AccountPrivate * priv = new AccountPrivate ();
-    
+
     priv->m_accountId = 255;
     priv->m_serviceName = "Picasa";
-    
+
     QString pres = priv->stringPresentation();
     QCOMPARE (pres, QString ("Accounts:ff:Picasa"));
-    
+
     QVERIFY (priv->fromStringPresentation (pres));
     QCOMPARE (priv->m_accountId, (Accounts::AccountId)255);
     QCOMPARE (priv->m_serviceName, QString ("Picasa"));
     QString newPres = priv->stringPresentation();
     QCOMPARE (pres, newPres);
-    
+
     priv->m_accountId = 423423;
     priv->m_serviceName = "Foo:Bar";
     pres = priv->stringPresentation();
@@ -672,11 +672,11 @@ void LibWebUploadTests::checkAccountPrivate () {
     QCOMPARE (priv->m_serviceName, QString ("Foo:Bar"));
     newPres = priv->stringPresentation();
     QCOMPARE (pres, newPres);
-    
+
     pres = "Invalid";
     QVERIFY (!(priv->fromStringPresentation (pres)));
     QVERIFY (!(priv->fromStringPresentation (QString())));
-    
+
     delete priv;
 }
 
@@ -684,19 +684,19 @@ void LibWebUploadTests::checkServicePrivate() {
 // TODO: NEED TO SEE HOW TO HANDLE THIS
 
     WebUpload::ServicePrivate * obj = new WebUpload::ServicePrivate (0);
-    
+
     QCOMPARE (obj->m_name, QString());
-    QVERIFY (obj->m_service == 0); 
-    
+    QVERIFY (obj->m_service == 0);
+
     obj->clear();
     obj->clear();
     obj->clear();
-    
+
     QVERIFY (!obj->validDataExists());
     QVERIFY (!obj->initFromDefinition (QDomElement()));
     QVERIFY (!obj->loadServiceOptions ());
     QVERIFY (obj->m_serviceOptionsLoaded == false);
-    
+
     //Invalid xml
     QDomDocument dom ("test");
     QFile invalid_file ("/usr/share/libwebupload-tests/no_option_id.service.xml");
@@ -709,7 +709,7 @@ void LibWebUploadTests::checkServicePrivate() {
     QCOMPARE (obj->m_maxMedia, (unsigned int)0);
     //TODO: Option loading!
     delete obj;
-    
+
     //Proper content
     obj = new WebUpload::ServicePrivate (0);
     QFile file("/usr/share/libwebupload-tests/valid.service.xml");
@@ -749,7 +749,7 @@ void LibWebUploadTests::checkServicePrivate() {
     QVERIFY (descOpt->caption() == WebUpload::CommonOptionPrivate::defaultCaption(descOpt->type()));
 
     QVERIFY (tagsOpt == 0);
-    
+
     QDomNodeList optionsNodeList = dom.elementsByTagName ("postOptions");
     for (int i = 0; i < optionsNodeList.count(); ++i) {
         QDomNode node = optionsNodeList.at (i);
@@ -760,12 +760,12 @@ void LibWebUploadTests::checkServicePrivate() {
         obj->initOptions (element);
         break;
     }
-    
+
     // This will be false since accounts() is not defined
     //QVERIFY (obj->m_serviceOptionsLoaded == true);
     QCOMPARE (obj->m_postOptions.count(), (2+2));
-    QCOMPARE (obj->m_uploadPlugin, QString ("plugin name"));    
-    
+    QCOMPARE (obj->m_uploadPlugin, QString ("plugin name"));
+
     delete obj;
 
     // Another valid xml - this time with more options set
@@ -819,20 +819,20 @@ void LibWebUploadTests::checkServicePrivate() {
 
     QVERIFY (titleOpt);
     QVERIFY (titleOpt->caption() == "Caption for images and videos");
-    
+
     CommonTextOption * textOpt = qobject_cast <CommonTextOption*> (titleOpt);
     QVERIFY (textOpt);
     QVERIFY (textOpt->prefill() == true);
 
     QVERIFY (descOpt);
     QVERIFY (descOpt->caption() == "Description for links");
-    
+
     textOpt = qobject_cast <CommonTextOption*> (descOpt);
     QVERIFY (textOpt);
     QVERIFY (textOpt->prefill() == false);
 
     QVERIFY (tagsOpt == 0);
-    
+
     optionsNodeList = dom.elementsByTagName ("postOptions");
     for (int i = 0; i < optionsNodeList.count(); ++i) {
         QDomNode node = optionsNodeList.at (i);
@@ -843,12 +843,12 @@ void LibWebUploadTests::checkServicePrivate() {
         obj->initOptions (element);
         break;
     }
-    
+
     // This will be false since accounts() is not defined
     //QVERIFY (obj->m_serviceOptionsLoaded == true);
     QCOMPARE (obj->m_postOptions.count(), (2+2));
-    QCOMPARE (obj->m_uploadPlugin, QString ("plugin name"));    
-    
+    QCOMPARE (obj->m_uploadPlugin, QString ("plugin name"));
+
     delete obj;
 
 }
@@ -858,10 +858,10 @@ void LibWebUploadTests::checkServicePrivate() {
 void LibWebUploadTests::testHttpMultiContentIO() {
     HttpMultiContentIO * multi = 0;
     QString payload = "";
-    
+
     multi = new HttpMultiContentIO();
     QVERIFY(multi->open(QIODevice::ReadWrite));
-    
+
     QVERIFY(multi->size() == 0);
     QVERIFY(multi->bytesAvailable() == 0);
 
@@ -890,7 +890,7 @@ void LibWebUploadTests::testHttpMultiContentIO() {
     QVERIFY(multi->addString("Testing...", false));
     payload += "Testing...\r\n";
     QCOMPARE(multi->bytesAvailable(), (long long)payload.length());
-    
+
     QVERIFY(multi->setBoundaryString("123"));
     QCOMPARE(multi->boundaryString(), QString("123"));
 
@@ -944,11 +944,11 @@ void LibWebUploadTests::testHttpMultiContentIO() {
 
     QCOMPARE(multi->size(), multi->bytesAvailable());
     QVERIFY(!multi->boundaryString().isNull());
-    QVERIFY(!multi->boundaryString().isEmpty());    
+    QVERIFY(!multi->boundaryString().isEmpty());
     multi->close ();
 
     QVERIFY(multi->open(QIODevice::ReadOnly));
-    QString readValue = ""; 
+    QString readValue = "";
     int step = 0;
     for(step += 10; step < payload.length(); step += 10)
     {
@@ -963,7 +963,7 @@ void LibWebUploadTests::testHttpMultiContentIO() {
     delete multi;
 }
 
-void LibWebUploadTests::testError() {    
+void LibWebUploadTests::testError() {
     WebUpload::Error error = WebUpload::Error::connectFailure();
     QVERIFY(!error.canContinue());
     // QVERIFY(error.repairable());
@@ -974,9 +974,9 @@ void LibWebUploadTests::testError() {
     QVERIFY(!error.description().isEmpty());
     QVERIFY(error.description() == "Hello World");
      **/
-    QString desc = error.description(); 
+    QString desc = error.description();
 
-    error = WebUpload::Error::invalidFileType();        
+    error = WebUpload::Error::invalidFileType();
     QVERIFY (desc != error.description());
     QVERIFY(!error.repairable());
     QVERIFY(error.canContinue());
@@ -1053,46 +1053,46 @@ void LibWebUploadTests::testXmlHelper() {
         QDomNode node = list.at (i);
         QVERIFY (node.isElement());
         QDomElement element = node.toElement();
-        
+
         QStringList mimes = XmlHelper::readMimeTypes (element);
         QString type = element.attribute ("type");
-        
+
         if (type.contains ("empty")) {
             QCOMPARE (mimes.count(), 0);
         } else {
             QVERIFY (mimes.count() > 0);
         }
-        
+
         if (type.contains ("all") || type.contains ("empty") ||
             type.contains ("both")) {
-            
+
             QVERIFY (XmlHelper::mimeTypeListCheck ("image/jpeg", mimes));
             QVERIFY (XmlHelper::mimeTypeListCheck ("image/png", mimes));
             QVERIFY (XmlHelper::mimeTypeListCheck ("image/gif", mimes));
             QVERIFY (XmlHelper::mimeTypeListCheck ("video/mp4", mimes));
-            
+
             bool acceptPDF = type.contains ("all") || type.contains ("empty");
             QVERIFY (XmlHelper::mimeTypeListCheck ("application/pdf", mimes)
                 == acceptPDF);
-                    
+
         } else if (type.contains ("image")) {
             QVERIFY (XmlHelper::mimeTypeListCheck ("image/jpeg", mimes));
             QVERIFY (XmlHelper::mimeTypeListCheck ("image/png", mimes));
             QVERIFY (XmlHelper::mimeTypeListCheck ("image/gif", mimes));
-            QVERIFY (!XmlHelper::mimeTypeListCheck ("video/mp4", mimes));            
+            QVERIFY (!XmlHelper::mimeTypeListCheck ("video/mp4", mimes));
             QVERIFY (!XmlHelper::mimeTypeListCheck ("application/pdf", mimes));
-                     
+
         } else if (type.contains ("video")) {
             QVERIFY (XmlHelper::mimeTypeListCheck ("video/mp4", mimes));
-            QVERIFY (!XmlHelper::mimeTypeListCheck ("image/jpeg", mimes));            
+            QVERIFY (!XmlHelper::mimeTypeListCheck ("image/jpeg", mimes));
             QVERIFY (!XmlHelper::mimeTypeListCheck ("application/pdf", mimes));
-            
+
         } else if (type.contains ("jpeg")) {
             QVERIFY (XmlHelper::mimeTypeListCheck ("image/jpeg", mimes));
             QVERIFY (!XmlHelper::mimeTypeListCheck ("image/jpg", mimes));
             QVERIFY (!XmlHelper::mimeTypeListCheck ("image/png", mimes));
             QVERIFY (!XmlHelper::mimeTypeListCheck ("application/pdf", mimes));
-                              
+
         } else if (type.contains ("pdf")) {
             QVERIFY (!XmlHelper::mimeTypeListCheck ("image/jpeg", mimes));
             QVERIFY (!XmlHelper::mimeTypeListCheck ("image/png", mimes));
@@ -1105,7 +1105,7 @@ void LibWebUploadTests::testXmlHelper() {
 
 void LibWebUploadTests::testProcessExchangeData () {
     ProcessExchangeData pData;
-    
+
     // No need to actually check all of them
     QSignalSpy feSpy(&pData, SIGNAL(startUploadSignal(QString,WebUpload::Error)));
     QSignalSpy uaSpy(&pData, SIGNAL(updateAllSignal(QString)));
@@ -1118,7 +1118,7 @@ void LibWebUploadTests::testProcessExchangeData () {
     QList<QVariant> spyArgs;
     QVariant firstArg, secondArg;
 
-    QByteArray feArray = pData.startUpload ("/tmp/path", 
+    QByteArray feArray = pData.startUpload ("/tmp/path",
         WebUpload::Error::noConnection());
     quint32 feArraySize = feArray.size ();
 
@@ -1248,10 +1248,10 @@ void LibWebUploadTests::testPost () {
     WebUpload::Error wError;
     QSignalSpy errorSpy (&postInst, SIGNAL (error(WebUpload::Error)));
     QSignalSpy doneSpy (&postInst, SIGNAL (done()));
-    QSignalSpy mediaStartedSpy (&postInst, 
+    QSignalSpy mediaStartedSpy (&postInst,
         SIGNAL (mediaStarted(WebUpload::Media*)));
     QSignalSpy errorFixedSpy (&postInst, SIGNAL (errorFixed()));
-    QSignalSpy errorFixFailedSpy (&postInst, 
+    QSignalSpy errorFixFailedSpy (&postInst,
         SIGNAL (errorFixFailed(WebUpload::Error)));
     QList<QVariant> spyArgs;
     QVariant firstArg;
@@ -1383,7 +1383,7 @@ inline void LibWebUploadTests::createAccounts () {
         sList = acc->services ();
         for (int j = 0; j < sList.size(); j++) {
             acc->selectService (sList[j]);
-            if ((i == 0) && (sList[j]->serviceType () == "sharing")) {
+            if ((i == 0) && (sList[j].serviceType () == "sharing")) {
                 acc->setEnabled (true);
             } else {
                 acc->setEnabled (false);
@@ -1425,14 +1425,14 @@ inline QSparqlResult * LibWebUploadTests::blockingSparqlQuery (
     result->waitForFinished ();
 
     if (result->hasError ()) {
-        qDebug() << "Error with query" << query.preparedQueryText() << ":" << 
+        qDebug() << "Error with query" << query.preparedQueryText() << ":" <<
             result->lastError().message ();
         delete result;
         return 0;
     } else if ((singleResponse == true) && (result->size () != 1)) {
         // There should be exactly 1 row in the response if it was a valid
         // tracker iri
-        qDebug() << query.preparedQueryText() << "returned" << 
+        qDebug() << query.preparedQueryText() << "returned" <<
             result->size() << "rows";
         delete result;
         return 0;
@@ -1447,7 +1447,7 @@ inline void LibWebUploadTests::createEntry (const QString & path) {
     QString parentPath = QDir::homePath() + "/MyDocs/.images/";
     QDir dir (parentPath);
     QVERIFY (dir.exists ());
-    
+
     // Create entry
     Entry * entry = new Entry();
     QVERIFY(entry != 0);
@@ -1455,7 +1455,7 @@ inline void LibWebUploadTests::createEntry (const QString & path) {
     //TODO: uses fake account
     entry->setAccountId("facebook");
     QVERIFY(entry->accountId() == "facebook");
-    
+
     Media * media1 = NULL;
     createMedia (parentPath, "libwebupload-test1.jpg", &media1);
     QVERIFY(media1 != NULL);
@@ -1491,7 +1491,7 @@ inline void LibWebUploadTests::createEntry (const QString & path) {
     qDebug() << "Description is " << media1->description();
     QVERIFY(!media1->description().isEmpty());
     QVERIFY(media1->tags().count() == 2);
-    
+
     Media * media2 = NULL;
     createMedia (parentPath, "libwebupload-test2.jpg", &media2);
     QVERIFY(media2 != NULL);
@@ -1504,19 +1504,19 @@ inline void LibWebUploadTests::createEntry (const QString & path) {
     QVERIFY(!media2->description().isEmpty());
 
     entry->setMetadataFilter(WebUpload::METADATA_FILTER_NONE);
-    
-    QVERIFY (!entry->reSerialize());    
-    
+
+    QVERIFY (!entry->reSerialize());
+
     QVERIFY (entry->serialize (path));
-    checkFilePaths << path;    
-    
+    checkFilePaths << path;
+
     QString trackerUrl = entry->trackerIRI();
     qDebug() << "Tracker URI is " << trackerUrl;
     cleanTrackerUris << trackerUrl;
     delete entry;
 }
 
-inline void LibWebUploadTests::createMedia (const QString & path, 
+inline void LibWebUploadTests::createMedia (const QString & path,
         const QString & file, WebUpload::Media **mediaP) {
     QVERIFY(mediaP);
 
@@ -1646,8 +1646,8 @@ void LibWebUploadTests::checkImageResizeOptionMedium () {
         QSize copySize = copy.size ();
 
         if (resize[i]) {
-            QVERIFY(copySize.height() <= maxSize); 
-            QVERIFY(copySize.width() <= maxSize); 
+            QVERIFY(copySize.height() <= maxSize);
+            QVERIFY(copySize.width() <= maxSize);
         } else {
             QVERIFY (origSize == copySize);
         }
@@ -1688,8 +1688,8 @@ void LibWebUploadTests::checkImageResizeOptionSmall () {
         QSize copySize = copy.size ();
 
         if (resize[i]) {
-            QVERIFY(copySize.height() <= maxSize); 
-            QVERIFY(copySize.width() <= maxSize); 
+            QVERIFY(copySize.height() <= maxSize);
+            QVERIFY(copySize.width() <= maxSize);
         } else {
             QVERIFY (origSize == copySize);
         }
