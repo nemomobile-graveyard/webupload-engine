@@ -40,10 +40,13 @@ LIBS += -lgcov
 LIBS += ../libwebupload/out/libwebupload.so
 LIBS += ../webupload-service/libwebupload-service.so
 
-target.path = /usr/bin
+target.path = /opt/tests/webupload-engine
 
-sh.path  = /usr/share/webupload-engine-tests
-sh.files = tests.xml 1.jpg 2.jpg \
+testdefinition.path = /opt/tests/webupload-engine/test-definition
+testdefinition.files = tests.xml
+
+sh.path  = /opt/tests/webupload-engine
+sh.files = 1.jpg 2.jpg \
            run-test.sh tracker-clean.sh tracker-copy.sh
 
 INSTALLS += target \

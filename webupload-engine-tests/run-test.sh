@@ -4,8 +4,8 @@
 if [ "$(/usr/bin/id -u)" != "0" ]; then
     /bin/echo "Already user"
     /bin/echo "Running test case $1"
-    /usr/bin/webupload-engine-tests $1
+    /opt/tests/webupload-engine/webupload-engine-tests $1
 else
     /bin/echo User run test $1
-    /bin/su user -c /usr/bin/webupload-engine-tests $1
+    /bin/su user -c /opt/tests/webupload-engine/webupload-engine-tests $1
 fi

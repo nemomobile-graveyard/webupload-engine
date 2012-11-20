@@ -4,91 +4,91 @@
     <set name="libwebupload-tests" feature="libwebupload unit tests">
       <description>Testing the libwebupload library</description>
       <pre_steps>
-        <step>sh /usr/share/libwebupload-tests/tracker-copy.sh</step>
+        <step>sh /opt/tests/libwebupload/tracker-copy.sh</step>
       </pre_steps>
       <case name="testGeotagInfo" type="Functional" level="Component">
         <description>Check GeotagInfo class</description>
-        <step>sh /usr/share/libwebupload-tests/run-test.sh testGeotagInfo</step>
+        <step>sh /opt/tests/libwebupload/run-test.sh testGeotagInfo</step>
       </case>
       <case name="systemChecks" type="Functional" level="Component">
         <description>Check GeotagInfo class</description>
-        <step>sh /usr/share/libwebupload-tests/run-test.sh systemChecks</step>
+        <step>sh /opt/tests/libwebupload/run-test.sh systemChecks</step>
       </case>
       <case name="checkServicePrivate" type="Functional" level="Component">
         <description>Unit test Service by calling private class</description>
-        <step>sh /usr/share/libwebupload-tests/run-test.sh checkServicePrivate</step>
+        <step>sh /opt/tests/libwebupload/run-test.sh checkServicePrivate</step>
       </case>
       <case name="loadEntry" type="Functional" level="Component">
         <description>Check loading of a sharing entry xml file</description>
-        <step>sh /usr/share/libwebupload-tests/run-test.sh loadEntry</step>
+        <step>sh /opt/tests/libwebupload/run-test.sh loadEntry</step>
       </case>
       <case name="loadEntryInvalid" type="Functional" level="Component">
         <description>Check loading of an invalid sharing entry xml file</description>
-        <step>sh /usr/share/libwebupload-tests/run-test.sh loadEntryInvalid</step>
+        <step>sh /opt/tests/libwebupload/run-test.sh loadEntryInvalid</step>
       </case>
       <case name="checkCompleted" type="Functional" level="Component">
         <description>Check handling of completed for a sharing entry</description>
-        <step>sh /usr/share/libwebupload-tests/run-test.sh checkCompleted</step>
+        <step>sh /opt/tests/libwebupload/run-test.sh checkCompleted</step>
       </case>
       <case name="checkCancelled1" type="Functional" level="Component">
         <description>Check handling of cancel for a sharing entry</description>
-        <step>sh /usr/share/libwebupload-tests/run-test.sh checkCancelled1</step>
+        <step>sh /opt/tests/libwebupload/run-test.sh checkCancelled1</step>
       </case>
       <case name="checkCancelled2" type="Functional" level="Component">
         <description>Check handling of cancel for a sharing entry</description>
-        <step>sh /usr/share/libwebupload-tests/run-test.sh checkCancelled2</step>
+        <step>sh /opt/tests/libwebupload/run-test.sh checkCancelled2</step>
       </case>
       <case name="checkImageResizeOptionOriginal" type="Functional" level="Component">
         <description>Check if image copies are made correctly if the user opts to keep the original size</description>
-        <step>sh /usr/share/libwebupload-tests/run-test.sh checkImageResizeOptionOriginal</step>
+        <step>sh /opt/tests/libwebupload/run-test.sh checkImageResizeOptionOriginal</step>
       </case>
       <case name="checkImageResizeOptionMedium" type="Functional" level="Component">
         <description>Check if image copies are made correctly if the user opts to resize with the medium option</description>
-        <step>sh /usr/share/libwebupload-tests/run-test.sh checkImageResizeOptionMedium</step>
+        <step>sh /opt/tests/libwebupload/run-test.sh checkImageResizeOptionMedium</step>
       </case>
       <case name="checkImageResizeOptionSmall" type="Functional" level="Component">
         <description>Check if image copies are made correctly if the user opts to resize with the small option</description>
-        <step>sh /usr/share/libwebupload-tests/run-test.sh checkImageResizeOptionSmall</step>
+        <step>sh /opt/tests/libwebupload/run-test.sh checkImageResizeOptionSmall</step>
       </case>
       <case name="modifyMediaFields" type="Functional" level="Component">
         <description>Check the various api's provided by Sharing::Media class</description>
-        <step>sh /usr/share/libwebupload-tests/run-test.sh modifyMediaFields</step>
+        <step>sh /opt/tests/libwebupload/run-test.sh modifyMediaFields</step>
       </case>
       <case name="createOptions" type="Functional" level="Component">
         <description>Test creation of new options for accounts</description>
-        <step>sh /usr/share/libwebupload-tests/run-test.sh createOptions</step>
+        <step>sh /opt/tests/libwebupload/run-test.sh createOptions</step>
       </case>
       <case name="entryMetadataHandling" type="Functional" level="Component">
         <description>Test handling metadata options - enabling/disabling them, changing tags etc</description>
-        <step>sh /usr/share/libwebupload-tests/run-test.sh entryMetadataHandling</step>
+        <step>sh /opt/tests/libwebupload/run-test.sh entryMetadataHandling</step>
       </case>
       <case name="checkAccountPrivate" type="Functional" level="Component">
         <description>Check the AccountPrivate class</description>
-        <step>sh /usr/share/libwebupload-tests/run-test.sh checkAccountPrivate</step>
+        <step>sh /opt/tests/libwebupload/run-test.sh checkAccountPrivate</step>
       </case>
       <case name="testHttpMultiContentIO" type="Functional" level="Component">
         <description>Tests the HttpMultiContentIO class</description>
-        <step>sh /usr/share/libwebupload-tests/run-test.sh testHttpMultiContentIO</step>
+        <step>sh /opt/tests/libwebupload/run-test.sh testHttpMultiContentIO</step>
       </case>
       <case name="testError" type="Functional" level="Component">
         <description>Tests the error class</description>
-        <step>sh /usr/share/libwebupload-tests/run-test.sh testError</step>
+        <step>sh /opt/tests/libwebupload/run-test.sh testError</step>
       </case>
       <case name="testErrorSerialization" type="Functional" level="Component">
         <description>Tests the serialization/deserialization of the error class</description>
-        <step>sh /usr/share/libwebupload-tests/run-test.sh testErrorSerialization</step>
+        <step>sh /opt/tests/libwebupload/run-test.sh testErrorSerialization</step>
       </case>
       <case name="testXmlHelper" type="Functional" level="Component">
         <description>Tests XML helper class</description>
-        <step>sh /usr/share/libwebupload-tests/run-test.sh testXmlHelper</step>
+        <step>sh /opt/tests/libwebupload/run-test.sh testXmlHelper</step>
       </case>
       <case name="testProcessExchangeData" type="Functional" level="Component">
         <description>Tests ProcessExchangeData class</description>
-        <step>sh /usr/share/libwebupload-tests/run-test.sh testProcessExchangeData</step>
+        <step>sh /opt/tests/libwebupload/run-test.sh testProcessExchangeData</step>
       </case>
       <case name="testPost" type="Functional" level="Component">
         <description>Tests Post classes</description>
-        <step>sh /usr/share/libwebupload-tests/run-test.sh testPost</step>
+        <step>sh /opt/tests/libwebupload/run-test.sh testPost</step>
       </case>
       <environments>
         <scratchbox>true</scratchbox>
@@ -98,7 +98,7 @@
         <file>/home/user/.local/share/tracker/tracker-store.log</file>
       </get>
       <post_steps>
-        <step>sh /usr/share/libwebupload-tests/tracker-clean.sh</step>        
+        <step>sh /opt/tests/libwebupload/tracker-clean.sh</step>        
       </post_steps>
     </set>
   </suite>

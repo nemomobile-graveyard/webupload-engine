@@ -38,10 +38,10 @@ HEADERS += libwebuploadtests.h dummypost.h
 LIBS += -lgcov
 LIBS += ../webupload-service/libwebupload-service.so
 
-target.path = /usr/bin
+target.path = /opt/tests/libwebupload
 
-sh.path  = /usr/share/libwebupload-tests
-sh.files = tests.xml \
+sh.path  = /opt/tests/libwebupload
+sh.files = \
            test.txt \
            *.service.xml \
            empty.xml   \
@@ -61,10 +61,14 @@ sh.files = tests.xml \
            tracker-copy.sh \
            tracker-clean.sh \
            run-test.sh
-           
+
+testdefinition.path = /opt/tests/libwebupload/test-definition
+testdefinition.files = tests.xml
+
 invalid_plugin.path  = /usr/lib/webupload/plugins
 invalid_plugin.files = libempty_plugin.so
-           
+
 INSTALLS += target \
             sh     \
-            invalid_plugin
+            invalid_plugin \
+            testdefinition

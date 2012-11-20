@@ -10,8 +10,8 @@ fi
 # Create the destination path if it does not exist
 /bin/mkdir -p $PATH/MyDocs/.images
 
-/bin/cp /usr/share/webupload-engine-tests/1.jpg $PATH/MyDocs/.images/webupload-engine-test1.jpg || /bin/echo Failed to copy file
-/bin/cp /usr/share/webupload-engine-tests/2.jpg $PATH/MyDocs/.images/webupload-engine-test2.jpg || /bin/echo Failed to copy file
+/bin/cp /opt/tests/webupload-engine/1.jpg $PATH/MyDocs/.images/webupload-engine-test1.jpg || /bin/echo Failed to copy file
+/bin/cp /opt/tests/webupload-engine/2.jpg $PATH/MyDocs/.images/webupload-engine-test2.jpg || /bin/echo Failed to copy file
 
 /bin/echo Give some time for tracker to index...
 /bin/sleep 300

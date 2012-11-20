@@ -699,7 +699,7 @@ void LibWebUploadTests::checkServicePrivate() {
 
     //Invalid xml
     QDomDocument dom ("test");
-    QFile invalid_file ("/usr/share/libwebupload-tests/no_option_id.service.xml");
+    QFile invalid_file ("/opt/tests/libwebupload/no_option_id.service.xml");
     QVERIFY (invalid_file.open(QIODevice::ReadOnly));
     QVERIFY (dom.setContent(&invalid_file));
     invalid_file.close();
@@ -712,7 +712,7 @@ void LibWebUploadTests::checkServicePrivate() {
 
     //Proper content
     obj = new WebUpload::ServicePrivate (0);
-    QFile file("/usr/share/libwebupload-tests/valid.service.xml");
+    QFile file("/opt/tests/libwebupload/valid.service.xml");
     QVERIFY (file.open(QIODevice::ReadOnly));
     QVERIFY (dom.setContent(&file));
     file.close();
@@ -770,7 +770,7 @@ void LibWebUploadTests::checkServicePrivate() {
 
     // Another valid xml - this time with more options set
     obj = new WebUpload::ServicePrivate (0);
-    file.setFileName("/usr/share/libwebupload-tests/another.valid.service.xml");
+    file.setFileName("/opt/tests/libwebupload/another.valid.service.xml");
     QVERIFY (file.open(QIODevice::ReadOnly));
     QVERIFY (dom.setContent(&file));
     file.close();
@@ -1042,7 +1042,7 @@ void LibWebUploadTests::testErrorSerialization () {
 
 void LibWebUploadTests::testXmlHelper() {
     QDomDocument dom ("test");
-    QFile testFile ("/usr/share/libwebupload-tests/mimetypes.xml");
+    QFile testFile ("/opt/tests/libwebupload/mimetypes.xml");
     QVERIFY (testFile.open(QIODevice::ReadOnly));
     QVERIFY (dom.setContent (&testFile));
     testFile.close();
